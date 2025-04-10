@@ -30,7 +30,6 @@ const Welcome = () => {
       id={guestRoutes.welcome.route}
       sx={styles.container}
     >
-      {' '}
       <Box alt='Title' component='img' src={image} sx={styles.title} />
       <Typography sx={styles.subtitle}>
         {t('guestHomePage.welcomeBlock.description')}
