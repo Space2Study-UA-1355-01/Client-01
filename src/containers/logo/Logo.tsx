@@ -10,7 +10,7 @@ interface LogoProps extends BoxProps {
 
 const Logo: FC<LogoProps> = ({ light = false, ...props }) => {
   const handleClick = () => {
-    const welcomeSection = document.getElementById('welcome')
+    const welcomeSection = document.querySelector('[data-route="welcome"]')
     if (welcomeSection) {
       welcomeSection.scrollIntoView({ behavior: 'smooth' })
     }
