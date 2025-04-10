@@ -8,13 +8,24 @@ interface LogoProps extends BoxProps {
   light?: boolean
 }
 
-const Logo: FC<LogoProps> = ({ light = false, ...props }) => (
-  <Box
-    alt='logo'
-    component={ComponentEnum.Img}
-    src={light ? logoLight : logo}
-    {...props}
-  />
-)
+const Logo: FC<LogoProps> = ({ light = false, ...props }) => {
+  const handleClick = () => {
+    const welcomeSection = document.getElementById('welcome')
+    if (welcomeSection) {
+      welcomeSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <Box
+      alt='logo'
+      component={ComponentEnum.Img}
+      onClick={handleClick}
+      src={light ? logoLight : logo}
+      sx={{ cursor: 'pointer' }}
+      {...props}
+    />
+  )
+}
 
 export default Logo
