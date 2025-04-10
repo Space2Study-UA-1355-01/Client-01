@@ -15,19 +15,26 @@ const handleChange = vi.fn()
 const handleBlur = vi.fn()
 const handleSubmit = vi.fn()
 
+const renderForm = (
+  customData,
+  customErrors,
+  preloadedState = { appMain: { authLoading: false } }
+) => {
+  return renderWithProviders(
+    <LoginForm
+      data={customData}
+      errors={customErrors}
+      handleBlur={handleBlur}
+      handleChange={handleChange}
+      handleSubmit={handleSubmit}
+    />,
+    { preloadedState }
+  )
+}
+
 describe('Login form test', () => {
-  const preloadedState = { appMain: { authLoading: false } }
   beforeEach(() => {
-    renderWithProviders(
-      <LoginForm
-        data={data}
-        errors={errors}
-        handleBlur={handleBlur}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-      />,
-      { preloadedState }
-    )
+    renderForm(data, errors)
   })
 
   it('should render email input label', () => {
@@ -87,19 +94,34 @@ describe('Login form test', () => {
 describe('Login form test with loading', () => {
   const preloadedState = { appMain: { authLoading: true } }
   it('should render loader', () => {
-    renderWithProviders(
-      <LoginForm
-        data={data}
-        errors={errors}
-        handleBlur={handleBlur}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-      />,
-      { preloadedState }
-    )
-
+    renderForm(data, errors, preloadedState)
     const loader = screen.getByTestId('loader')
-
     expect(loader).toBeInTheDocument()
+  })
+})
+
+describe('Login button disabled state', () => {
+  test.each([
+    ['empty email', { email: '', password: 'passTest1' }, { email: false }],
+    [
+      'empty password',
+      { email: 'email@mail.com', password: '' },
+      { email: false }
+    ],
+    [
+      'invalid email',
+      { email: 'test', password: 'passTest1' },
+      { email: 'common.errorMessages.emailValid' }
+    ]
+  ])('should disable button if %s', (caseName, customData, customErrors) => {
+    renderForm(customData, customErrors)
+    const button = screen.getByText('common.labels.login')
+    expect(button).toBeDisabled()
+  })
+
+  it('should enable button if data is valid', () => {
+    renderForm(data, errors)
+    const button = screen.getByText('common.labels.login')
+    expect(button).not.toBeDisabled()
   })
 })
