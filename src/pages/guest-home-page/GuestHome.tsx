@@ -38,8 +38,13 @@ const GuestHomePage = () => {
           <ResetPassword openModal={openModal} resetToken={resetToken} />
         )
       })
+    // searchParams.get('login') !== null && openModal(LoginDialog, true)
     searchParams.get('login') !== null &&
-      openModal({ component: <LoginDialog />, disableBackdropClick: true })
+      openModal({
+        component: <LoginDialog />,
+        paperProps: {},
+        disableBackdropClick: true
+      })
 
     setSearchParams([])
   }, [searchParams, setSearchParams, openModal])

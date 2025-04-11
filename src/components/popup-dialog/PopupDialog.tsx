@@ -21,9 +21,10 @@ const PopupDialog: FC<PopupDialogProps> = ({
   content,
   paperProps,
   timerId,
-  closeModal,
   closeModalAfterDelay,
-  disableBackdropClick = false
+  closeModal,
+  disableBackdropClick
+  // this value isn't received
 }) => {
   const { isMobile } = useBreakpoints()
 
@@ -40,12 +41,11 @@ const PopupDialog: FC<PopupDialogProps> = ({
       onClose={(event, reason) => {
         /* */
         console.log('disableBackdropClick', disableBackdropClick)
-        // if (disableBackdropClick && reason === 'backdropClick') return
-        if (disableBackdropClick) return
+        if (disableBackdropClick && reason === 'backdropClick') return
+        // if (disableBackdropClick) return
         // if (reason === 'backdropClick') return
         closeModal()
         console.log('reason', reason)
-        console.log('disableBackdropClick', disableBackdropClick)
       }}
       open
     >

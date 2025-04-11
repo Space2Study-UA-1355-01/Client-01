@@ -16,7 +16,11 @@ interface Component {
 }
 
 interface ModalProvideContext {
-  openModal: (component: Component, delayToClose?: number) => void
+  openModal: (
+    component: Component,
+    delayToClose?: number,
+    disableBackdropClick?: boolean
+  ) => void
   closeModal: () => void
 }
 
@@ -32,9 +36,8 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   const [modal, setModal] = useState<React.ReactElement | null>(null)
   const [paperProps, setPaperProps] = useState<PaperProps>({})
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
-  const [disableBackdropClick, setDisableBackdropClick] = useState<
-    boolean | undefined
-  >(false)
+  const [disableBackdropClick, setDisableBackdropClick] =
+    useState<boolean>(false)
 
   const closeModal = useCallback(() => {
     setModal(null)
@@ -56,9 +59,17 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
       { component, paperProps, disableBackdropClick }: Component,
       delayToClose?: number
     ) => {
+      console.log('openModal received component:', component)
+
+      console.log(
+        'openModal received disableBackdropClick:',
+        disableBackdropClick
+      ) // undefined!
+
       setModal(component)
+
       /* disableBackdropClick state is not passed correctly, lost along the way */
-      setDisableBackdropClick(disableBackdropClick)
+      setDisableBackdropClick(disableBackdropClick ?? false)
 
       paperProps && setPaperProps(paperProps)
       delayToClose && closeModalAfterDelay(delayToClose)
@@ -74,16 +85,18 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   return (
     <ModalContext.Provider value={contextValue}>
       {children}
-      {modal && (
-        <PopupDialog
-          closeModal={closeModal}
-          closeModalAfterDelay={closeModalAfterDelay}
-          content={modal}
-          disableBackdropClick={disableBackdropClick}
-          paperProps={paperProps}
-          timerId={timer}
-        />
-      )}
+      {modal &&
+        (console.log('disableBackdropClick передаємо:', disableBackdropClick),
+        (
+          <PopupDialog
+            closeModal={closeModal}
+            closeModalAfterDelay={closeModalAfterDelay}
+            content={modal}
+            disableBackdropClick={disableBackdropClick}
+            paperProps={paperProps}
+            timerId={timer}
+          />
+        ))}
     </ModalContext.Provider>
   )
 }
