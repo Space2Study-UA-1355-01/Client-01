@@ -13,13 +13,17 @@ interface PopupDialogProps {
   paperProps: PaperProps
   timerId: NodeJS.Timeout | null
   closeModalAfterDelay: (delay?: number) => void
+  closeModal: () => void
+  disableBackdropClick?: boolean
 }
 
 const PopupDialog: FC<PopupDialogProps> = ({
   content,
   paperProps,
   timerId,
-  closeModalAfterDelay
+  closeModal,
+  closeModalAfterDelay,
+  disableBackdropClick = false
 }) => {
   const { isMobile } = useBreakpoints()
 
@@ -33,6 +37,16 @@ const PopupDialog: FC<PopupDialogProps> = ({
       disableRestoreFocus
       fullScreen={isMobile}
       maxWidth='xl'
+      onClose={(event, reason) => {
+        /* */
+        console.log('disableBackdropClick', disableBackdropClick)
+        // if (disableBackdropClick && reason === 'backdropClick') return
+        if (disableBackdropClick) return
+        // if (reason === 'backdropClick') return
+        closeModal()
+        console.log('reason', reason)
+        console.log('disableBackdropClick', disableBackdropClick)
+      }}
       open
     >
       <Box

@@ -39,7 +39,7 @@ const GuestHomePage = () => {
         )
       })
     searchParams.get('login') !== null &&
-      openModal({ component: <LoginDialog /> })
+      openModal({ component: <LoginDialog />, disableBackdropClick: true })
 
     setSearchParams([])
   }, [searchParams, setSearchParams, openModal])

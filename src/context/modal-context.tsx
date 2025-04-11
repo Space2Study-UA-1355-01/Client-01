@@ -12,6 +12,7 @@ import { PaperProps } from '@mui/material/Paper'
 interface Component {
   component: React.ReactElement
   paperProps?: PaperProps
+  disableBackdropClick?: boolean
 }
 
 interface ModalProvideContext {
@@ -31,12 +32,16 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   const [modal, setModal] = useState<React.ReactElement | null>(null)
   const [paperProps, setPaperProps] = useState<PaperProps>({})
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
+  const [disableBackdropClick, setDisableBackdropClick] = useState<
+    boolean | undefined
+  >(false)
 
   const closeModal = useCallback(() => {
     setModal(null)
     setPaperProps({})
     setTimer(null)
-  }, [setModal, setPaperProps, setTimer])
+    setDisableBackdropClick(false)
+  }, [setModal, setPaperProps, setTimer, setDisableBackdropClick])
 
   const closeModalAfterDelay = useCallback(
     (delay?: number) => {
@@ -47,13 +52,18 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   )
 
   const openModal = useCallback(
-    ({ component, paperProps }: Component, delayToClose?: number) => {
+    (
+      { component, paperProps, disableBackdropClick }: Component,
+      delayToClose?: number
+    ) => {
       setModal(component)
+      /* disableBackdropClick state is not passed correctly, lost along the way */
+      setDisableBackdropClick(disableBackdropClick)
 
       paperProps && setPaperProps(paperProps)
       delayToClose && closeModalAfterDelay(delayToClose)
     },
-    [setModal, setPaperProps, closeModalAfterDelay]
+    [setModal, setPaperProps, setDisableBackdropClick, closeModalAfterDelay]
   )
 
   const contextValue = useMemo(
@@ -66,8 +76,10 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
       {children}
       {modal && (
         <PopupDialog
+          closeModal={closeModal}
           closeModalAfterDelay={closeModalAfterDelay}
           content={modal}
+          disableBackdropClick={disableBackdropClick}
           paperProps={paperProps}
           timerId={timer}
         />
