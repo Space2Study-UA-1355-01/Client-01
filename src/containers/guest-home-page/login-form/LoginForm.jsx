@@ -32,6 +32,9 @@ const LoginForm = ({
     openModal({ component: <ForgotPassword /> })
   }
 
+  const isSubmitButtonDisabled =
+    !data.email || !data.password || Boolean(errors.email)
+
   return (
     <Box component='form' onSubmit={handleSubmit} sx={styles.form}>
       <AppTextField
@@ -70,7 +73,12 @@ const LoginForm = ({
         {t('login.forgotPassword')}
       </Typography>
 
-      <AppButton loading={authLoading} sx={styles.loginButton} type='submit'>
+      <AppButton
+        disabled={isSubmitButtonDisabled}
+        loading={authLoading}
+        sx={styles.loginButton}
+        type='submit'
+      >
         {t('common.labels.login')}
       </AppButton>
     </Box>
