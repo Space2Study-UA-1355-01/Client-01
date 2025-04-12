@@ -1,30 +1,48 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { expect } from 'vitest'
+import { vi } from 'vitest'
 
 import SearchInput from '~/components/search-input/SearchInput'
 
 describe('SearchInput', () => {
-  beforeEach(() => {
-    render(<SearchInput />)
-  })
-
-  // it('test', () => {
-  //   const SearchIcon = screen.getByTestId('search-icon')
-  //   expect(SearchIcon).toBeInTheDocument()
-  // })
+  const setSearch = vi.fn()
 
   it('should render text correctly', () => {
-    const textFieldElement = screen.getByRole('textbox')
-    expect(textFieldElement).toBeInTheDocument()
+    render(<SearchInput search='hello' />)
+    const input = screen.getByRole('textbox')
+    expect(input).toHaveValue('hello')
   })
 
-  it('should call setSearch when search icon is clicked', () => {
-    /*  const searchIcon = screen.getByTestId('search-icon')
-   expect setSearch to be called after this event */
+  it('should call setSearch when search icon is clicked', async () => {
+    render(<SearchInput setSearch={setSearch} />)
+    const searchIcon = screen.getByTestId('search-icon')
+    fireEvent.click(searchIcon)
+    expect(setSearch).toHaveBeenCalled()
   })
 
-  it('should call setState with empty string when delete icon is clicked', () => {})
-  it('should call setSearch when enter is pressed', () => {})
-  it('should have hidden class if search is empty', () => {})
-  it('should have visible class if search is not empty', () => {})
+  it('should call setState with empty string when delete icon is clicked', async () => {
+    render(<SearchInput setSearch={setSearch} />)
+    const deleteIcon = screen.getByTestId('delete-icon')
+    fireEvent.click(deleteIcon)
+    expect(setSearch).toHaveBeenCalledWith('')
+  })
+
+  it('should call setSearch when enter is pressed', async () => {
+    render(<SearchInput setSearch={setSearch} />)
+    const input = screen.getByRole('textbox')
+    fireEvent.keyPress(input, { key: 'Enter', code: 'Enter', charCode: 13 })
+    expect(setSearch).toHaveBeenCalled()
+  })
+
+  it('should have hidden class if search is empty', () => {
+    render(<SearchInput search='' />)
+    const deleteIcon = screen.getByTestId('delete-icon')
+    expect(deleteIcon).toHaveClass('hidden')
+  })
+
+  it('should have visible class if search is not empty', () => {
+    render(<SearchInput search='hello' />)
+    const deleteIcon = screen.getByTestId('delete-icon')
+    expect(deleteIcon).toHaveClass('visible')
+  })
 })
