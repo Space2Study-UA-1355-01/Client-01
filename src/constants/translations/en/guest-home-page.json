@@ -27,12 +27,12 @@
     "learn": {
       "title": "Learn from experts",
       "description": "Learning from experts is a shortcut to mastery. Their knowledge and experience can guide you, unlocking your potential. Don't put off until tomorrow. Embrace it! 🌟",
-      "actionLabel": "Become a student"
+      "actionLabel": "Join as a student"
     },
     "teach": {
       "title": "Share your experience",
       "description": "Sharing your experience as an expert will be incredibly rewarding, helping students unlock their pоtential and achieve their goals. Don't waste your time 📚",
-      "actionLabel": "Become a tutor"
+      "actionLabel": "Join as a tutor"
     }
   },
   "howItWorks": {
