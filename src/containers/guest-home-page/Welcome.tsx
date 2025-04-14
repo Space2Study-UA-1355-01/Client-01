@@ -26,7 +26,6 @@ const Welcome = () => {
   return (
     <Box
       className='section'
-      data-route='welcome'
       id={guestRoutes.welcome.route}
       sx={styles.container}
     >
