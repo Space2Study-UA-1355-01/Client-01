@@ -1,12 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import SliderWithInput from '~/components/slider-with-input/SliderWithInput'
-
-const defaultValue = 0
-const title = 'hello'
-const max = 5
-const min = 0
-const onChange = vi.fn()
+import userEvent from '@testing-library/user-event'
 
 // interface SliderWithInputProps {
 //     defaultValue: number
@@ -18,21 +13,43 @@ const onChange = vi.fn()
 
 describe('SliderWithInput', () => {
   it('should render correctly', () => {
+    const handleChange = vi.fn()
     render(
       <SliderWithInput
-        defaultValue={defaultValue}
-        max={max}
-        min={min}
-        onChange={onChange}
-        title={title}
+        defaultValue={50}
+        max={100}
+        min={0}
+        onChange={handleChange}
+        title='Volume'
       />
     )
-    const titleElement = screen.getByText(title)
+    const titleElement = screen.getByText('Volume')
     expect(titleElement).toBeInTheDocument()
-    screen.logTestingPlaygroundURL()
   })
 
-  it('should call onChange when slider is moved', () => {})
+  it('should call onChange when slider is moved', async () => {
+    const user = userEvent.setup()
+    const handleChange = vi.fn()
+
+    render(
+      <SliderWithInput
+        defaultValue={50}
+        max={100}
+        min={0}
+        onChange={handleChange}
+        title='Volume'
+      />
+    )
+
+    /*
+    mock a onChange fn -> find user-event for a slider move 
+    */
+
+    const slider = screen.getByRole('slider')
+
+    await user.click(slider)
+    expect(slider).toHaveFocus()
+  })
 
   it('should update inputValue correctly when input value is empty', () => {})
   it('should not update prices when input is blurred and value in input has not changed', () => {})
