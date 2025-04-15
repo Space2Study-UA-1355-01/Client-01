@@ -41,7 +41,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   errors
 }) => {
   const { inputVisibility: passwordVisibility, showInputText: showPassword } =
-    useInputVisibility() // No error passed since no validation
+    useInputVisibility()
 
   const { openModal } = useModalContext()
   const { t } = useTranslation()
@@ -50,7 +50,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     openModal({ component: <ForgotPassword /> })
   }
 
-  // Ensure all data fields are defined
   const safeData = {
     email: data.email ?? '',
     password: data.password ?? '',
@@ -65,7 +64,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       <AppTextField
         autoFocus
         data-testid='firstName'
-        errorMsg={errors.firstName ? t(errors.firstName) : ''} // Empty since no validation
+        errorMsg={errors.firstName ? t(errors.firstName) : ''}
         fullWidth
         label={t('common.labels.firstName')}
         onBlur={handleBlur('firstName')}
@@ -77,7 +76,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       />
       <AppTextField
         data-testid='lastName'
-        errorMsg={errors.lastName ? t(errors.lastName) : ''} // Empty since no validation
+        errorMsg={errors.lastName ? t(errors.lastName) : ''}
         fullWidth
         label={t('common.labels.lastName')}
         onBlur={handleBlur('lastName')}
@@ -89,7 +88,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       />
       <AppTextField
         data-testid='email'
-        errorMsg={errors.email ? t(errors.email) : ''} // Empty since no validation
+        errorMsg={errors.email ? t(errors.email) : ''}
         fullWidth
         label={t('common.labels.email')}
         onBlur={handleBlur('email')}
@@ -101,7 +100,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       />
       <AppTextField
         InputProps={passwordVisibility}
-        errorMsg={errors.password ? t(errors.password) : ''} // Empty since no validation
+        errorMsg={errors.password ? t(errors.password) : ''}
         fullWidth
         label={t('common.labels.password')}
         onBlur={handleBlur('password')}
@@ -113,7 +112,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       <AppTextField
         InputProps={passwordVisibility}
         data-testid='confirmPassword'
-        errorMsg={errors.confirmPassword ? t(errors.confirmPassword) : ''} // Empty since no validation
+        errorMsg={errors.confirmPassword ? t(errors.confirmPassword) : ''}
         fullWidth
         label={t('common.labels.confirmPassword')}
         onBlur={handleBlur('confirmPassword')}
@@ -124,8 +123,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       />
       <AppTextField
         data-testid='role'
-        disabled // Role is set by defaultRole
-        errorMsg={errors.role ? t(errors.role) : ''} // Empty since no validation
+        disabled
+        errorMsg={errors.role ? t(errors.role) : ''}
         fullWidth
         label={t('common.labels.role')}
         onBlur={handleBlur('role')}

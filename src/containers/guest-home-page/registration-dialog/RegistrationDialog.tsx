@@ -20,19 +20,17 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: defaultRole || '', // Fallback to empty string
+    role: defaultRole || 'Student',
     firstName: '',
     lastName: '',
     confirmPassword: ''
   })
 
-  // Handle input changes
   const handleChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData((prev) => ({ ...prev, [field]: e.target.value }))
     }
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log('Form submitted with values:', formData)
@@ -71,15 +69,13 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
         <Box sx={styles.form}>
           <Typography sx={styles.roleInfo}>
             {t('registration.registerAs', {
-              role: t(
-                `registration.${(formData.role || 'student').toLowerCase()}`
-              )
+              role: t(`registration.${formData.role.toLowerCase()}`)
             })}
           </Typography>
           <RegistrationForm
             data={formData}
             errors={errors}
-            handleBlur={() => {}} // No-op since no validation
+            handleBlur={() => {}}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
           />
