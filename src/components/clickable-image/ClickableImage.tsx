@@ -3,9 +3,8 @@ import Box, { BoxProps } from '@mui/material/Box'
 
 import AppButton from '~/components/app-button/AppButton'
 
-import { ComponentEnum, ButtonVariantEnum } from '~/types'
+import { ComponentEnum, ButtonVariantEnum, Media } from '~/types'
 import { styles } from '~/components/clickable-image/ClickableImage.styles'
-import { Media } from '~/types/components/clickable-image/clickableImage.interface'
 
 interface ClickableImageProps extends Omit<BoxProps, 'onClick'> {
   onClick?: (image: Media) => void

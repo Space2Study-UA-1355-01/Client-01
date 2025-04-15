@@ -86,3 +86,27 @@ export interface AddDocuments {
   typeError: string
   maxQuantityFiles: number
 }
+
+export interface Media {
+  name: string
+  path: string
+}
+//
+// export interface File extends CommonEntityFields {
+//   name: string
+//   size: number
+//   url: string
+// }
+//
+// export interface Link {
+//   _id: string
+//   name: string
+//   url: string
+// }
+// export interface Attachment {
+//   _id: string
+//   fileName: string
+//   size: number
+//   url: string
+//   extension: string
+// }
