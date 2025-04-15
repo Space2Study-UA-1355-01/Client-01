@@ -1,6 +1,7 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import EnhancedTableRow from '~/components/enhanced-table/enhanced-table-row/EnhancedTableRow'
 import { describe, expect, test, vi } from 'vitest'
+import userEvent from '@testing-library/user-event'
 
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn()
@@ -46,7 +47,7 @@ describe('EnhancedTableRow', () => {
     expect(screen.getByText('test@example.com')).toBeInTheDocument()
   })
 
-  test('should call handleSelectClick when checkbox is clicked', () => {
+  test('should call handleSelectClick when checkbox is clicked', async () => {
     render(
       <EnhancedTableRow
         columns={columns}
@@ -58,7 +59,7 @@ describe('EnhancedTableRow', () => {
     )
     const checkbox = screen.getByRole('checkbox')
 
-    fireEvent.click(checkbox)
+    await userEvent.click(checkbox)
 
     expect(select.handleSelectClick).toHaveBeenCalled()
   })
@@ -75,7 +76,7 @@ describe('EnhancedTableRow', () => {
     )
     const menuIconButton = screen.getByTestId('menu-icon')
 
-    fireEvent.click(menuIconButton)
+    await userEvent.click(menuIconButton)
 
     const menuItems = await screen.findAllByRole('menuitem')
 
@@ -96,13 +97,13 @@ describe('EnhancedTableRow', () => {
     )
 
     const menuIconButton = screen.getByTestId('menu-icon')
-    fireEvent.click(menuIconButton)
+    await userEvent.click(menuIconButton)
 
     const menuItems = await screen.findAllByRole('menuitem')
     expect(menuItems).toHaveLength(rowActions.length)
 
     const firstMenuItem = menuItems[0]
-    fireEvent.click(firstMenuItem)
+    await userEvent.click(firstMenuItem)
 
     expect(rowActions[0].func).toHaveBeenCalled()
   })
@@ -118,12 +119,12 @@ describe('EnhancedTableRow', () => {
     )
 
     const menuIconButton = screen.getByTestId('menu-icon')
-    fireEvent.click(menuIconButton)
+    await userEvent.click(menuIconButton)
 
     const menuItems = await screen.findAllByRole('menuitem')
     expect(menuItems).toHaveLength(rowActions.length)
 
-    fireEvent.keyDown(document, { key: 'Escape' })
+    await userEvent.keyDown(document, { key: 'Escape' })
 
     await waitFor(() => {
       expect(screen.queryAllByRole('menuitem')).toHaveLength(0)
