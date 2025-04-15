@@ -14,6 +14,7 @@ const delay = 500
 describe('SliderWithInput', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    handleChangeMock.mockReset()
     render(
       <SliderWithInput
         defaultValue={defaultValue}
@@ -76,6 +77,7 @@ describe('SliderWithInput', () => {
     fireEvent.blur(input)
 
     expect(input).toHaveValue(inputValue)
+    expect(handleChangeMock).not.toHaveBeenCalled()
   })
 
   it('should update prices when input is blurred and input is greater than max value', () => {
