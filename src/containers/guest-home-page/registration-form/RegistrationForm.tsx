@@ -1,10 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import useInputVisibility from '~/hooks/use-input-visibility'
 import Box from '@mui/material/Box'
-import ButtonBase from '@mui/material/ButtonBase'
-import Typography from '@mui/material/Typography'
-import { useModalContext } from '~/context/modal-context'
-import ForgotPassword from '~/containers/guest-home-page/forgot-password/ForgotPassword'
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
 import { styles } from '~/containers/guest-home-page/login-form/LoginForm.styles'
@@ -43,13 +39,9 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const { inputVisibility: passwordVisibility, showInputText: showPassword } =
     useInputVisibility()
 
-  const { openModal } = useModalContext()
   const { t } = useTranslation()
 
-  const openForgotPassword = () => {
-    openModal({ component: <ForgotPassword /> })
-  }
-
+  // Ensure all data fields are strings
   const safeData = {
     email: data.email ?? '',
     password: data.password ?? '',
@@ -121,27 +113,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         type={showPassword ? 'text' : 'password'}
         value={safeData.confirmPassword}
       />
-      <AppTextField
-        data-testid='role'
-        disabled
-        errorMsg={errors.role ? t(errors.role) : ''}
-        fullWidth
-        label={t('common.labels.role')}
-        onBlur={handleBlur('role')}
-        onChange={handleChange('role')}
-        required
-        value={safeData.role}
-      />
-      <Typography
-        component={ButtonBase}
-        onClick={openForgotPassword}
-        sx={styles.forgotPass}
-        variant='subtitle2'
-      >
-        {t('login.forgotPassword')}
-      </Typography>
       <AppButton sx={styles.loginButton} type='submit'>
-        {t('common.labels.register')}
+        {t('common.labels.signup')}
       </AppButton>
     </Box>
   )

@@ -12,30 +12,29 @@ import { UserRoleEnum } from '~/types'
 
 interface PopupDialogProps {
   content: React.ReactNode
-  paperProps: PaperProps
+  paperProps?: PaperProps
   timerId?: NodeJS.Timeout | null
-  onClose: () => void
   defaultRole?: UserRoleEnum | null
+  closeModal: () => void
+  closeModalAfterDelay: () => void
+  isFullScreen?: boolean
+  setFullScreen?: (value: boolean) => void
 }
 
 const PopupDialog: FC<PopupDialogProps> = ({
   content,
   paperProps,
   timerId,
-  onClose
+  closeModal,
+  closeModalAfterDelay,
+  isFullScreen
 }) => {
   const { isMobile } = useBreakpoints()
-  const { closeModal } = useModalContext()
+  const { closeModal: contextCloseModal } = useModalContext()
 
   const handleClose = () => {
-    onClose()
     closeModal()
-  }
-
-  const closeModalAfterDelay = (delay = 0) => {
-    setTimeout(() => {
-      handleClose()
-    }, delay)
+    contextCloseModal()
   }
 
   const handleMouseOver = () => timerId && clearTimeout(timerId)
@@ -46,7 +45,7 @@ const PopupDialog: FC<PopupDialogProps> = ({
       PaperProps={paperProps}
       data-testid='popup'
       disableRestoreFocus
-      fullScreen={isMobile}
+      fullScreen={isFullScreen ?? isMobile}
       maxWidth='xl'
       onClose={handleClose}
       open

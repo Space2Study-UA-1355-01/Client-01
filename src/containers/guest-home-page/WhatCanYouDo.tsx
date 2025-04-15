@@ -8,8 +8,8 @@ import learnImg from '~/assets/img/guest-home-page/learnImg.png'
 import teachImg from '~/assets/img/guest-home-page/teachImg.png'
 import { UserRoleEnum } from '~/types'
 import { styles } from '~/containers/guest-home-page/styles/WhatCanYouDo.styles'
-import PopupDialog from '~/components/popup-dialog/PopupDialog'
 import RegistrationDialog from './registration-dialog/RegistrationDialog'
+import { useModalContext } from '~/context/modal-context'
 
 const cardData = [
   {
@@ -30,24 +30,21 @@ const cardData = [
 
 const WhatCanYouDo = () => {
   const { t } = useTranslation()
-  const [openLoginDialog, setOpenLoginDialog] = useState(false)
+  const { openModal } = useModalContext()
   const [selectedRole, setSelectedRole] = useState<UserRoleEnum | null>(null)
+  console.log(selectedRole)
 
   const openDialogWithRole = (role: UserRoleEnum) => {
     setSelectedRole(role)
-    setOpenLoginDialog(true)
-  }
-
-  const toggleDialog = () => {
-    setOpenLoginDialog((prev) => !prev)
-    if (openLoginDialog) {
-      setSelectedRole(null) // Clear role when closing
-    }
+    openModal({
+      component: <RegistrationDialog defaultRole={role} />,
+      paperProps: { sx: { maxWidth: 960 } }
+    })
   }
 
   const cards = cardData.map((item) => (
     <InfoCard
-      action={() => openDialogWithRole(item.actionType)} // Fixed to set role and open dialog
+      action={() => openDialogWithRole(item.actionType)}
       actionLabel={t(item.actionLabel)}
       cardWidth={460}
       description={t(item.description)}
@@ -65,13 +62,6 @@ const WhatCanYouDo = () => {
         title={t('guestHomePage.whatCanYouDo.title')}
       />
       <Box sx={styles.cards}>{cards}</Box>
-      {openLoginDialog && selectedRole && (
-        <PopupDialog
-          content={<RegistrationDialog defaultRole={selectedRole} />}
-          onClose={toggleDialog}
-          paperProps={{ sx: { maxWidth: 960 } }}
-        />
-      )}
     </Box>
   )
 }
