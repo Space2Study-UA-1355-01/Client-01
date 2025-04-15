@@ -46,4 +46,33 @@ describe('EnhancedTablePagination', () => {
       2
     )
   })
+
+  it('should call handleChangeRowsPerPage when rows per page changes', async () => {
+    render(<EnhancedTablePagination pagination={paginationMock} />)
+    const user = userEvent.setup()
+    const select = screen.getByLabelText('table.numberOfRows')
+    await user.click(select)
+    const option = await screen.findByRole('option', { name: '25' })
+    await user.click(option)
+
+    expect(paginationMock.handleChangeRowsPerPage).toHaveBeenCalled()
+  })
+
+  it('should call handleChangePageInput on input change', async () => {
+    render(<EnhancedTablePagination pagination={paginationMock} />)
+    const user = userEvent.setup()
+    const input = screen.getByTestId('pagination-page-input')
+    await user.type(input, '3')
+
+    expect(paginationMock.handleChangePageInput).toHaveBeenCalled()
+  })
+
+  it('should call handlePageSubmit on button click', async () => {
+    render(<EnhancedTablePagination pagination={paginationMock} />)
+    const user = userEvent.setup()
+    const button = screen.getByText('table.go')
+    await user.click(button)
+
+    expect(paginationMock.handlePageSubmit).toHaveBeenCalledWith(5)
+  })
 })
