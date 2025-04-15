@@ -124,7 +124,7 @@ describe('EnhancedTableRow', () => {
     const menuItems = await screen.findAllByRole('menuitem')
     expect(menuItems).toHaveLength(rowActions.length)
 
-    await userEvent.keyDown(document, { key: 'Escape' })
+    await userEvent.keyboard('{Escape}')
 
     await waitFor(() => {
       expect(screen.queryAllByRole('menuitem')).toHaveLength(0)
