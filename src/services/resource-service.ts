@@ -16,7 +16,10 @@ import {
   UpdateQuestionParams,
   GetQuestion,
   UpdateResourceCategory,
-  ApiMethodEnum
+  ApiMethodEnum,
+  Attachment,
+  LessonData,
+  Quiz
 } from '~/types'
 import { createUrlPath } from '~/utils/helper-functions'
 
@@ -55,7 +58,34 @@ export const ResourceService = {
   deleteResourceCategory: async (id: string): Promise<AxiosResponse> =>
     await axiosClient.delete(
       createUrlPath(URLs.resources.resourcesCategories.delete, id)
-    )
+    ),
+  getAttachments: async () =>
+    Promise.resolve({} as AxiosResponse<ItemsWithCount<Attachment>>),
+  addLesson: async (_data: LessonData) => {
+    void _data
+    return Promise.resolve({} as AxiosResponse<ItemsWithCount<Attachment>>)
+  },
+  editLesson: async (data: LessonData, id: string | undefined) => {
+    void data
+    void id
+    return Promise.resolve({} as AxiosResponse<ItemsWithCount<Attachment>>)
+  },
+  getLesson: async (id: string | undefined) => {
+    void id
+    return Promise.resolve({} as AxiosResponse<ItemsWithCount<Attachment>>)
+  },
+  addQuiz: async (data: string | undefined) => {
+    void data
+    return Promise.resolve({} as AxiosResponse<Quiz>)
+  },
+  getQuiz: async (id: string | undefined) => {
+    void id
+    return Promise.resolve({} as AxiosResponse<Quiz>)
+  },
+  editQuiz: async (params: string | undefined) => {
+    void params
+    return Promise.resolve({} as AxiosResponse<Quiz>)
+  }
 }
 
 export const resourceService = appApi.injectEndpoints({

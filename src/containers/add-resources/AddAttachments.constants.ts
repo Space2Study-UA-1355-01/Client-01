@@ -1,3 +1,7 @@
-export const columns: unknown[] = []
+import { Categories, Question, RemoveColumnRules, TableColumn } from '~/types'
 
-export const removeColumnRules = ['_id']
+export const columns = [] as TableColumn<Question>[]
+
+export const removeColumnRules = ['_id'] as RemoveColumnRules<
+  Question | Categories
+>

@@ -99,12 +99,13 @@ const AddResources = <T extends CourseResources | Question>({
             .toLocaleLowerCase()
             .includes(inputValue.toLocaleLowerCase())
         } else {
-          titleMatch = item.fileName
-            .toLocaleLowerCase()
-            .split('.')
-            .slice(0, -1)
-            .join('.')
-            .includes(inputValue.toLocaleLowerCase())
+          // titleMatch = item.fileName
+          //   .toLocaleLowerCase()
+          //   .split('.')
+          //   .slice(0, -1)
+          //   .join('.')
+          //   .includes(inputValue.toLocaleLowerCase())
+          return
         }
 
         const categoryMatch =

@@ -33,17 +33,26 @@ import {
   ButtonTypeEnum,
   ButtonVariantEnum,
   ErrorResponse,
-  CreateQuizParams,
   Question,
-  Quiz,
   SizeEnum,
   TextFieldVariantEnum,
   ResourcesTabsEnum,
-  UpdateQuizParams,
-  CategoryNameInterface
+  CategoryNameInterface,
+  ServiceFunction
 } from '~/types'
 import { getErrorMessage } from '~/utils/error-with-message'
 import { styles } from '~/containers/my-quizzes/create-or-edit-quiz-container/CreateOrEditQuizContainer.styles'
+
+interface CreateQuizParams {}
+
+interface UpdateQuizParams extends CreateQuizParams {}
+
+interface Quiz {
+  title: string
+  category: string | null
+  description: string
+  items: Question[]
+}
 
 const CreateOrEditQuizContainer = ({
   title,
@@ -91,12 +100,12 @@ const CreateOrEditQuizContainer = ({
   }
 
   const createQuizService = useCallback(
-    (data?: CreateQuizParams) => ResourceService.addQuiz(data),
+    (data?: string) => ResourceService.addQuiz(data),
     []
   )
 
   const { fetchData: addNewQuiz } = useAxios<Quiz, CreateQuizParams>({
-    service: createQuizService,
+    service: createQuizService as ServiceFunction<Quiz, CreateQuizParams>,
     fetchOnMount: false,
     defaultResponse,
     onResponse: handleResponse,
@@ -104,17 +113,19 @@ const CreateOrEditQuizContainer = ({
   })
 
   const editQuizService = useCallback(
-    (params?: UpdateQuizParams) => ResourceService.editQuiz(params),
+    (params?: string) => ResourceService.editQuiz(params),
     []
   )
 
-  const { fetchData: fetchEditedQuiz } = useAxios<null, UpdateQuizParams>({
-    service: editQuizService,
-    fetchOnMount: false,
-    defaultResponse: null,
-    onResponse: handleResponse,
-    onResponseError
-  })
+  const { fetchData: fetchEditedQuiz } = useAxios<Quiz, UpdateQuizParams, null>(
+    {
+      service: editQuizService as ServiceFunction<Quiz, UpdateQuizParams>,
+      fetchOnMount: false,
+      defaultResponse: null,
+      onResponse: handleResponse,
+      onResponseError
+    }
+  )
 
   const getQuiz = (id?: string): Promise<AxiosResponse> => {
     return ResourceService.getQuiz(id)

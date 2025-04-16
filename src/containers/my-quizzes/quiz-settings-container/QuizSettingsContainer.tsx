@@ -23,6 +23,7 @@ const quizViewFields = [
     title: 'Stepper'
   }
 ]
+
 const QuizSettingsContainer = () => {
   const { t } = useTranslation()
   const { data, handleInputChange, handleNonInputValueChange } = useForm({

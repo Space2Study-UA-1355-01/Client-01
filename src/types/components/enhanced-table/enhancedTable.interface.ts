@@ -1,7 +1,7 @@
 import { ChangeEvent, ReactElement } from 'react'
 
 import { Sort } from '~/types/common/common.index'
-import { AdditionalPropsInterface } from '~/types/my-cooperations/myCooperations.index'
+import { AdditionalPropsInterface } from '~/types/'
 import { TableActionFunc } from './enhancedTable.types'
 
 export interface TableColumn<I> {

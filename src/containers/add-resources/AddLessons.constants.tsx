@@ -6,7 +6,7 @@ import IconExtensionWithTitle from '~/components/icon-extension-with-title/IconE
 
 import { styles } from '~/containers/add-resources/AddResources.styles'
 import { getFormattedDate } from '~/utils/helper-functions'
-import { AdditionalPropsInterface, Lesson, RemoveColumnRules } from '~/types'
+import { AdditionalPropsInterface, Lesson } from '~/types'
 
 export const columns = [
   {
@@ -22,7 +22,7 @@ export const columns = [
     calculatedCellValue: (lesson: Lesson, { t }: AdditionalPropsInterface) =>
       lesson.category ? (
         <AppChip labelSx={styles.categoryChipLabel} sx={styles.categoryChip}>
-          {lesson.category.name}
+          {''}
         </AppChip>
       ) : (
         <Typography sx={styles.date}>
@@ -38,6 +38,6 @@ export const columns = [
   }
 ]
 
-export const removeColumnRules: RemoveColumnRules<Lesson> = {
-  tablet: ['myResourcesPage.lessons.lastUpdates']
-}
+// export const removeColumnRules: RemoveColumnRules<Lesson> = {
+//   tablet: ['myResourcesPage.lessons.lastUpdates']
+// }
