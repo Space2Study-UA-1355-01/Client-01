@@ -25,12 +25,7 @@ const GuestHomePage = () => {
     const resetToken = searchParams.get('resetToken')
     confirmToken &&
       openModal({
-        component: (
-          <EmailConfirmModal
-            confirmToken={confirmToken}
-            openModal={openModal}
-          />
-        )
+        component: <EmailConfirmModal confirmToken={confirmToken} />
       })
     resetToken &&
       openModal({
