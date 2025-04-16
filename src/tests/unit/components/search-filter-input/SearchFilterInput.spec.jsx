@@ -1,6 +1,6 @@
+import { vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import SearchFilterInput from '~/components/search-filter-input/SearchFilterInput'
-import { vi } from 'vitest'
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
