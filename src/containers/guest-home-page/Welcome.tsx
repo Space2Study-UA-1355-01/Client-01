@@ -26,7 +26,7 @@ const Welcome = () => {
   return (
     <Box
       className='section'
-      id={guestRoutes.welcome.route} //
+      id={guestRoutes.welcome.route}
       sx={styles.container}
     >
       <Box alt='Title' component='img' src={image} sx={styles.title} />
