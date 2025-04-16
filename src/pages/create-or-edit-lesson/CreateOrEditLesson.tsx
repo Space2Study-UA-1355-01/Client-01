@@ -181,7 +181,7 @@ const CreateOrEditLesson = () => {
     if (id) {
       void fetchDataLesson(id)
     }
-  }, [id])
+  }, [fetchDataLesson, id])
 
   if (getLessonLoading) {
     return <Loader pageLoad />
