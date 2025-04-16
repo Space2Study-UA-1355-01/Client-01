@@ -1,17 +1,21 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { useTranslation } from 'react-i18next'
+
 import { FC, useState } from 'react'
-import RegistrationForm from '~/containers/guest-home-page/registration-form/RegistrationForm'
+import { useTranslation } from 'react-i18next'
+
 import { useModalContext } from '~/context/modal-context'
-import loginImg from '~/assets/img/login-dialog/login.svg'
 import { UserRoleEnum } from '~/types'
-import styles from '~/containers/guest-home-page/registration-dialog/RegistrationDialog.styles'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
-import GoogleLogin from '../google-login/GoogleLogin'
+
 import { signup } from '~/constants'
-import Link from '@mui/material/Link'
+
+import RegistrationForm from '~/containers/guest-home-page/registration-form/RegistrationForm'
+import GoogleLogin from '../google-login/GoogleLogin'
+
+import studentImg from '~/assets/img/signup-dialog/student.svg'
+import tutorImg from '~/assets/img/signup-dialog/tutor.svg'
+
+import styles from '~/containers/guest-home-page/registration-dialog/RegistrationDialog.styles'
 
 interface RegistrationDialogProps {
   defaultRole: UserRoleEnum
@@ -31,17 +35,11 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
     confirmPassword: ''
   })
 
-  const [iAgreeCheck, setIAgreeCheck] = useState(false)
-
   // Handle input changes
   const handleChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData((prev) => ({ ...prev, [field]: e.target.value }))
     }
-
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIAgreeCheck(e.target.checked)
-  }
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -71,7 +69,7 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
         <Box
           alt='registration'
           component='img'
-          src={loginImg}
+          src={defaultRole === UserRoleEnum.Student ? studentImg : tutorImg}
           sx={styles.img}
         />
       </Box>
@@ -86,28 +84,6 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
             handleBlur={() => {}}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={iAgreeCheck}
-                color='primary'
-                onChange={handleCheckboxChange}
-              />
-            }
-            label={
-              <Typography variant='body2'>
-                {t('signup.iAgree')}{' '}
-                <Link href='#' underline='hover'>
-                  Term
-                </Link>{' '}
-                {t('and')}{' '}
-                <Link href='#' underline='hover'>
-                  Privacy Policy
-                </Link>
-              </Typography>
-            }
-            sx={{ mt: 1 }}
           />
         </Box>
         <GoogleLogin

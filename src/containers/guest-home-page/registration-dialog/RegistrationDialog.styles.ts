@@ -1,21 +1,20 @@
-import { scrollbar } from '~/styles/app-theme/custom-scrollbar'
-
 const style = {
   root: {
     maxWidth: { sm: 'sm', md: 'md', lg: 'lg' },
-    mt: { xs: '56px', sm: 0 },
+    mt: { xs: '56px' },
+    mb: { xs: '56px' },
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: { lg: '122px', md: '40px' },
+    gap: { lg: '50px', md: '40px' },
     maxHeight: { xs: 'calc(100vh - 56px)', sm: 'calc(100vh - 64px)' }
   },
   imgContainer: {
     width: '450px',
     maxWidth: { md: '50%', lg: '450px' },
     maxHeight: 'inherit',
-    display: { xs: 'none', md: 'flex' }, // Скрываем на <600px
-    pl: { lg: '96px', md: '30px' }
+    display: { xs: 'none', md: 'flex' },
+    pl: { lg: '50px', md: '30px' }
   },
   img: {
     objectFit: 'contain',
@@ -24,25 +23,25 @@ const style = {
   formContainer: {
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
     maxHeight: 'inherit',
+    minWidth: { lg: '400px' },
     boxSizing: 'border-box',
     borderTop: { xs: '1px solid', sm: 'none' },
     borderColor: { xs: 'primary.100' },
     pt: { xs: '24px', sm: '64px' },
-    pl: { xs: '8px', sm: '96px', md: '16px' }
+    pl: { sm: '46px', md: '16px' },
+    pr: { sm: '46px', md: '16px' },
+    pb: { xs: '24px' }
   },
   title: {
-    mb: '16px',
-    fontSize: '40px',
-    lineHeight: '48px'
+    fontSize: '32px',
+    lineHeight: '20px',
+    pb: '10px'
   },
   form: {
-    overflow: 'auto',
-    maxWidth: { xs: '315px', md: '343px' },
-    pt: '16px',
-    pr: { xs: '8px', sm: '96px', md: '80px', lg: '96px' },
-    pb: { xs: '24px', sm: '64px' },
-    ...scrollbar
+    maxWidth: { xs: '370px' }
   },
   roleInfo: {
     mb: '16px',

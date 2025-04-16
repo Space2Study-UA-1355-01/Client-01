@@ -1,9 +1,16 @@
+import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Link from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
+
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import useInputVisibility from '~/hooks/use-input-visibility'
-import Box from '@mui/material/Box'
+
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
-import { styles } from '~/containers/guest-home-page/login-form/LoginForm.styles'
+import { styles } from '~/containers/guest-home-page/registration-form/RegistrationForm.styles'
 
 interface RegistrationFormProps {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
@@ -39,6 +46,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const { inputVisibility: passwordVisibility, showInputText: showPassword } =
     useInputVisibility()
 
+  const [iAgreeCheck, setIAgreeCheck] = useState(false)
+
   const { t } = useTranslation()
 
   // Ensure all data fields are strings
@@ -51,33 +60,48 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     confirmPassword: data.confirmPassword ?? ''
   }
 
+  // Check if all required fields are filled and checkbox is checked
+  const isFormComplete =
+    safeData.email.trim() &&
+    safeData.password.trim() &&
+    safeData.confirmPassword.trim() &&
+    safeData.firstName.trim() &&
+    safeData.lastName.trim() &&
+    iAgreeCheck
+
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIAgreeCheck(e.target.checked)
+  }
+
   return (
     <Box component='form' onSubmit={handleSubmit} sx={styles.form}>
-      <AppTextField
-        autoFocus
-        data-testid='firstName'
-        errorMsg={errors.firstName ? t(errors.firstName) : ''}
-        fullWidth
-        label={t('common.labels.firstName')}
-        onBlur={handleBlur('firstName')}
-        onChange={handleChange('firstName')}
-        required
-        sx={{ mb: '5px' }}
-        type='text'
-        value={safeData.firstName}
-      />
-      <AppTextField
-        data-testid='lastName'
-        errorMsg={errors.lastName ? t(errors.lastName) : ''}
-        fullWidth
-        label={t('common.labels.lastName')}
-        onBlur={handleBlur('lastName')}
-        onChange={handleChange('lastName')}
-        required
-        sx={{ mb: '5px' }}
-        type='text'
-        value={safeData.lastName}
-      />
+      <Box sx={styles.fullname}>
+        <AppTextField
+          autoFocus
+          data-testid='firstName'
+          errorMsg={errors.firstName ? t(errors.firstName) : ''}
+          fullWidth
+          label={t('common.labels.firstName')}
+          onBlur={handleBlur('firstName')}
+          onChange={handleChange('firstName')}
+          required
+          sx={{ mb: '5px' }}
+          type='text'
+          value={safeData.firstName}
+        />
+        <AppTextField
+          data-testid='lastName'
+          errorMsg={errors.lastName ? t(errors.lastName) : ''}
+          fullWidth
+          label={t('common.labels.lastName')}
+          onBlur={handleBlur('lastName')}
+          onChange={handleChange('lastName')}
+          required
+          sx={{ mb: '5px' }}
+          type='text'
+          value={safeData.lastName}
+        />
+      </Box>
       <AppTextField
         data-testid='email'
         errorMsg={errors.email ? t(errors.email) : ''}
@@ -113,7 +137,33 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         type={showPassword ? 'text' : 'password'}
         value={safeData.confirmPassword}
       />
-      <AppButton sx={styles.loginButton} type='submit'>
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={iAgreeCheck}
+            color='primary'
+            onChange={handleCheckboxChange}
+          />
+        }
+        label={
+          <Typography variant='body2'>
+            {t('signup.iAgree')}{' '}
+            <Link href='#' underline='hover'>
+              Term
+            </Link>{' '}
+            {t('and')}{' '}
+            <Link href='#' underline='hover'>
+              Privacy Policy
+            </Link>
+          </Typography>
+        }
+        sx={{ mt: 1 }}
+      />
+      <AppButton
+        disabled={!isFormComplete}
+        sx={styles.loginButton}
+        type='submit'
+      >
         {t('common.labels.signup')}
       </AppButton>
     </Box>

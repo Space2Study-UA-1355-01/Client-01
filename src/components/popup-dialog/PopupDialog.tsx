@@ -6,9 +6,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import { PaperProps } from '@mui/material'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
-import { styles } from '~/components/popup-dialog/PopupDialog.styles'
 import { useModalContext } from '~/context/modal-context'
 import { UserRoleEnum } from '~/types'
+import { styles } from '~/components/popup-dialog/PopupDialog.styles'
 
 interface PopupDialogProps {
   content: React.ReactNode
@@ -37,6 +37,13 @@ const PopupDialog: FC<PopupDialogProps> = ({
     contextCloseModal()
   }
 
+  const handleDialogClose = (_event: object, reason: string) => {
+    if (reason === 'backdropClick') {
+      return
+    }
+    handleClose()
+  }
+
   const handleMouseOver = () => timerId && clearTimeout(timerId)
   const handleMouseLeave = () => timerId && closeModalAfterDelay()
 
@@ -47,7 +54,7 @@ const PopupDialog: FC<PopupDialogProps> = ({
       disableRestoreFocus
       fullScreen={isFullScreen ?? isMobile}
       maxWidth='xl'
-      onClose={handleClose}
+      onClose={handleDialogClose}
       open
     >
       <Box
