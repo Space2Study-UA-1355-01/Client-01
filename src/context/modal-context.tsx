@@ -17,6 +17,8 @@ interface Component {
 interface ModalProvideContext {
   openModal: (component: Component, delayToClose?: number) => void
   closeModal: () => void
+  unsavedChanges: boolean
+  setUnsavedChanges: (value: boolean) => void
 }
 
 interface ModalProviderProps {
@@ -31,11 +33,13 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   const [modal, setModal] = useState<React.ReactElement | null>(null)
   const [paperProps, setPaperProps] = useState<PaperProps>({})
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
+  const [unsavedChanges, setUnsavedChanges] = useState(false)
 
   const closeModal = useCallback(() => {
     setModal(null)
     setPaperProps({})
     setTimer(null)
+    setUnsavedChanges(false)
   }, [setModal, setPaperProps, setTimer])
 
   const closeModalAfterDelay = useCallback(
@@ -57,8 +61,8 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
   )
 
   const contextValue = useMemo(
-    () => ({ openModal, closeModal }),
-    [closeModal, openModal]
+    () => ({ openModal, closeModal, unsavedChanges, setUnsavedChanges }),
+    [closeModal, openModal, unsavedChanges]
   )
 
   return (
@@ -66,6 +70,7 @@ const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
       {children}
       {modal && (
         <PopupDialog
+          closeModal={closeModal}
           closeModalAfterDelay={closeModalAfterDelay}
           content={modal}
           paperProps={paperProps}
