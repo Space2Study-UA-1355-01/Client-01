@@ -6,23 +6,37 @@ import CloseIcon from '@mui/icons-material/Close'
 import { PaperProps } from '@mui/material'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
+import { UserRoleEnum } from '~/types'
 import { styles } from '~/components/popup-dialog/PopupDialog.styles'
 import { useModalContext } from '~/context/modal-context'
 
 interface PopupDialogProps {
   content: React.ReactNode
-  paperProps: PaperProps
-  timerId: NodeJS.Timeout | null
-  closeModalAfterDelay: (delay?: number) => void
+  paperProps?: PaperProps
+  timerId?: NodeJS.Timeout | null
+  defaultRole?: UserRoleEnum | null
+  closeModal: () => void
+  closeModalAfterDelay: () => void
+  isFullScreen?: boolean
+  setFullScreen?: (value: boolean) => void
 }
 
 const PopupDialog: FC<PopupDialogProps> = ({
   content,
   paperProps,
   timerId,
-  closeModalAfterDelay
+  closeModal,
+  closeModalAfterDelay,
+  isFullScreen
 }) => {
   const { isMobile } = useBreakpoints()
+
+  const handleDialogClose = (_event: object, reason: string) => {
+    if (reason === 'backdropClick') {
+      return
+    }
+    closeModal()
+  }
 
   const handleMouseOver = () => timerId && clearTimeout(timerId)
   const handleMouseLeave = () => timerId && closeModalAfterDelay()
@@ -33,8 +47,9 @@ const PopupDialog: FC<PopupDialogProps> = ({
       PaperProps={paperProps}
       data-testid='popup'
       disableRestoreFocus
-      fullScreen={isMobile}
+      fullScreen={isFullScreen ?? isMobile}
       maxWidth='xl'
+      onClose={handleDialogClose}
       open
     >
       <Box
