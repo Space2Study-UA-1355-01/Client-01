@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next'
-
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
 import InfoCard from '~/components/info-card/InfoCard'
-
 import { guestRoutes } from '~/router/constants/guestRoutes'
 import learnImg from '~/assets/img/guest-home-page/learnImg.png'
 import teachImg from '~/assets/img/guest-home-page/teachImg.png'
-
 import { UserRoleEnum } from '~/types'
 import { styles } from '~/containers/guest-home-page/styles/WhatCanYouDo.styles'
+import RegistrationDialog from './registration-dialog/RegistrationDialog'
+import { useModalContext } from '~/context/modal-context'
 
 const cardData = [
   {
@@ -30,10 +30,21 @@ const cardData = [
 
 const WhatCanYouDo = () => {
   const { t } = useTranslation()
+  const { openModal } = useModalContext()
+  const [selectedRole, setSelectedRole] = useState<UserRoleEnum | null>(null)
+  console.log(selectedRole)
+
+  const openDialogWithRole = (role: UserRoleEnum) => {
+    setSelectedRole(role)
+    openModal({
+      component: <RegistrationDialog defaultRole={role} />,
+      paperProps: { sx: { maxWidth: 960 } }
+    })
+  }
 
   const cards = cardData.map((item) => (
     <InfoCard
-      action={() => {}}
+      action={() => openDialogWithRole(item.actionType)}
       actionLabel={t(item.actionLabel)}
       cardWidth={460}
       description={t(item.description)}
@@ -50,7 +61,6 @@ const WhatCanYouDo = () => {
         style={styles.titleWithDescription}
         title={t('guestHomePage.whatCanYouDo.title')}
       />
-
       <Box sx={styles.cards}>{cards}</Box>
     </Box>
   )
