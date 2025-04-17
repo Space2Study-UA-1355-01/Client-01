@@ -8,6 +8,7 @@ import { PaperProps } from '@mui/material'
 import useBreakpoints from '~/hooks/use-breakpoints'
 import { useModalContext } from '~/context/modal-context'
 import { UserRoleEnum } from '~/types'
+import { useTranslation } from 'react-i18next'
 import { styles } from '~/components/popup-dialog/PopupDialog.styles'
 import { ConfirmationDialogContext } from '~/context/confirm-context'
 
@@ -33,12 +34,13 @@ const PopupDialog: FC<PopupDialogProps> = ({
   const { isMobile } = useBreakpoints()
   const { openDialog } = useContext(ConfirmationDialogContext)
   const { unsavedChanges } = useModalContext()
+  const { t } = useTranslation()
 
   const handleClose = () => {
     if (unsavedChanges) {
       openDialog({
-        title: 'test',
-        message: 'test',
+        title: t('confirmationWindow.confirmation'),
+        message: t('confirmationWindow.unsavedChanges'),
         sendConfirm: (confirmed) => {
           if (confirmed) closeModal()
         }
@@ -50,9 +52,9 @@ const PopupDialog: FC<PopupDialogProps> = ({
 
   const handleDialogClose = (_event: object, reason: string) => {
     if (reason === 'backdropClick') {
-      return
+      handleClose()
     }
-    handleClose()
+    return
   }
 
   const handleMouseOver = () => timerId && clearTimeout(timerId)
