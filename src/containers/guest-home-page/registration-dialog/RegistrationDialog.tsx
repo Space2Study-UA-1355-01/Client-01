@@ -25,23 +25,20 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
   const { t } = useTranslation()
   const { closeModal } = useModalContext()
 
-  // Minimal form state without validation
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    role: defaultRole || 'Student',
+    role: defaultRole,
     firstName: '',
     lastName: '',
     confirmPassword: ''
   })
 
-  // Handle input changes
   const handleChange =
     (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
       setFormData((prev) => ({ ...prev, [field]: e.target.value }))
     }
 
-  // Handle form submission
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log('Form submitted with values:', formData)
@@ -53,7 +50,6 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
     }
   }
 
-  // Mock errors object (empty since no validation)
   const errors = {
     email: '',
     password: '',

@@ -50,7 +50,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
 
   const { t } = useTranslation()
 
-  // Ensure all data fields are strings
   const safeData = {
     email: data.email ?? '',
     password: data.password ?? '',
@@ -60,7 +59,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     confirmPassword: data.confirmPassword ?? ''
   }
 
-  // Check if all required fields are filled and checkbox is checked
   const isFormComplete =
     safeData.email.trim() &&
     safeData.password.trim() &&

@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/Close'
 import { PaperProps } from '@mui/material'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
-import { useModalContext } from '~/context/modal-context'
 import { UserRoleEnum } from '~/types'
 import { styles } from '~/components/popup-dialog/PopupDialog.styles'
 
@@ -30,11 +29,9 @@ const PopupDialog: FC<PopupDialogProps> = ({
   isFullScreen
 }) => {
   const { isMobile } = useBreakpoints()
-  const { closeModal: contextCloseModal } = useModalContext()
 
   const handleClose = () => {
     closeModal()
-    contextCloseModal()
   }
 
   const handleDialogClose = (_event: object, reason: string) => {
