@@ -30,15 +30,11 @@ const PopupDialog: FC<PopupDialogProps> = ({
 }) => {
   const { isMobile } = useBreakpoints()
 
-  const handleClose = () => {
-    closeModal()
-  }
-
   const handleDialogClose = (_event: object, reason: string) => {
     if (reason === 'backdropClick') {
       return
     }
-    handleClose()
+    closeModal()
   }
 
   const handleMouseOver = () => timerId && clearTimeout(timerId)
@@ -60,7 +56,7 @@ const PopupDialog: FC<PopupDialogProps> = ({
         onMouseOver={handleMouseOver}
         sx={styles.box}
       >
-        <IconButton onClick={handleClose} sx={styles.icon}>
+        <IconButton onClick={closeModal} sx={styles.icon}>
           <CloseIcon />
         </IconButton>
         <Box sx={styles.contentWraper}>{content}</Box>
