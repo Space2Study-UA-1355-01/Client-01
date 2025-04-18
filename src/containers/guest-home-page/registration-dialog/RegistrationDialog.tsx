@@ -18,6 +18,7 @@ import tutorImg from '~/assets/img/signup-dialog/tutor.svg'
 import styles from '~/containers/guest-home-page/registration-dialog/RegistrationDialog.styles'
 
 import { useForm } from '~/hooks/use-form'
+import EmailInfoPopup from '~/components/email-info-popup/EmailInfoPopup'
 
 interface RegistrationDialogProps {
   defaultRole: UserRoleEnum
@@ -25,7 +26,7 @@ interface RegistrationDialogProps {
 
 const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
   const { t } = useTranslation()
-  const { closeModal } = useModalContext()
+  const { closeModal, openModal } = useModalContext()
 
   const validateEmail = (email: string): string | undefined => {
     if (!email) return 'common.errorMessages.emptyField'
@@ -87,9 +88,16 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
       console.log('User registered with role:', data.role)
       try {
         closeModal()
+
+        openModal({
+          component: (
+            <EmailInfoPopup email={data.email} onClose={closeModal} open />
+          )
+        })
       } catch (e) {
         console.log('Something went wrong while closing modal')
       }
+
       return Promise.resolve()
     }
   })
