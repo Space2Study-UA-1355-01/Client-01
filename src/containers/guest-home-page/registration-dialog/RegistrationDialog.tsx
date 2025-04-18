@@ -2,7 +2,6 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
 import { FC } from 'react'
-
 import { useTranslation } from 'react-i18next'
 
 import { useModalContext } from '~/context/modal-context'
@@ -17,6 +16,7 @@ import studentImg from '~/assets/img/signup-dialog/student.svg'
 import tutorImg from '~/assets/img/signup-dialog/tutor.svg'
 
 import styles from '~/containers/guest-home-page/registration-dialog/RegistrationDialog.styles'
+
 import { useForm } from '~/hooks/use-form'
 
 interface RegistrationDialogProps {

@@ -33,11 +33,18 @@ const ConfirmDialog: FC<ConfirmDialogProps> = ({
 }) => {
   const { t } = useTranslation()
 
+  const handleDialogClose = (_event: object, reason: string) => {
+    if (reason === 'backdropClick') {
+      onDismiss()
+    }
+    return
+  }
+
   return (
     <Dialog
       PaperProps={{ sx: styles.root }}
       data-testid='confirmDialog'
-      onClose={onDismiss}
+      onClose={handleDialogClose}
       open={open}
     >
       <Typography sx={styles.title}>{t(title)}</Typography>
