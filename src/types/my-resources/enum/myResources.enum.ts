@@ -1,6 +1,7 @@
 export enum ResourcesTabsEnum {
   Questions = 'questions',
-  Categories = 'categories'
+  Categories = 'categories',
+  Attachments = 'attachments'
 }
 
 export enum QuestionTypesEnum {

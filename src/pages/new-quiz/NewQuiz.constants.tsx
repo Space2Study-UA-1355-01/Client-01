@@ -5,10 +5,15 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import SettingsIcon from '@mui/icons-material/Settings'
 
 import CreateOrEditQuizContainer from '~/containers/my-quizzes/create-or-edit-quiz-container/CreateOrEditQuizContainer'
-import ViewQuizContainer from '~/containers/my-quizzes/view-quiz-container/ViewQuizContainer'
+// import ViewQuizContainer from '~/containers/my-quizzes/view-quiz-container/ViewQuizContainer'
 import QuizSettingsContainer from '~/containers/my-quizzes/quiz-settings-container/QuizSettingsContainer'
 
-import { CreateQuizParams, Question } from '~/types'
+import { Question } from '~/types'
+
+interface CreateQuizParams {
+  title: string
+  description: string
+}
 
 export interface QuizContentProps {
   title: string
@@ -29,6 +34,7 @@ export interface QuizTabsData {
     tabProps?: Omit<ButtonProps, 'onClick'>
   }
 }
+
 export const tabsData: QuizTabsData = {
   edit: {
     title: 'Edit',
@@ -37,12 +43,12 @@ export const tabsData: QuizTabsData = {
   },
   quizzes: {
     title: 'View',
-    content: (props) => <ViewQuizContainer {...props} />,
+    content: () => <QuizSettingsContainer />,
     icon: <VisibilityIcon />
   },
   settings: {
     title: 'Settings',
-    content: (props) => <QuizSettingsContainer {...props} />,
+    content: () => <QuizSettingsContainer />,
     icon: <SettingsIcon />
   }
 }

@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useModalContext } from '~/context/modal-context'
@@ -17,6 +17,8 @@ import tutorImg from '~/assets/img/signup-dialog/tutor.svg'
 
 import styles from '~/containers/guest-home-page/registration-dialog/RegistrationDialog.styles'
 
+import { useForm } from '~/hooks/use-form'
+
 interface RegistrationDialogProps {
   defaultRole: UserRoleEnum
 }
@@ -25,43 +27,72 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
   const { t } = useTranslation()
   const { closeModal } = useModalContext()
 
-  // Minimal form state without validation
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    role: defaultRole || 'Student',
-    firstName: '',
-    lastName: '',
-    confirmPassword: ''
+  const validateEmail = (email: string): string | undefined => {
+    if (!email) return 'common.errorMessages.emptyField'
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if (!emailRegex.test(email)) return 'common.errorMessages.emailValid'
+    return undefined
+  }
+
+  const validatePassword = (password: string): string | undefined => {
+    if (!password) return 'common.errorMessages.emptyField'
+    if (password.length < 8 || password.length > 25)
+      return 'common.errorMessages.passwordLength'
+    if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
+      return 'common.errorMessages.passwordValid'
+    }
+    return undefined
+  }
+
+  const validateConfirmPassword = (
+    confirmPassword: string
+  ): string | undefined => {
+    if (!confirmPassword) return 'common.errorMessages.emptyField'
+    if (confirmPassword !== data.password)
+      return 'common.errorMessages.passwordsDontMatch'
+    return undefined
+  }
+
+  const validateName = (name: string): string | undefined => {
+    if (!name) return 'common.errorMessages.emptyField'
+    if (name.length > 30) return 'common.errorMessages.nameLength'
+    if (!/^[a-zA-Zа-яА-ЯіІїЇєЄґҐ]+$/.test(name))
+      return 'common.errorMessages.nameAlphabeticOnly'
+    return undefined
+  }
+  const {
+    data,
+    errors,
+    handleInputChange,
+    handleBlur,
+    handleSubmit: handleFormSubmit
+  } = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+      role: defaultRole || UserRoleEnum.Student,
+      firstName: '',
+      lastName: '',
+      confirmPassword: ''
+    },
+    validations: {
+      email: validateEmail,
+      password: validatePassword,
+      firstName: validateName,
+      lastName: validateName,
+      confirmPassword: validateConfirmPassword
+    },
+    onSubmit: () => {
+      console.log('Form submitted with values:', data)
+      console.log('User registered with role:', data.role)
+      try {
+        closeModal()
+      } catch (e) {
+        console.log('Something went wrong while closing modal')
+      }
+      return Promise.resolve()
+    }
   })
-
-  // Handle input changes
-  const handleChange =
-    (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData((prev) => ({ ...prev, [field]: e.target.value }))
-    }
-
-  // Handle form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log('Form submitted with values:', formData)
-    console.log('User registered with role:', formData.role)
-    try {
-      closeModal()
-    } catch (e) {
-      console.log('Something went wrong while closing modal')
-    }
-  }
-
-  // Mock errors object (empty since no validation)
-  const errors = {
-    email: '',
-    password: '',
-    role: '',
-    firstName: '',
-    lastName: '',
-    confirmPassword: ''
-  }
 
   return (
     <Box sx={styles.root}>
@@ -79,11 +110,11 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
         </Typography>
         <Box sx={styles.form}>
           <RegistrationForm
-            data={formData}
+            data={data}
             errors={errors}
-            handleBlur={() => {}}
-            handleChange={handleChange}
-            handleSubmit={handleSubmit}
+            handleBlur={handleBlur}
+            handleChange={handleInputChange}
+            handleSubmit={handleFormSubmit}
           />
         </Box>
         <GoogleLogin

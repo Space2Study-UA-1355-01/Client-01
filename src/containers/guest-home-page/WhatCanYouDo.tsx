@@ -1,15 +1,22 @@
+import Box from '@mui/material/Box'
+
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import Box from '@mui/material/Box'
+
+import { guestRoutes } from '~/router/constants/guestRoutes'
+
+import { useModalContext } from '~/context/modal-context'
+
+import { UserRoleEnum } from '~/types'
+
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
 import InfoCard from '~/components/info-card/InfoCard'
-import { guestRoutes } from '~/router/constants/guestRoutes'
+import RegistrationDialog from './registration-dialog/RegistrationDialog'
+
 import learnImg from '~/assets/img/guest-home-page/learnImg.png'
 import teachImg from '~/assets/img/guest-home-page/teachImg.png'
-import { UserRoleEnum } from '~/types'
+
 import { styles } from '~/containers/guest-home-page/styles/WhatCanYouDo.styles'
-import RegistrationDialog from './registration-dialog/RegistrationDialog'
-import { useModalContext } from '~/context/modal-context'
 
 const cardData = [
   {
@@ -31,7 +38,10 @@ const cardData = [
 const WhatCanYouDo = () => {
   const { t } = useTranslation()
   const { openModal } = useModalContext()
-  const [selectedRole, setSelectedRole] = useState<UserRoleEnum | null>(null)
+
+  const [selectedRole, setSelectedRole] = useState<UserRoleEnum>(
+    UserRoleEnum.Student
+  )
   console.log(selectedRole)
 
   const openDialogWithRole = (role: UserRoleEnum) => {

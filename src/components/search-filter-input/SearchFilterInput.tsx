@@ -54,7 +54,7 @@ const SearchFilterInput = ({
       <InputWithIcon
         onChange={onChange}
         onClear={onClear}
-        onKeyPress={onEnterPress}
+        onKeyDown={onEnterPress}
         startIcon={<SearchIcon sx={styles.searchIcon} />}
         sx={styles.input}
         value={search}
