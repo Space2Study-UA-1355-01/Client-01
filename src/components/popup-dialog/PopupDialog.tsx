@@ -6,7 +6,6 @@ import CloseIcon from '@mui/icons-material/Close'
 import { PaperProps } from '@mui/material'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
-import { useModalContext } from '~/context/modal-context'
 import { UserRoleEnum } from '~/types'
 import { styles } from '~/components/popup-dialog/PopupDialog.styles'
 
@@ -30,18 +29,12 @@ const PopupDialog: FC<PopupDialogProps> = ({
   isFullScreen
 }) => {
   const { isMobile } = useBreakpoints()
-  const { closeModal: contextCloseModal } = useModalContext()
-
-  const handleClose = () => {
-    closeModal()
-    contextCloseModal()
-  }
 
   const handleDialogClose = (_event: object, reason: string) => {
     if (reason === 'backdropClick') {
       return
     }
-    handleClose()
+    closeModal()
   }
 
   const handleMouseOver = () => timerId && clearTimeout(timerId)
@@ -63,7 +56,7 @@ const PopupDialog: FC<PopupDialogProps> = ({
         onMouseOver={handleMouseOver}
         sx={styles.box}
       >
-        <IconButton onClick={handleClose} sx={styles.icon}>
+        <IconButton onClick={closeModal} sx={styles.icon}>
           <CloseIcon />
         </IconButton>
         <Box sx={styles.contentWraper}>{content}</Box>
