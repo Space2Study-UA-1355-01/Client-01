@@ -8,7 +8,6 @@ import { PaperProps } from '@mui/material'
 import useBreakpoints from '~/hooks/use-breakpoints'
 import { UserRoleEnum } from '~/types'
 import { styles } from '~/components/popup-dialog/PopupDialog.styles'
-import { useModalContext } from '~/context/modal-context'
 
 interface PopupDialogProps {
   content: React.ReactNode
@@ -40,7 +39,6 @@ const PopupDialog: FC<PopupDialogProps> = ({
 
   const handleMouseOver = () => timerId && clearTimeout(timerId)
   const handleMouseLeave = () => timerId && closeModalAfterDelay()
-  const { closeModal } = useModalContext()
 
   return (
     <Dialog
