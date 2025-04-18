@@ -9,7 +9,7 @@ import AppTextField from '~/components/app-text-field/AppTextField'
 import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
 import AppButton from '~/components/app-button/AppButton'
 
-import { styles } from '~/containers/my-resources/edit-attachment-modal/EditAttachmentModal.styles'
+import { styles } from './CreateOrEditQuestionModal.styles'
 import { emptyField, textField } from '~/utils/validations/common'
 import {
   ButtonVariantEnum,

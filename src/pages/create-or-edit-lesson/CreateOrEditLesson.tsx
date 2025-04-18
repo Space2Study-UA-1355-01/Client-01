@@ -181,8 +181,7 @@ const CreateOrEditLesson = () => {
     if (id) {
       void fetchDataLesson(id)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  }, [fetchDataLesson, id])
 
   if (getLessonLoading) {
     return <Loader pageLoad />

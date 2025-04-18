@@ -4,6 +4,7 @@ export interface ItemsWithCount<T> {
   count: number
   items: T[]
 }
+
 export interface CommonEntityFields {
   _id: string
   createdAt: string
@@ -61,6 +62,7 @@ export interface Faq {
   question: string
   answer: string
 }
+
 export interface OutletContext {
   pageRef: React.RefObject<HTMLDivElement> | null
 }
@@ -72,6 +74,7 @@ export interface Breakpoints {
   isTablet: boolean
   isMobile: boolean
 }
+
 export interface RouteItem {
   route: string
   path: string
@@ -86,3 +89,22 @@ export interface AddDocuments {
   typeError: string
   maxQuantityFiles: number
 }
+
+export interface Media {
+  name: string
+  path: string
+}
+
+export interface File extends CommonEntityFields {
+  name: string
+  size: number
+  url: string
+}
+
+export interface Link {
+  _id: string
+  name: string
+  url: string
+}
+
+// export type Attachment = CourseResources | Question
