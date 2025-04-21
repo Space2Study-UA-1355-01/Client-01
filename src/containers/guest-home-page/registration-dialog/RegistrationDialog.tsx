@@ -88,7 +88,7 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
       console.log('User registered with role:', data.role)
       try {
         closeModal()
-
+        
         openModal({
           component: (
             <EmailInfoPopup email={data.email} onClose={closeModal} open />
@@ -97,7 +97,6 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
       } catch (e) {
         console.log('Something went wrong while closing modal')
       }
-
       return Promise.resolve()
     }
   })
