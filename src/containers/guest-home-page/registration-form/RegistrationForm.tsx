@@ -4,9 +4,10 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import useInputVisibility from '~/hooks/use-input-visibility'
+import { useModalContext } from '~/context/modal-context'
 
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
@@ -57,6 +58,7 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     useInputVisibility()
 
   const [iAgreeCheck, setIAgreeCheck] = useState(false)
+  const { setUnsavedChanges } = useModalContext()
 
   const { t } = useTranslation()
 
@@ -80,6 +82,13 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIAgreeCheck(e.target.checked)
   }
+
+  useEffect(() => {
+    const isDirty = Object.entries(data)
+      .filter(([key]) => key !== 'role')
+      .some(([, value]) => value.trim() !== '')
+    setUnsavedChanges(isDirty)
+  }, [data, setUnsavedChanges])
 
   const textFields = [
     {
