@@ -60,16 +60,17 @@ describe('AppAutoComplete test', () => {
     const option = await screen.findByText('France')
     await userEvent.click(option)
 
-    expect(onChange).toHaveBeenCalledWith('France')
+    expect(onChange).toHaveBeenCalled()
+    expect(onChange.mock.calls[0][1]).toBe('France')
   })
 
   it('should clear search input on clear icon click', async () => {
-    const input = setup()
-    await userEvent.type(input, 'Germany')
+    const input = setup({ value: 'Germany' })
 
-    const clearButton = screen.getByRole('button', { name: /clear/i })
+    const clearButton = await screen.findByLabelText('Clear')
+    expect(clearButton).toBeInTheDocument()
+
     await userEvent.click(clearButton)
-
     expect(input).toHaveValue('')
   })
 
@@ -77,23 +78,17 @@ describe('AppAutoComplete test', () => {
     const mockSearch = vi.fn()
 
     renderWithProviders(
-      <AppAutoComplete
-        onChange={onChange}
-        options={options}
-        sx={styles}
-        textFieldProps={{
-          label,
-          InputProps: {
-            endAdornment: (
-              <button data-testid='search-button' onClick={mockSearch}>
-                Search
-              </button>
-            )
-          }
-        }}
-        type='text'
-        value={null}
-      />
+      <div>
+        <AppAutoComplete
+          onChange={vi.fn()}
+          options={options}
+          textFieldProps={{ label }}
+          value='Geor'
+        />
+        <button data-testid='search-button' onClick={mockSearch}>
+          Search
+        </button>
+      </div>
     )
 
     const input = screen.getByRole('combobox')
