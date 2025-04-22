@@ -13,12 +13,22 @@ import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
 import { styles } from '~/containers/guest-home-page/registration-form/RegistrationForm.styles'
 
+type FormFields =
+  | 'email'
+  | 'password'
+  | 'role'
+  | 'firstName'
+  | 'lastName'
+  | 'confirmPassword'
+
 interface RegistrationFormProps {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
   handleChange: (
-    field: string
+    field: FormFields
   ) => (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleBlur: (field: string) => (e: React.FocusEvent<HTMLInputElement>) => void
+  handleBlur: (
+    field: FormFields
+  ) => (e: React.FocusEvent<HTMLInputElement>) => void
   data: {
     email: string
     password: string
@@ -80,70 +90,97 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
     setUnsavedChanges(isDirty)
   }, [data, setUnsavedChanges])
 
+  const textFields = [
+    {
+      id: 'firstName',
+      label: t('common.labels.firstName'),
+      value: safeData.firstName,
+      error: errors.firstName ? t(errors.firstName) : '',
+      handleChange: handleChange('firstName'),
+      handleBlur: handleBlur('firstName'),
+      autoFocus: true,
+      sx: { mb: '15px' },
+      type: 'text'
+    },
+    {
+      id: 'lastName',
+      label: t('common.labels.lastName'),
+      value: safeData.lastName,
+      error: errors.lastName ? t(errors.lastName) : '',
+      handleChange: handleChange('lastName'),
+      handleBlur: handleBlur('lastName'),
+      sx: { mb: '5px' },
+      type: 'text'
+    },
+    {
+      id: 'email',
+      label: t('common.labels.email'),
+      value: safeData.email,
+      error: errors.email ? t(errors.email) : '',
+      handleChange: handleChange('email'),
+      handleBlur: handleBlur('email'),
+      sx: { mb: '5px' },
+      type: 'email'
+    },
+    {
+      id: 'password',
+      label: t('common.labels.password'),
+      value: safeData.password,
+      error: errors.password ? t(errors.password) : '',
+      handleChange: handleChange('password'),
+      handleBlur: handleBlur('password'),
+      type: showPassword ? 'text' : 'password',
+      InputProps: passwordVisibility,
+      sx: { mb: '5px' }
+    },
+    {
+      id: 'confirmPassword',
+      label: t('common.labels.confirmPassword'),
+      value: safeData.confirmPassword,
+      error: errors.confirmPassword ? t(errors.confirmPassword) : '',
+      handleChange: handleChange('confirmPassword'),
+      handleBlur: handleBlur('confirmPassword'),
+      type: showPassword ? 'text' : 'password',
+      InputProps: passwordVisibility
+    }
+  ]
+
   return (
     <Box component='form' onSubmit={handleSubmit} sx={styles.form}>
       <Box sx={styles.fullname}>
-        <AppTextField
-          autoFocus
-          data-testid='firstName'
-          errorMsg={errors.firstName ? t(errors.firstName) : ''}
-          fullWidth
-          label={t('common.labels.firstName')}
-          onBlur={handleBlur('firstName')}
-          onChange={handleChange('firstName')}
-          required
-          sx={{ mb: '5px' }}
-          type='text'
-          value={safeData.firstName}
-        />
-        <AppTextField
-          data-testid='lastName'
-          errorMsg={errors.lastName ? t(errors.lastName) : ''}
-          fullWidth
-          label={t('common.labels.lastName')}
-          onBlur={handleBlur('lastName')}
-          onChange={handleChange('lastName')}
-          required
-          sx={{ mb: '5px' }}
-          type='text'
-          value={safeData.lastName}
-        />
+        {textFields.slice(0, 2).map((field) => (
+          <AppTextField
+            autoFocus={field.autoFocus}
+            data-testid={field.id}
+            errorMsg={field.error}
+            fullWidth
+            key={field.id}
+            label={field.label}
+            onBlur={field.handleBlur}
+            onChange={field.handleChange}
+            required
+            sx={field.sx}
+            type={field.type}
+            value={field.value}
+          />
+        ))}
       </Box>
-      <AppTextField
-        data-testid='email'
-        errorMsg={errors.email ? t(errors.email) : ''}
-        fullWidth
-        label={t('common.labels.email')}
-        onBlur={handleBlur('email')}
-        onChange={handleChange('email')}
-        required
-        sx={{ mb: '5px' }}
-        type='email'
-        value={safeData.email}
-      />
-      <AppTextField
-        InputProps={passwordVisibility}
-        errorMsg={errors.password ? t(errors.password) : ''}
-        fullWidth
-        label={t('common.labels.password')}
-        onBlur={handleBlur('password')}
-        onChange={handleChange('password')}
-        required
-        type={showPassword ? 'text' : 'password'}
-        value={safeData.password}
-      />
-      <AppTextField
-        InputProps={passwordVisibility}
-        data-testid='confirmPassword'
-        errorMsg={errors.confirmPassword ? t(errors.confirmPassword) : ''}
-        fullWidth
-        label={t('common.labels.confirmPassword')}
-        onBlur={handleBlur('confirmPassword')}
-        onChange={handleChange('confirmPassword')}
-        required
-        type={showPassword ? 'text' : 'password'}
-        value={safeData.confirmPassword}
-      />
+      {textFields.slice(2).map((field) => (
+        <AppTextField
+          InputProps={field.InputProps}
+          data-testid={field.id}
+          errorMsg={field.error}
+          fullWidth
+          key={field.id}
+          label={field.label}
+          onBlur={field.handleBlur}
+          onChange={field.handleChange}
+          required
+          sx={field.sx}
+          type={field.type}
+          value={field.value}
+        />
+      ))}
       <FormControlLabel
         control={
           <Checkbox
@@ -164,7 +201,6 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
             </Link>
           </Typography>
         }
-        sx={{ mt: 1 }}
       />
       <AppButton
         disabled={!isFormComplete}
