@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AxiosError } from 'axios'
-
 import { ErrorResponse, ServiceFunction } from '~/types'
 
 export interface UseAxiosProps<
@@ -42,6 +41,8 @@ const useAxios = <
   const [error, setError] = useState<ErrorResponse | null>(null)
   const [loading, setLoading] = useState<boolean>(fetchOnMount)
 
+  const hasFetched = useRef(false)
+
   const fetchData = useCallback(
     async (params?: Params) => {
       try {
@@ -50,12 +51,12 @@ const useAxios = <
         const responseData = transform ? transform(res.data) : res.data
         setResponse(responseData as TransformedResponse)
         setError(null)
-        onResponse && onResponse(responseData as TransformedResponse)
+        onResponse?.(responseData as TransformedResponse)
       } catch (e) {
         const error = e as AxiosError<ErrorResponse>
         if (error.response) {
           setError(error.response.data)
-          onResponseError && onResponseError(error.response.data)
+          onResponseError?.(error.response.data)
         }
       } finally {
         setLoading(false)
@@ -65,10 +66,11 @@ const useAxios = <
   )
 
   useEffect(() => {
-    if (fetchOnMount) {
+    if (fetchOnMount && !hasFetched.current) {
+      hasFetched.current = true
       void fetchData()
     }
-  }, [fetchData, fetchOnMount])
+  }, [fetchOnMount, fetchData])
 
   return { response, error, loading, fetchData }
 }
