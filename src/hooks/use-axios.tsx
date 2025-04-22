@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AxiosError } from 'axios'
+
 import { ErrorResponse, ServiceFunction } from '~/types'
 
 export interface UseAxiosProps<
@@ -51,12 +52,12 @@ const useAxios = <
         const responseData = transform ? transform(res.data) : res.data
         setResponse(responseData as TransformedResponse)
         setError(null)
-        onResponse?.(responseData as TransformedResponse)
+        onResponse && onResponse(responseData as TransformedResponse)
       } catch (e) {
         const error = e as AxiosError<ErrorResponse>
         if (error.response) {
           setError(error.response.data)
-          onResponseError?.(error.response.data)
+          onResponseError && onResponseError(error.response.data)
         }
       } finally {
         setLoading(false)
