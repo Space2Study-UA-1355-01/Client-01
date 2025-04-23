@@ -63,12 +63,22 @@ const LanguageStep = ({ btnsBox }) => {
 
   return (
     <Box sx={styles.container}>
+      {/* Заголовок тільки на мобілці */}
+      <Typography sx={styles.mobileHeading}>
+        {t('becomeTutor.languages.title')}
+      </Typography>
+
       <Box sx={styles.imgContainer}>
         <Box component='img' src={img} sx={styles.img} />
       </Box>
+
       <Box sx={styles.rigthBox}>
+        {/* Заголовок на десктопі */}
         <Box>
-          <Typography>{t('becomeTutor.languages.title')}</Typography>
+          <Typography sx={styles.desktopHeading}>
+            {t('becomeTutor.languages.title')}
+          </Typography>
+
           <Autocomplete
             getOptionDisabled={(option) =>
               selectedLanguages.some((lang) => lang.id === option.id)
@@ -86,13 +96,15 @@ const LanguageStep = ({ btnsBox }) => {
             value={tempLang}
           />
 
-          <Button
-            onClick={handleButtonClick}
-            sx={{ width: 1 }}
-            variant='contained'
-          >
-            {t('becomeTutor.languages.button')}
-          </Button>
+          {selectedLanguages.length >= 1 && (
+            <Button
+              onClick={handleButtonClick}
+              sx={{ width: 1 }}
+              variant='contained'
+            >
+              {t('becomeTutor.languages.button')}
+            </Button>
+          )}
 
           <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             {selectedLanguages.map((lang) => (
@@ -104,6 +116,7 @@ const LanguageStep = ({ btnsBox }) => {
             ))}
           </Box>
         </Box>
+
         {btnsBox}
       </Box>
     </Box>
