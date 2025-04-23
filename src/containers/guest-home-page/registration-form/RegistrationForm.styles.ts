@@ -7,9 +7,10 @@ export const styles = {
     minWidth: { md: '340px' },
     pt: '16px',
     pr: { md: '0p' },
-    pb: { sm: '0px' },
+    pb: { sm: '10px' },
     display: 'flex',
     flexDirection: 'column',
+    gap: '10px',
     ...scrollbar
   },
   fullname: {

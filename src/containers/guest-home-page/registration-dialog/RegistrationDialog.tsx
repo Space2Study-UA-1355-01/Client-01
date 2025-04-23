@@ -19,6 +19,7 @@ import styles from '~/containers/guest-home-page/registration-dialog/Registratio
 
 import { useForm } from '~/hooks/use-form'
 import EmailInfoPopup from '~/components/email-info-popup/EmailInfoPopup'
+import { useSignUpMutation } from '~/services/auth-service'
 
 interface RegistrationDialogProps {
   defaultRole: UserRoleEnum
@@ -27,6 +28,7 @@ interface RegistrationDialogProps {
 const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
   const { t } = useTranslation()
   const { closeModal, openModal } = useModalContext()
+  const [signUp] = useSignUpMutation()
 
   const validateEmail = (email: string): string | undefined => {
     if (!email) return 'common.errorMessages.emptyField'
@@ -83,10 +85,11 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
       lastName: validateName,
       confirmPassword: validateConfirmPassword
     },
-    onSubmit: () => {
+    onSubmit: async () => {
       console.log('Form submitted with values:', data)
-      console.log('User registered with role:', data.role)
       try {
+        const response = await signUp(data).unwrap()
+        console.log('Registration succesful!', response)
         closeModal()
         
         openModal({
@@ -95,7 +98,7 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
           )
         })
       } catch (e) {
-        console.log('Something went wrong while closing modal')
+        console.log('Something went wrong', e)
       }
       return Promise.resolve()
     }

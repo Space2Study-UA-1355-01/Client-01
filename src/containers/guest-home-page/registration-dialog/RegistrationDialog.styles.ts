@@ -2,7 +2,7 @@ const style = {
   root: {
     maxWidth: { sm: 'sm', md: 'md', lg: 'lg' },
     mt: { xs: '56px' },
-    mb: { xs: '56px' },
+    mb: { xs: '62px' },
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -30,15 +30,18 @@ const style = {
     boxSizing: 'border-box',
     borderTop: { xs: '1px solid', sm: 'none' },
     borderColor: { xs: 'primary.100' },
-    pt: { xs: '24px', sm: '64px' },
+    pt: { xs: '56px', md: '100px', lg: '0' },
     pl: { sm: '46px', md: '16px' },
-    pr: { sm: '46px', md: '16px' },
-    pb: { xs: '24px' }
+    pr: { sm: '46px', md: '36px' }
   },
   title: {
     fontSize: '32px',
-    lineHeight: '20px',
-    pb: '10px'
+    lineHeight: '30px',
+    pt: { xs: '50px', lg: '0px' },
+    '@media (min-width:1024px)': {
+      pt: '0px'
+    },
+    pb: { xs: '10px' }
   },
   form: {
     maxWidth: { xs: '370px' }
