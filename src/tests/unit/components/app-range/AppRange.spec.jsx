@@ -1,11 +1,11 @@
-vi.mock('~/hooks/use-debounce', () => ({
-  useDebounce: (fn) => fn
-}))
-
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import AppRange from '~/components/app-range/AppRange'
+
+vi.mock('~/hooks/use-debounce', () => ({
+  useDebounce: (fn) => fn
+}))
 
 describe('AppRange', () => {
   let onChange
