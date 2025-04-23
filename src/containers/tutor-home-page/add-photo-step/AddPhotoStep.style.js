@@ -5,24 +5,9 @@ export const style = {
     display: 'flex',
     justifyContent: 'space-between',
     gap: '40px',
-    height: { sm: '485px' },
-    paddingBottom: { sm: '210px', md: '0px' },
     ...fadeAnimation
   },
-  img: {
-    width: '100%',
-    borderRadius: '20px',
-    mt: { xs: '20px', md: '0px' }
-  },
   imgContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    maxWidth: '440px',
-    width: '100%',
-    flex: 1,
-    pb: { xs: '16px', sm: '26px', md: '52px' }
-  },
-  uploadBox: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -32,37 +17,61 @@ export const style = {
     border: '2px dashed',
     borderColor: 'primary.200',
     borderRadius: '20px',
-    mt: { xs: '20px', md: '0px' }
+    mt: { xs: '20px', md: '0px' },
+    cursor: 'pointer'
+  },
+  uploadBox: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    width: '100%',
+    height: '100%'
   },
   activeDrag: {
-    border: '2px primary',
     borderColor: 'primary.900'
   },
-  rigthBox: {
+  img: {
+    width: '100%',
+    borderRadius: '20px',
+    mt: { xs: '20px', md: '0px' }
+  },
+  clearButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    '&:hover': {
+      backgroundColor: 'rgba(255,255,255,1)'
+    }
+  },
+  rightColumn: {
+    flex: 1,
     display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    maxWidth: '432px',
-    m: { md: 0, xs: '0 auto' },
-    pt: 0,
-    pb: { xs: '30px', sm: '0' }
+    flexDirection: 'column'
   },
   description: {
-    mb: '20px'
+    mb: 1
   },
-  fileUploader: {
-    button: {
-      textAlign: 'center'
-    },
-    root: {
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around',
-      border: '1px solid',
-      borderColor: 'primary.200',
-      borderRadius: '5px',
-      maxWidth: '270px',
-      overflow: 'auto'
-    }
+  uploadControl: {
+    display: 'flex',
+    alignItems: 'center',
+    mb: 1
+  },
+  uploadButton: {
+    textTransform: 'none'
+  },
+  checkIcon: {
+    ml: 1,
+    fontSize: '1.5rem'
+  },
+  fileSize: {
+    mb: 2
+  },
+  errorText: {
+    mb: 2
+  },
+  navButtons: {
+    mt: 'auto'
   }
 }
