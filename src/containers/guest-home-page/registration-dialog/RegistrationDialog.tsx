@@ -18,6 +18,7 @@ import tutorImg from '~/assets/img/signup-dialog/tutor.svg'
 import styles from '~/containers/guest-home-page/registration-dialog/RegistrationDialog.styles'
 
 import { useForm } from '~/hooks/use-form'
+import EmailInfoPopup from '~/components/email-info-popup/EmailInfoPopup'
 import { useSignUpMutation } from '~/services/auth-service'
 
 interface RegistrationDialogProps {
@@ -26,7 +27,7 @@ interface RegistrationDialogProps {
 
 const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
   const { t } = useTranslation()
-  const { closeModal } = useModalContext()
+  const { closeModal, openModal } = useModalContext()
   const [signUp] = useSignUpMutation()
 
   const validateEmail = (email: string): string | undefined => {
@@ -90,6 +91,12 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
         const response = await signUp(data).unwrap()
         console.log('Registration succesful!', response)
         closeModal()
+        
+        openModal({
+          component: (
+            <EmailInfoPopup email={data.email} onClose={closeModal} open />
+          )
+        })
       } catch (e) {
         console.log('Something went wrong', e)
       }
