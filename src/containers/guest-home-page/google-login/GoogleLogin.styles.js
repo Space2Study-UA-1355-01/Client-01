@@ -1,4 +1,10 @@
 export const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   linesBox: {
     margin: '23px 0',
     display: 'flex',
@@ -23,6 +29,7 @@ export const styles = {
   },
   haveAccount: {
     display: 'flex',
-    color: 'primary.700'
+    color: 'primary.700',
+    pb: '10px'
   }
 }
