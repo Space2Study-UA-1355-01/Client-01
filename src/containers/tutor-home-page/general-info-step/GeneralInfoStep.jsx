@@ -1,8 +1,7 @@
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 
 import { Typography, TextField, MenuItem, Stack } from '@mui/material'
-import AppTextArea from '~/components/app-text-area/AppTextArea'
-
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 import { useTranslation } from 'react-i18next'
 
@@ -19,6 +18,8 @@ const GeneralInfoStep = ({ btnsBox }) => {
   const { data: contextData } = stepData.generalInfo
   const { firstName, lastName, city, country, professionalSummary } =
     contextData
+  const [realValue, setRealValue] = useState(professionalSummary)
+  const [hasError, setHasError] = useState(false)
 
   const {
     handleBlur,
@@ -61,12 +62,18 @@ const GeneralInfoStep = ({ btnsBox }) => {
   function handleCitySelect(e) {
     handleStepData('generalInfo', { ...contextData, city: e.target.value })
   }
-
-  function handleProfessionalSummaryChange(e) {
-    handleStepData('generalInfo', {
-      ...contextData,
-      professionalSummary: e.target.value
-    })
+  const handleProfessionalSummaryChange = (e) => {
+    const newValue = e.target.value
+    setRealValue(newValue)
+    if (newValue.length > 200) {
+      setHasError(true)
+    } else {
+      setHasError(false)
+      handleStepData('generalInfo', {
+        ...contextData,
+        professionalSummary: newValue
+      })
+    }
   }
 
   function handleProfessionalSummaryBlur(e) {
@@ -134,15 +141,22 @@ const GeneralInfoStep = ({ btnsBox }) => {
               <MenuItem value='Porto'>Porto</MenuItem>
             </TextField>
           </Stack>
-
-          <AppTextArea
+          <TextField
+            error={hasError}
             fullWidth
+            helperText={
+              hasError
+                ? t('common.errorMessages.longText')
+                : `${realValue.length}/200`
+            }
             label={t('becomeTutor.generalInfo.textFieldLabel')}
             maxLength={200}
+            multiline
             onBlur={handleProfessionalSummaryBlur}
             onChange={handleProfessionalSummaryChange}
+            rows={4}
             sx={styles.textArea}
-            value={professionalSummary}
+            value={realValue}
           />
         </Stack>
 
