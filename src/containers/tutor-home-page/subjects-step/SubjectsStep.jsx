@@ -69,7 +69,7 @@ export const subjectsMock = {
 
 const SubjectsStep = ({ btnsBox }) => {
   const { stepData, handleStepData } = useStepContext()
-  const subjectLabel = Object.keys(stepData)[1] || 'subjects'
+  const subjectLabel = 'subjects'
   const subjects = Array.isArray(stepData[subjectLabel])
     ? stepData[subjectLabel]
     : []
@@ -138,22 +138,22 @@ const SubjectsStep = ({ btnsBox }) => {
 
   return (
     <Box sx={styles.step}>
+      <Typography component='h2' sx={styles.body2}>
+        Please choose the main subjects based on the category. You can add
+        others later
+      </Typography>
+
       <Box sx={styles.container}>
-        <Box sx={styles.imageWrapper}>
-          <Box sx={styles.containerImg}>
-            <Box
-              alt='study category'
-              component='img'
-              src={studyCategoryImg}
-              sx={styles.img}
-            />
-          </Box>
+        <Box sx={styles.containerImg}>
+          <Box
+            alt='study category'
+            component='img'
+            src={studyCategoryImg}
+            sx={styles.img}
+          />
         </Box>
-        <Box sx={styles.contentWrapper}>
-          <Typography component='h2' sx={styles.body2}>
-            Please choose the main subjects based on the category. You can add
-            others later
-          </Typography>
+
+        <Box sx={styles.content}>
           <Box sx={styles.autocompletes}>
             {categoriesMock.length > 0 ? (
               <AppAutoCompleteCategories
@@ -165,7 +165,7 @@ const SubjectsStep = ({ btnsBox }) => {
                 isOptionEqualToValue={(option, value) =>
                   option.value === value.value
                 }
-                onChange={(event, newValue) => handleCategoryChange(newValue)}
+                onChange={(_event, newValue) => handleCategoryChange(newValue)}
                 options={visibleCategories}
                 textFieldProps={{
                   label: 'Main Tutoring Category',
@@ -180,8 +180,9 @@ const SubjectsStep = ({ btnsBox }) => {
             ) : (
               <p>No categories</p>
             )}
+
             <AppAutoCompleteCategories
-              ListboxProps={{ style: { maxHeight: '160px' } }}
+              ListboxProps={{ style: { maxHeight: '150px' } }}
               disabled={!selectedCategory}
               getOptionLabel={(option) => option.title}
               hideClearIcon={false}
@@ -197,11 +198,11 @@ const SubjectsStep = ({ btnsBox }) => {
                 ) || null
               }
             />
-            <AppButton
-              disabled={!selectedSubject}
-              onClick={handleButtonClick}
-            />
-            Add one more subject
+
+            <AppButton disabled={!selectedSubject} onClick={handleButtonClick}>
+              Add one more subject
+            </AppButton>
+
             <AppChipList
               defaultQuantity={3}
               handleChipDelete={handleChipDelete}
@@ -209,9 +210,9 @@ const SubjectsStep = ({ btnsBox }) => {
               sx={styles.chipListWrapper}
             />
           </Box>
-          <Box sx={styles.btnsBox}>{btnsBox}</Box>
         </Box>
       </Box>
+      <Box sx={styles.btnsBox}>{btnsBox}</Box>
     </Box>
   )
 }
