@@ -66,10 +66,11 @@ export const style = {
     fontSize: '1.5rem'
   },
   fileSize: {
-    mb: 2
+    mb: 1
   },
   errorText: {
-    mb: 2
+    mb: 1,
+    fontSize: '14px'
   },
   navButtons: {
     mt: 'auto'
