@@ -14,4 +14,11 @@ export const validations = {
   professionalSummary: textField(0, 200)
 }
 
+export const studentStepLabels = [
+  'generalInfo',
+  'interests',
+  'language',
+  'photo'
+]
+
 export const tutorStepLabels = ['generalInfo', 'subjects', 'language', 'photo']

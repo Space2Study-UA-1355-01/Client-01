@@ -50,13 +50,6 @@ const PopupDialog: FC<PopupDialogProps> = ({
     }
   }
 
-  const handleDialogClose = (_event: object, reason: string) => {
-    if (reason === 'backdropClick') {
-      handleClose()
-    }
-    return
-  }
-
   const handleMouseOver = () => timerId && clearTimeout(timerId)
   const handleMouseLeave = () => timerId && closeModalAfterDelay()
 
@@ -67,7 +60,6 @@ const PopupDialog: FC<PopupDialogProps> = ({
       disableRestoreFocus
       fullScreen={isFullScreen ?? isMobile}
       maxWidth='xl'
-      onClose={handleDialogClose}
       open
     >
       <Box
