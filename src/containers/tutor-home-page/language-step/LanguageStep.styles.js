@@ -21,6 +21,10 @@ export const styles = {
     display: { xs: 'none', sm: 'block' },
     mb: 2
   },
+  button: {
+    width: 1,
+    p: 2
+  },
   imgContainer: {
     display: 'flex',
     flex: 1,
@@ -46,5 +50,6 @@ export const styles = {
     width: 1,
     mt: '20px',
     my: '16px'
-  }
+  },
+  chipContainer: { m: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }
 }

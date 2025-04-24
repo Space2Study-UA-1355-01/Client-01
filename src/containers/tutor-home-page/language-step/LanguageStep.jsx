@@ -12,6 +12,8 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useStepContext } from '~/context/step-context'
 import { useState } from 'react'
+import { useAppSelector } from '~/hooks/use-redux'
+import { student } from '~/constants'
 
 const languages = [
   { id: '1', label: 'English' },
@@ -28,15 +30,31 @@ const LanguageStep = ({ btnsBox }) => {
   const { t } = useTranslation()
   const { handleStepData, stepData } = useStepContext()
 
+  const { userRole } = useAppSelector((state) => state.appMain)
+
+  const isStudent = userRole === student
+
   const languageLabel = 'language'
   const selectedLanguages = stepData[languageLabel] || []
 
-  console.log(stepData)
+  const autocompleteValue =
+    isStudent || (selectedLanguages.length === 1 && !tempLang)
+      ? selectedLanguages[0] ?? null
+      : tempLang
+
+  const optionDisabledProp = (option) =>
+    selectedLanguages.some((lang) => lang.id === option.id)
 
   const handleOnChange = (e, newValue) => {
-    if (!newValue) return
+    if (!newValue) {
+      if (isStudent) {
+        handleStepData(languageLabel, [])
+      }
+      setTempLang(null)
+      return
+    }
 
-    if (!selectedLanguages.length) {
+    if (!selectedLanguages.length || isStudent) {
       handleStepData(languageLabel, [newValue])
       setTempLang(null)
     } else {
@@ -53,7 +71,7 @@ const LanguageStep = ({ btnsBox }) => {
   const handleButtonClick = () => {
     if (
       tempLang &&
-      !selectedLanguages.find((lang) => lang.id === tempLang.id)
+      !selectedLanguages.some((lang) => lang.id === tempLang.id)
     ) {
       const updatedLangs = [...selectedLanguages, tempLang]
       handleStepData(languageLabel, updatedLangs)
@@ -63,7 +81,6 @@ const LanguageStep = ({ btnsBox }) => {
 
   return (
     <Box sx={styles.container}>
-      {/* Заголовок тільки на мобілці */}
       <Typography sx={styles.mobileHeading}>
         {t('becomeTutor.languages.title')}
       </Typography>
@@ -73,16 +90,13 @@ const LanguageStep = ({ btnsBox }) => {
       </Box>
 
       <Box sx={styles.rigthBox}>
-        {/* Заголовок на десктопі */}
         <Box>
           <Typography sx={styles.desktopHeading}>
             {t('becomeTutor.languages.title')}
           </Typography>
 
           <Autocomplete
-            getOptionDisabled={(option) =>
-              selectedLanguages.some((lang) => lang.id === option.id)
-            }
+            getOptionDisabled={optionDisabledProp}
             onChange={handleOnChange}
             options={languages}
             renderInput={(params) => (
@@ -93,28 +107,30 @@ const LanguageStep = ({ btnsBox }) => {
             )}
             renderTags={() => null}
             sx={styles.input}
-            value={tempLang}
+            value={autocompleteValue}
           />
 
-          {selectedLanguages.length >= 1 && (
+          {selectedLanguages.length >= 1 && !isStudent && (
             <Button
               onClick={handleButtonClick}
-              sx={{ width: 1 }}
+              sx={styles.button}
               variant='contained'
             >
               {t('becomeTutor.languages.button')}
             </Button>
           )}
 
-          <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {selectedLanguages.map((lang) => (
-              <Chip
-                key={lang.id}
-                label={lang.label}
-                onDelete={() => handleDeleteLanguage(lang.id)}
-              />
-            ))}
-          </Box>
+          {!isStudent && (
+            <Box sx={styles.chipContainer}>
+              {selectedLanguages.map((lang) => (
+                <Chip
+                  key={lang.id}
+                  label={lang.label}
+                  onDelete={() => handleDeleteLanguage(lang.id)}
+                />
+              ))}
+            </Box>
+          )}
         </Box>
 
         {btnsBox}

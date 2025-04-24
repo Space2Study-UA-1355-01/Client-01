@@ -12,9 +12,6 @@ const StepProvider = ({ children, initialValues, stepLabels }) => {
   const [photo, setPhoto] = useState([])
   const [generalLabel, subjectLabel, languageLabel, photoLabel] = stepLabels
 
-  // console.log(stepLabels)
-  // console.log(generalLabel)
-
   const stepData = {
     [generalLabel]: generalData,
     [subjectLabel]: subject,
