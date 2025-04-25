@@ -7,6 +7,7 @@ import { useModalContext } from '~/context/modal-context'
 import { useStepContext } from '~/context/step-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import { userService } from '~/services/user-service'
+import { uploadPhotoService } from '~/services/upload-photo-service'
 import { snackbarVariants } from '~/constants'
 
 const useSteps = ({ steps }) => {
@@ -20,6 +21,7 @@ const useSteps = ({ steps }) => {
     (data) => userService.updateUser(userId, data),
     [userId]
   )
+  const uploadPhoto = useCallback((file) => uploadPhotoService.upload(file), [])
 
   const handleResponseError = (error) => {
     setAlert({
@@ -44,6 +46,17 @@ const useSteps = ({ steps }) => {
     onResponseError: handleResponseError
   })
 
+  const { loading: uploadLoading, fetchData: uploadPhotoFetch } = useAxios({
+    service: uploadPhoto,
+    fetchOnMount: false,
+    defaultResponse: null,
+    onResponse: (res) => {
+      const publicId = res.public_id
+      submitData(publicId)
+    },
+    onResponseError: handleResponseError
+  })
+
   const stepErrors = Object.values(stepData).map(
     (data) =>
       data && data.errors && Object.values(data.errors).find((error) => error)
@@ -60,22 +73,32 @@ const useSteps = ({ steps }) => {
   const isLastStep = activeStep === steps.length - 1
 
   const handleSubmit = () => {
+    const selectedFile = stepData.photo?.[0]
+
+    if (selectedFile) {
+      uploadPhotoFetch(selectedFile)
+    } else {
+      submitData()
+    }
+  }
+
+  const submitData = (publicId = '') => {
     const hasErrors = stepErrors.find((error) => error)
 
     const { firstName, lastName, country, city, professionalSummary } =
       stepData.generalInfo.data
 
     const data = {
-      photo: stepData.photo[0] ? stepData.photo[0] : '',
+      photo: publicId,
       firstName,
       lastName,
       address: {
         country: country ?? '',
         city: city ?? ''
       },
-      professionalSummary: professionalSummary,
+      professionalSummary,
       mainSubjects: stepData.subjects,
-      nativeLanguage: stepData.language ?? ''
+      nativeLanguage: stepData.language ?? 'English'
     }
 
     !hasErrors && fetchData(data)
@@ -88,7 +111,14 @@ const useSteps = ({ steps }) => {
     setActiveStep
   }
 
-  return { activeStep, stepErrors, isLastStep, stepOperation, loading }
+  return {
+    activeStep,
+    stepErrors,
+    isLastStep,
+    stepOperation,
+    loading,
+    uploadLoading
+  }
 }
 
 export default useSteps
