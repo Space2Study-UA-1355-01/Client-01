@@ -1,6 +1,4 @@
-import { useState } from 'react'
 import Box from '@mui/material/Box'
-
 import { Typography, TextField, MenuItem, Stack } from '@mui/material'
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 import { useTranslation } from 'react-i18next'
@@ -18,13 +16,12 @@ const GeneralInfoStep = ({ btnsBox }) => {
   const { data: contextData } = stepData.generalInfo
   const { firstName, lastName, city, country, professionalSummary } =
     contextData
-  const [realValue, setRealValue] = useState(professionalSummary)
-  const [hasError, setHasError] = useState(false)
 
   const {
     handleBlur,
     handleInputChange,
-    errors: useFormErrors
+    errors: useFormErrors,
+    handleErrors
   } = useForm({
     initialValues: contextData,
     validations: {
@@ -46,6 +43,10 @@ const GeneralInfoStep = ({ btnsBox }) => {
     handleBlur('firstName')(e)
   }
 
+  function handleProfessionalSummaryBlur(e) {
+    handleBlur('professionalSummary')(e)
+  }
+
   function handleLastNameChange(e) {
     handleStepData('generalInfo', { ...contextData, lastName: e.target.value })
     handleInputChange('lastName')(e)
@@ -62,22 +63,19 @@ const GeneralInfoStep = ({ btnsBox }) => {
   function handleCitySelect(e) {
     handleStepData('generalInfo', { ...contextData, city: e.target.value })
   }
+
   const handleProfessionalSummaryChange = (e) => {
     const newValue = e.target.value
-    setRealValue(newValue)
-    if (newValue.length > 200) {
-      setHasError(true)
-    } else {
-      setHasError(false)
-      handleStepData('generalInfo', {
-        ...contextData,
-        professionalSummary: newValue
-      })
-    }
-  }
+    handleStepData('generalInfo', {
+      ...contextData,
+      professionalSummary: newValue
+    })
 
-  function handleProfessionalSummaryBlur(e) {
-    handleBlur('professionalSummary')(e)
+    if (newValue.length > 200) {
+      handleErrors('professionalSummary', 'common.errorMessages.longText')
+    } else {
+      handleErrors('professionalSummary', '')
+    }
   }
 
   return (
@@ -141,13 +139,14 @@ const GeneralInfoStep = ({ btnsBox }) => {
               <MenuItem value='Porto'>Porto</MenuItem>
             </TextField>
           </Stack>
+
           <TextField
-            error={hasError}
+            error={useFormErrors.professionalSummary}
             fullWidth
             helperText={
-              hasError
-                ? t('common.errorMessages.longText')
-                : `${realValue.length}/200`
+              useFormErrors.professionalSummary
+                ? t(useFormErrors.professionalSummary)
+                : `${professionalSummary.length}/200`
             }
             label={t('becomeTutor.generalInfo.textFieldLabel')}
             maxLength={200}
@@ -156,7 +155,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
             onChange={handleProfessionalSummaryChange}
             rows={4}
             sx={styles.textArea}
-            value={realValue}
+            value={professionalSummary}
           />
         </Stack>
 
