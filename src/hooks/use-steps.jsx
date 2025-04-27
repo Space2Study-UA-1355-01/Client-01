@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react'
 
 import useAxios from '~/hooks/use-axios'
 import { useAppSelector } from '~/hooks/use-redux'
-
 import { useModalContext } from '~/context/modal-context'
 import { useStepContext } from '~/context/step-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
@@ -38,11 +37,29 @@ const useSteps = ({ steps }) => {
     closeModal()
   }
 
+  const handleResponseWarning = () => {
+    setAlert({
+      severity: snackbarVariants.warning,
+      message: 'becomeTutor.warningMessage'
+    })
+    closeModal()
+  }
+
+  const submitPhoto = () => {
+    const selectedFile = stepData.photo?.[0]
+
+    if (selectedFile) {
+      uploadPhotoFetch(selectedFile)
+    } else {
+      handleResponse()
+    }
+  }
+
   const { loading, fetchData } = useAxios({
     service: updateUser,
     fetchOnMount: false,
     defaultResponse: null,
-    onResponse: handleResponse,
+    onResponse: submitPhoto,
     onResponseError: handleResponseError
   })
 
@@ -50,11 +67,8 @@ const useSteps = ({ steps }) => {
     service: uploadPhoto,
     fetchOnMount: false,
     defaultResponse: null,
-    onResponse: (res) => {
-      const publicId = res.public_id
-      submitData(publicId)
-    },
-    onResponseError: handleResponseError
+    onResponse: handleResponse,
+    onResponseError: handleResponseWarning
   })
 
   const stepErrors = Object.values(stepData).map(
@@ -73,23 +87,12 @@ const useSteps = ({ steps }) => {
   const isLastStep = activeStep === steps.length - 1
 
   const handleSubmit = () => {
-    const selectedFile = stepData.photo?.[0]
-
-    if (selectedFile) {
-      uploadPhotoFetch(selectedFile)
-    } else {
-      submitData()
-    }
-  }
-
-  const submitData = (publicId = '') => {
     const hasErrors = stepErrors.find((error) => error)
 
     const { firstName, lastName, country, city, professionalSummary } =
       stepData.generalInfo.data
 
     const data = {
-      photo: publicId,
       firstName,
       lastName,
       address: {
