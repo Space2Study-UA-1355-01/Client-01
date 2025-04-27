@@ -36,7 +36,7 @@ const defaultFilterOptions = (
 
 const AppAutoCompleteCategories: React.FC<AppAutoCompleteProps> = ({
   filterOptions = defaultFilterOptions,
-  ListboxProps = { style: { maxHeight: 160 } },
+  ListboxProps = { style: { maxHeight: '140px' } },
   options = [],
   hideClearIcon = false,
   textFieldProps = {},

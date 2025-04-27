@@ -1,11 +1,12 @@
-import { Box, Typography } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
-import AppAutoCompleteCategories from '~/components/app-auto-complete/AppAutoCompleteCategories'
-import { styles } from '~/containers/tutor-home-page/subjects-step/SubjectsStep.styles'
+import { Box, Typography } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import { useStepContext } from '~/context/step-context'
+import AppAutoCompleteCategories from '~/components/app-autocomplete-categories/AppAutoCompleteCategories'
 import AppButton from '~/components/app-button/AppButton'
 import AppChipList from '~/components/app-chips-list/AppChipList'
-import { useStepContext } from '../../../context/step-context'
 import studyCategoryImg from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
+import { styles } from './SubjectsStep.styles'
 
 export const categoriesMock = [
   { title: 'History', value: 'history' },
@@ -68,6 +69,7 @@ export const subjectsMock = {
 }
 
 const SubjectsStep = ({ btnsBox }) => {
+  const { t } = useTranslation()
   const { stepData, handleStepData } = useStepContext()
   const subjectLabel = 'subjects'
   const subjects = Array.isArray(stepData[subjectLabel])
@@ -93,13 +95,13 @@ const SubjectsStep = ({ btnsBox }) => {
   }
 
   const handleSubjectChange = (newValue) => {
-    setSelectedSubject(newValue?.value || null)
+    setSelectedSubject(newValue?.title || null)
   }
 
   const handleButtonClick = () => {
     if (selectedSubject) {
       const updatedSubjects = [...subjects, selectedSubject]
-      handleStepData(subjectLabel, updatedSubjects, undefined)
+      handleStepData(subjectLabel, updatedSubjects)
       setSelectedCategory(null)
       setSelectedSubject(null)
     } else {
@@ -139,8 +141,7 @@ const SubjectsStep = ({ btnsBox }) => {
   return (
     <Box sx={styles.step}>
       <Typography component='h2' sx={styles.body2}>
-        Please choose the main subjects based on the category. You can add
-        others later
+        {t('common.categoryStep.title')}
       </Typography>
 
       <Box sx={styles.container}>
@@ -158,7 +159,7 @@ const SubjectsStep = ({ btnsBox }) => {
             {categoriesMock.length > 0 ? (
               <AppAutoCompleteCategories
                 ListboxProps={{
-                  style: { maxHeight: '160px' },
+                  style: { maxHeight: '140px' },
                   onScroll: handleScroll
                 }}
                 getOptionLabel={(option) => option.title}
@@ -182,14 +183,14 @@ const SubjectsStep = ({ btnsBox }) => {
             )}
 
             <AppAutoCompleteCategories
-              ListboxProps={{ style: { maxHeight: '150px' } }}
+              ListboxProps={{ style: { maxHeight: '140px' } }}
               disabled={!selectedCategory}
               getOptionLabel={(option) => option.title}
               hideClearIcon={false}
               isOptionEqualToValue={(option, value) =>
                 option.value === value.value
               }
-              onChange={(event, newValue) => handleSubjectChange(newValue)}
+              onChange={(_event, newValue) => handleSubjectChange(newValue)}
               options={subcategories}
               textFieldProps={{ label: 'Subject', variant: 'outlined' }}
               value={
@@ -200,7 +201,7 @@ const SubjectsStep = ({ btnsBox }) => {
             />
 
             <AppButton disabled={!selectedSubject} onClick={handleButtonClick}>
-              Add one more subject
+              {t('common.categoryStep.buttonText')}
             </AppButton>
 
             <AppChipList
