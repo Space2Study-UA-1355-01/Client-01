@@ -7,6 +7,9 @@ interface Validations {
 
 const validations: Validations = {
   nameField: (value) => {
+    if (value.trim().length === 0) {
+      return 'common.errorMessages.emptyField'
+    }
     if (value.length > 30) {
       return 'common.errorMessages.nameLength'
     }
