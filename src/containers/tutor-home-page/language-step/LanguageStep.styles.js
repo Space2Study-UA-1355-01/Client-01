@@ -23,7 +23,12 @@ export const styles = {
   },
   button: {
     width: 1,
-    p: 2
+    height: '48px',
+    padding: '7px 24px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '8px',
+    alignSelf: 'stretch'
   },
   imgContainer: {
     display: 'flex',
