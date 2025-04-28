@@ -25,3 +25,5 @@ export const useDebounce = <T,>(
 
   return debouncedCallback
 }
+
+export default useDebounce

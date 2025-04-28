@@ -1,5 +1,13 @@
+import axios from 'axios'
+import { useState, useEffect, useCallback } from 'react'
 import Box from '@mui/material/Box'
-import { Typography, TextField, MenuItem, Stack } from '@mui/material'
+import {
+  Typography,
+  TextField,
+  Autocomplete,
+  CircularProgress,
+  Stack
+} from '@mui/material'
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 import { useTranslation } from 'react-i18next'
 
@@ -9,6 +17,7 @@ import { ComponentEnum } from '~/types'
 import { useStepContext } from '~/context/step-context'
 
 import useForm from '~/hooks/use-form'
+import useDebounce from '~/hooks/use-debounce'
 import { nameField, textField } from '~/utils/validations/common'
 
 const GeneralInfoStep = ({ btnsBox }) => {
@@ -17,66 +26,189 @@ const GeneralInfoStep = ({ btnsBox }) => {
   const { firstName, lastName, city, country, professionalSummary } =
     contextData
 
+  const [countries, setCountries] = useState([])
+  const [cities, setCities] = useState([])
+  const [loadingCountries, setLoadingCountries] = useState(false)
+  const [loadingCities, setLoadingCities] = useState(false)
+  const [countriesPage, setCountriesPage] = useState(1)
+  const [citiesPage, setCitiesPage] = useState(1)
+
+  const apiPath = import.meta.env.VITE_API_BASE_PATH
+  const maxTextLength = 200
   const {
     handleBlur,
     handleInputChange,
-    errors: useFormErrors,
-    handleErrors
+    errors: useFormErrors
   } = useForm({
     initialValues: contextData,
     validations: {
       firstName: nameField,
       lastName: nameField,
-      professionalSummary: textField(0, 200)
+      professionalSummary: textField(0, maxTextLength)
     }
   })
 
   const { t } = useTranslation()
 
-  function handleFirstNameChange(e) {
-    const newValue = e.target.value
-    handleStepData('generalInfo', { ...contextData, firstName: newValue })
-    handleInputChange('firstName')(e)
-  }
+  const handleFieldChange = (fieldName) => (e) => {
+    const { value } = e.target
 
-  function handleFirstNameBlur(e) {
-    handleBlur('firstName')(e)
-  }
-
-  function handleProfessionalSummaryBlur(e) {
-    handleBlur('professionalSummary')(e)
-  }
-
-  function handleLastNameChange(e) {
-    handleStepData('generalInfo', { ...contextData, lastName: e.target.value })
-    handleInputChange('lastName')(e)
-  }
-
-  function handleLastNameBlur(e) {
-    handleBlur('lastName')(e)
-  }
-
-  function handleCountrySelect(e) {
-    handleStepData('generalInfo', { ...contextData, country: e.target.value })
-  }
-
-  function handleCitySelect(e) {
-    handleStepData('generalInfo', { ...contextData, city: e.target.value })
-  }
-
-  const handleProfessionalSummaryChange = (e) => {
-    const newValue = e.target.value
     handleStepData('generalInfo', {
       ...contextData,
-      professionalSummary: newValue
+      [fieldName]: value
     })
 
-    if (newValue.length > 200) {
-      handleErrors('professionalSummary', 'common.errorMessages.longText')
-    } else {
-      handleErrors('professionalSummary', '')
+    handleInputChange(fieldName)(e)
+  }
+
+  function handleCountrySelect(_, newValue) {
+    setCities([])
+    setCitiesPage(1)
+
+    handleStepData('generalInfo', {
+      ...contextData,
+      country: newValue ? newValue.iso2 : ''
+    })
+
+    if (newValue) {
+      fetchCities('', newValue.iso2, 1)
     }
   }
+
+  function handleCitySelect(_, newValue) {
+    handleStepData('generalInfo', {
+      ...contextData,
+      city: newValue ? newValue.name : ''
+    })
+  }
+
+  const handleFieldBlur = (fieldName) => (e) => {
+    handleBlur(fieldName)(e)
+  }
+
+  const fetchCountries = useCallback(
+    async (searchTerm = '', page = 1) => {
+      setLoadingCountries(true)
+      try {
+        const res = await axios.get(`${apiPath}/countries`, {
+          params: { search: searchTerm, page, limit: 20 }
+        })
+        setCountries((prev) => [...prev, ...res.data.data])
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoadingCountries(false)
+      }
+    },
+    [apiPath]
+  )
+
+  const fetchCities = useCallback(
+    async (searchTerm = '', countryCode, page = 1) => {
+      if (!countryCode) return
+      setLoadingCities(true)
+      try {
+        const res = await axios.get(
+          `${apiPath}/countries/${countryCode}/cities`,
+          { params: { search: searchTerm, page, limit: 20 } }
+        )
+        setCities((prev) => [...prev, ...res.data.data])
+      } catch (err) {
+        console.error(err)
+      } finally {
+        setLoadingCities(false)
+      }
+    },
+    [apiPath]
+  )
+
+  const handleScrollLoadMore = (event, type) => {
+    const listboxNode = event.currentTarget
+    const scrollTop = listboxNode.scrollTop
+    const scrollHeight = listboxNode.scrollHeight
+    const clientHeight = listboxNode.clientHeight
+
+    if (scrollTop + clientHeight >= scrollHeight - 50) {
+      if (type === 'countries' && !loadingCountries) {
+        const nextPage = countriesPage + 1
+        setCountriesPage(nextPage)
+        fetchCountries('', nextPage)
+      }
+
+      if (type === 'cities' && !loadingCities) {
+        const nextPage = citiesPage + 1
+        setCitiesPage(nextPage)
+        fetchCities('', country, nextPage)
+      }
+    }
+  }
+
+  const fetchCountriesDebounced = useDebounce(async (searchTerm) => {
+    if (searchTerm) {
+      setCountries([])
+      setCountriesPage(1)
+      fetchCountries(searchTerm)
+    }
+  }, 500)
+
+  const fetchCitiesDebounced = useDebounce(async (searchTerm, countryCode) => {
+    if (searchTerm && countryCode) {
+      setCities([])
+      setCitiesPage(1)
+      fetchCities(searchTerm, countryCode)
+    }
+  }, 500)
+
+  const handleCountrySearch = (event) => {
+    if (!event || !event.target) return
+
+    const searchTerm = event.target.value
+
+    if (!searchTerm) {
+      setCountries([])
+      setCountriesPage(1)
+      fetchCountries('', 1)
+      return
+    }
+
+    fetchCountriesDebounced(searchTerm)
+  }
+
+  const handleCitySearch = (event) => {
+    if (!event || !event.target) return
+
+    const searchTerm = event.target.value
+
+    if (!country) {
+      setCities([])
+      setCitiesPage(1)
+      return
+    }
+
+    if (!searchTerm) {
+      setCities([])
+      setCitiesPage(1)
+      fetchCities('', country, 1)
+      return
+    }
+
+    fetchCitiesDebounced(searchTerm, country)
+  }
+
+  useEffect(() => {
+    fetchCountries()
+  }, [fetchCountries])
+
+  useEffect(() => {
+    if (country) {
+      setCities([])
+      setCitiesPage(1)
+      fetchCities('', country, 1)
+    }
+  }, [country, fetchCities])
+
+  const selectedCountry = countries.find((c) => c.iso2 === country) || null
+  const selectedCity = cities.find((c) => c.name === city) || null
 
   return (
     <Box sx={styles.container}>
@@ -96,8 +228,8 @@ const GeneralInfoStep = ({ btnsBox }) => {
               fullWidth
               helperText={useFormErrors.firstName && t(useFormErrors.firstName)}
               label={t('common.labels.firstName')}
-              onBlur={handleFirstNameBlur}
-              onChange={handleFirstNameChange}
+              onBlur={handleFieldBlur('firstName')}
+              onChange={handleFieldChange('firstName')}
               required
               value={firstName}
             />
@@ -106,53 +238,90 @@ const GeneralInfoStep = ({ btnsBox }) => {
               fullWidth
               helperText={useFormErrors.lastName && t(useFormErrors.lastName)}
               label={t('common.labels.lastName')}
-              onBlur={handleLastNameBlur}
-              onChange={handleLastNameChange}
+              onBlur={handleFieldBlur('lastName')}
+              onChange={handleFieldChange('lastName')}
               required
               value={lastName}
             />
           </Stack>
 
           <Stack direction='row' spacing={2}>
-            <TextField
+            <Autocomplete
+              ListboxProps={{
+                onScroll: (event) => handleScrollLoadMore(event, 'countries'),
+                style: { maxHeight: '300px', overflow: 'auto' }
+              }}
+              autoHighlight={false}
+              disableListWrap
               fullWidth
-              label={t('common.labels.country')}
+              getOptionLabel={(option) => option.name || ''}
+              loading={loadingCountries}
               onChange={handleCountrySelect}
-              required
-              select
-              value={country}
-            >
-              <MenuItem value='Portugal'>Portugal</MenuItem>
-              <MenuItem value='Spain'>Spain</MenuItem>
-              <MenuItem value='France'>France</MenuItem>
-            </TextField>
-            <TextField
+              onInputChange={handleCountrySearch}
+              options={countries}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {loadingCountries ? (
+                          <CircularProgress size={20} />
+                        ) : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    )
+                  }}
+                  label={t('common.labels.country')}
+                />
+              )}
+              value={selectedCountry}
+            />
+            <Autocomplete
+              ListboxProps={{
+                onScroll: (event) => handleScrollLoadMore(event, 'cities'),
+                style: { maxHeight: '300px', overflow: 'auto' }
+              }}
+              autoHighlight={false}
+              disableListWrap
               fullWidth
-              label={t('common.labels.city')}
+              getOptionLabel={(option) => option.name || ''}
+              loading={loadingCities}
               onChange={handleCitySelect}
-              required
-              select
-              value={city}
-            >
-              <MenuItem value='Lisbon'>Lisbon</MenuItem>
-              <MenuItem value='Faro'>Faro</MenuItem>
-              <MenuItem value='Porto'>Porto</MenuItem>
-            </TextField>
+              onInputChange={handleCitySearch}
+              options={cities}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {loadingCities ? <CircularProgress size={20} /> : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    )
+                  }}
+                  label={t('common.labels.city')}
+                />
+              )}
+              value={selectedCity}
+            />
           </Stack>
-
           <TextField
             error={useFormErrors.professionalSummary}
             fullWidth
             helperText={
               useFormErrors.professionalSummary
                 ? t(useFormErrors.professionalSummary)
-                : `${professionalSummary.length}/200`
+                : `${professionalSummary.length}/${maxTextLength}`
             }
             label={t('becomeTutor.generalInfo.textFieldLabel')}
-            maxLength={200}
+            maxLength={maxTextLength}
             multiline
-            onBlur={handleProfessionalSummaryBlur}
-            onChange={handleProfessionalSummaryChange}
+            onBlur={handleFieldBlur('professionalSummary')}
+            onChange={handleFieldChange('professionalSummary')}
             rows={4}
             sx={styles.textArea}
             value={professionalSummary}
