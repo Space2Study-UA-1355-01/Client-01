@@ -27,7 +27,7 @@
     "placeholder": "Photo Preview",
     "description": "Please upload a photo that represents you and helps others recognize you.",
     "typeError": "Wrong file type. Only .png/.jpg/.jpeg files are allowed.",
-    "fileSizeError": "Size for one file cannot be more than 10MB."
+    "fileSizeError": "Maximum file size - 10 MB."
   },
   "successMessage": "Success! Your data were added."
 }
