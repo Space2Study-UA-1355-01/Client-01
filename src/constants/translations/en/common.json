@@ -92,5 +92,9 @@
     "french": "French",
     "spanish": "Spanish",
     "arabic": "Arabic"
+  },
+  "categoryStep": {
+    "title": "Please choose the main subjects based on the category. You can add others later",
+    "buttonText": "Add one more subject"
   }
 }

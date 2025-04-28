@@ -9,8 +9,9 @@
     "textFieldLabel": "Text here"
   },
   "languages": {
-    "title": "Velit officia consequat duis enim velit mollit. Other categories you can add in your account settings later.",
-    "autocompleteLabel": "Your native language"
+    "title": "Please select the language in which you would like to study and cooperate.",
+    "autocompleteLabel": "Your native language",
+    "button": "Add one more language"
   },
   "categories": {
     "title": "Velit officia consequat duis enim velit mollit. Other categories you can add in your account settings later.",
@@ -26,7 +27,7 @@
     "placeholder": "Photo Preview",
     "description": "Please upload a photo that represents you and helps others recognize you.",
     "typeError": "Wrong file type. Only .png/.jpg/.jpeg files are allowed.",
-    "fileSizeError": "Size for one file cannot be more than 10MB."
+    "fileSizeError": "Maximum file size - 10 MB."
   },
   "successMessage": "Success! Your data were added."
 }

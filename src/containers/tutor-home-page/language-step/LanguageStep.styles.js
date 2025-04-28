@@ -4,9 +4,31 @@ export const styles = {
   container: {
     display: 'flex',
     justifyContent: 'space-between',
-    gap: '40px',
+    flexDirection: {
+      xs: 'column',
+      sm: 'row'
+    },
     height: { sm: '485px' },
     ...fadeAnimation
+  },
+  mobileHeading: {
+    display: { xs: 'block', sm: 'none' },
+    textAlign: 'left',
+    mb: 2,
+    fontSize: '14px'
+  },
+  desktopHeading: {
+    display: { xs: 'none', sm: 'block' },
+    mb: 2
+  },
+  button: {
+    width: 1,
+    height: '48px',
+    padding: '7px 24px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '8px',
+    alignSelf: 'stretch'
   },
   imgContainer: {
     display: 'flex',
@@ -17,14 +39,22 @@ export const styles = {
   },
   img: {
     width: '100%',
+    height: 'auto',
     m: { sm: 0, xs: '0 auto' }
   },
   rigthBox: {
     maxWidth: '432px',
     display: 'flex',
-    flexDirection: 'column',
     justifyContent: 'space-between',
+    flexDirection: 'column',
     m: { md: 0, xs: '0 auto' },
-    pt: 0
-  }
+    pt: 0,
+    width: '100%'
+  },
+  input: {
+    width: 1,
+    mt: '20px',
+    my: '16px'
+  },
+  chipContainer: { m: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }
 }
