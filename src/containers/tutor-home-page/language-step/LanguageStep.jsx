@@ -109,26 +109,27 @@ const LanguageStep = ({ btnsBox }) => {
             sx={styles.input}
             value={autocompleteValue}
           />
-
-          {selectedLanguages.length >= 1 && !isStudent && (
-            <Button
-              onClick={handleButtonClick}
-              sx={styles.button}
-              variant='contained'
-            >
-              {t('becomeTutor.languages.button')}
-            </Button>
-          )}
-
           {!isStudent && (
-            <Box sx={styles.chipContainer}>
-              {selectedLanguages.map((lang) => (
-                <Chip
-                  key={lang.id}
-                  label={lang.label}
-                  onDelete={() => handleDeleteLanguage(lang.id)}
-                />
-              ))}
+            <Box>
+              {selectedLanguages.length >= 1 && (
+                <Button
+                  onClick={handleButtonClick}
+                  sx={styles.button}
+                  variant='contained'
+                >
+                  {t('becomeTutor.languages.button')}
+                </Button>
+              )}
+
+              <Box sx={styles.chipContainer}>
+                {selectedLanguages.map((lang) => (
+                  <Chip
+                    key={lang.id}
+                    label={lang.label}
+                    onDelete={() => handleDeleteLanguage(lang.id)}
+                  />
+                ))}
+              </Box>
             </Box>
           )}
         </Box>
