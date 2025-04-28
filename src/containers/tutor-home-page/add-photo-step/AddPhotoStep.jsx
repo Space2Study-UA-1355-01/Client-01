@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { Box, Typography, Button, IconButton, Tooltip } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
@@ -6,16 +6,21 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import { useTranslation } from 'react-i18next'
 import useUpload from '~/hooks/use-upload'
 import DragAndDrop from '~/components/drag-and-drop/DragAndDrop'
+import { useStepContext } from '~/context/step-context'
 
 import { validationData } from './constants'
 import { style } from './AddPhotoStep.style'
 
 const AddPhotoStep = ({ btnsBox }) => {
   const { t } = useTranslation()
-  const [files, setFiles] = useState([])
+  const { handleStepData, stepData, photoLabel } = useStepContext()
   const [error, setError] = useState('')
   const [preview, setPreview] = useState(null)
   const inputRef = useRef(null)
+  const files = useMemo(
+    () => stepData[photoLabel] ?? [],
+    [stepData, photoLabel]
+  )
 
   useEffect(() => {
     if (files[0]) {
@@ -27,26 +32,36 @@ const AddPhotoStep = ({ btnsBox }) => {
   }, [files])
 
   const emitter = ({ files: newFiles, error: newError }) => {
-    setFiles(newFiles)
+    const limitedFiles =
+      newFiles.length > 0 ? [newFiles[newFiles.length - 1]] : []
+    handleStepData(photoLabel, limitedFiles)
     setError(newError)
   }
 
-  const { dragStart, dragLeave, dragDrop, isDrag, addFiles } = useUpload({
-    files,
-    validationData,
-    emitter
-  })
+  const { dragStart, dragLeave, dragDrop, isDrag, addFiles, deleteFile } =
+    useUpload({
+      files,
+      validationData,
+      emitter
+    })
 
   const hasFile = files.length > 0
   const maxMb = validationData.maxFileSize / 1_000_000
 
   const clearFile = () => {
-    setFiles([])
+    if (files[0]) {
+      deleteFile(files[0])
+    }
     setError('')
   }
 
   const handleRootClick = () => {
     inputRef.current?.click()
+  }
+
+  const dynamicImgStyle = {
+    ...style.imgContainer,
+    ...(hasFile && { border: 'none' })
   }
 
   return (
@@ -60,7 +75,7 @@ const AddPhotoStep = ({ btnsBox }) => {
         onDragStart={dragStart}
         onDrop={dragDrop}
         style={{
-          root: style.imgContainer,
+          root: dynamicImgStyle,
           uploadBox: style.uploadBox,
           activeDrag: style.activeDrag
         }}

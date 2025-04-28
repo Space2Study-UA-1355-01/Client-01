@@ -1,5 +1,4 @@
 import { Typography, TextField, MenuItem, Stack, Box } from '@mui/material'
-import AppTextArea from '~/components/app-text-area/AppTextArea'
 
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 import { useTranslation } from 'react-i18next'
