@@ -32,7 +32,6 @@ const AddPhotoStep = ({ btnsBox }) => {
   }, [files])
 
   const emitter = ({ files: newFiles, error: newError }) => {
-    console.log('emiter works', photoLabel)
     const limitedFiles =
       newFiles.length > 0 ? [newFiles[newFiles.length - 1]] : []
     handleStepData(photoLabel, limitedFiles)

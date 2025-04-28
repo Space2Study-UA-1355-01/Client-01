@@ -3,13 +3,22 @@ import { fadeAnimation } from '~/styles/app-theme/custom-animations'
 export const styles = {
   container: {
     display: 'flex',
+    flexDirection: {
+      xs: 'column',
+      sm: 'row'
+    },
     justifyContent: 'space-between',
     height: { sm: '485px' },
     paddingBottom: { xs: '30px', sm: '0' },
     ...fadeAnimation
   },
   imgContainer: {
-    display: 'flex',
+    display: {
+      xs: 'flex',
+      sm: 'none',
+      md: 'flex',
+      lg: 'flex'
+    },
     flex: 1,
     maxWidth: '432px',
     aspectRatio: { xs: '4/3', sm: 'auto' },

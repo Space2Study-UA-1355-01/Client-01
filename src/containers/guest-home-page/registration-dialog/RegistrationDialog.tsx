@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useModalContext } from '~/context/modal-context'
@@ -18,6 +18,7 @@ import tutorImg from '~/assets/img/signup-dialog/tutor.svg'
 import styles from '~/containers/guest-home-page/registration-dialog/RegistrationDialog.styles'
 
 import { useForm } from '~/hooks/use-form'
+import EmailInfoPopup from '~/components/email-info-popup/EmailInfoPopup'
 import { useSignUpMutation } from '~/services/auth-service'
 
 interface RegistrationDialogProps {
@@ -26,8 +27,9 @@ interface RegistrationDialogProps {
 
 const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
   const { t } = useTranslation()
-  const { closeModal } = useModalContext()
+  const { closeModal, openModal } = useModalContext()
   const [signUp] = useSignUpMutation()
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const validateEmail = (email: string): string | undefined => {
     if (!email) return 'common.errorMessages.emptyField'
@@ -85,13 +87,21 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
       confirmPassword: validateConfirmPassword
     },
     onSubmit: async () => {
+      setIsSubmitting(true)
       console.log('Form submitted with values:', data)
       try {
         const response = await signUp(data).unwrap()
         console.log('Registration succesful!', response)
         closeModal()
+        setIsSubmitting(false)
+        openModal({
+          component: (
+            <EmailInfoPopup email={data.email} onClose={closeModal} open />
+          )
+        })
       } catch (e) {
         console.log('Something went wrong', e)
+        setIsSubmitting(false)
       }
       return Promise.resolve()
     }
@@ -118,6 +128,7 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
             handleBlur={handleBlur}
             handleChange={handleInputChange}
             handleSubmit={handleFormSubmit}
+            isSubmitting={isSubmitting}
           />
         </Box>
         <GoogleLogin

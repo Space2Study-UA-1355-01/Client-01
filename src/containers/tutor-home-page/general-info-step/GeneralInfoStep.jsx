@@ -1,7 +1,4 @@
-import Box from '@mui/material/Box'
-
-import { Typography, TextField, MenuItem, Stack } from '@mui/material'
-import AppTextArea from '~/components/app-text-area/AppTextArea'
+import { Typography, TextField, MenuItem, Stack, Box } from '@mui/material'
 
 import { styles } from '~/containers/tutor-home-page/general-info-step/GeneralInfoStep.styles'
 import { useTranslation } from 'react-i18next'
@@ -23,7 +20,8 @@ const GeneralInfoStep = ({ btnsBox }) => {
   const {
     handleBlur,
     handleInputChange,
-    errors: useFormErrors
+    errors: useFormErrors,
+    handleErrors
   } = useForm({
     initialValues: contextData,
     validations: {
@@ -45,6 +43,10 @@ const GeneralInfoStep = ({ btnsBox }) => {
     handleBlur('firstName')(e)
   }
 
+  function handleProfessionalSummaryBlur(e) {
+    handleBlur('professionalSummary')(e)
+  }
+
   function handleLastNameChange(e) {
     handleStepData('generalInfo', { ...contextData, lastName: e.target.value })
     handleInputChange('lastName')(e)
@@ -62,15 +64,18 @@ const GeneralInfoStep = ({ btnsBox }) => {
     handleStepData('generalInfo', { ...contextData, city: e.target.value })
   }
 
-  function handleProfessionalSummaryChange(e) {
+  const handleProfessionalSummaryChange = (e) => {
+    const newValue = e.target.value
     handleStepData('generalInfo', {
       ...contextData,
-      professionalSummary: e.target.value
+      professionalSummary: newValue
     })
-  }
 
-  function handleProfessionalSummaryBlur(e) {
-    handleBlur('professionalSummary')(e)
+    if (newValue.length > 200) {
+      handleErrors('professionalSummary', 'common.errorMessages.longText')
+    } else {
+      handleErrors('professionalSummary', '')
+    }
   }
 
   return (
@@ -135,12 +140,20 @@ const GeneralInfoStep = ({ btnsBox }) => {
             </TextField>
           </Stack>
 
-          <AppTextArea
+          <TextField
+            error={useFormErrors.professionalSummary}
             fullWidth
+            helperText={
+              useFormErrors.professionalSummary
+                ? t(useFormErrors.professionalSummary)
+                : `${professionalSummary.length}/200`
+            }
             label={t('becomeTutor.generalInfo.textFieldLabel')}
             maxLength={200}
+            multiline
             onBlur={handleProfessionalSummaryBlur}
             onChange={handleProfessionalSummaryChange}
+            rows={4}
             sx={styles.textArea}
             value={professionalSummary}
           />

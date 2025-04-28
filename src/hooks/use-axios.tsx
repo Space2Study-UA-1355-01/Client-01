@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AxiosError } from 'axios'
 
 import { ErrorResponse, ServiceFunction } from '~/types'
@@ -42,6 +42,8 @@ const useAxios = <
   const [error, setError] = useState<ErrorResponse | null>(null)
   const [loading, setLoading] = useState<boolean>(fetchOnMount)
 
+  const hasFetched = useRef(false)
+
   const fetchData = useCallback(
     async (params?: Params) => {
       try {
@@ -65,10 +67,11 @@ const useAxios = <
   )
 
   useEffect(() => {
-    if (fetchOnMount) {
+    if (fetchOnMount && !hasFetched.current) {
+      hasFetched.current = true
       void fetchData()
     }
-  }, [fetchData, fetchOnMount])
+  }, [fetchOnMount, fetchData])
 
   return { response, error, loading, fetchData }
 }
