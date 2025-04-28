@@ -94,7 +94,6 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
         console.log('Registration succesful!', response)
         closeModal()
         setIsSubmitting(false)
-
         openModal({
           component: (
             <EmailInfoPopup email={data.email} onClose={closeModal} open />
