@@ -30,6 +30,8 @@ const LanguageStep = ({ btnsBox }) => {
   const { t } = useTranslation()
   const { handleStepData, stepData } = useStepContext()
 
+  console.log(stepData)
+
   const { userRole } = useAppSelector((state) => state.appMain)
 
   const isStudent = userRole === student
@@ -110,25 +112,27 @@ const LanguageStep = ({ btnsBox }) => {
             value={autocompleteValue}
           />
 
-          {selectedLanguages.length >= 1 && !isStudent && (
-            <Button
-              onClick={handleButtonClick}
-              sx={styles.button}
-              variant='contained'
-            >
-              {t('becomeTutor.languages.button')}
-            </Button>
-          )}
-
           {!isStudent && (
-            <Box sx={styles.chipContainer}>
-              {selectedLanguages.map((lang) => (
-                <Chip
-                  key={lang.id}
-                  label={lang.label}
-                  onDelete={() => handleDeleteLanguage(lang.id)}
-                />
-              ))}
+            <Box>
+              {selectedLanguages.length >= 1 && (
+                <Button
+                  onClick={handleButtonClick}
+                  sx={styles.button}
+                  variant='contained'
+                >
+                  {t('becomeTutor.languages.button')}
+                </Button>
+              )}
+
+              <Box sx={styles.chipContainer}>
+                {selectedLanguages.map((lang) => (
+                  <Chip
+                    key={lang.id}
+                    label={lang.label}
+                    onDelete={() => handleDeleteLanguage(lang.id)}
+                  />
+                ))}
+              </Box>
             </Box>
           )}
         </Box>
