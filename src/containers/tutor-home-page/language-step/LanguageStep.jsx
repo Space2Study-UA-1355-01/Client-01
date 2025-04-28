@@ -30,8 +30,6 @@ const LanguageStep = ({ btnsBox }) => {
   const { t } = useTranslation()
   const { handleStepData, stepData } = useStepContext()
 
-  console.log(stepData)
-
   const { userRole } = useAppSelector((state) => state.appMain)
 
   const isStudent = userRole === student
