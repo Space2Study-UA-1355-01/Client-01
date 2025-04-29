@@ -12,6 +12,7 @@ import { useModalContext } from '~/context/modal-context'
 import AppTextField from '~/components/app-text-field/AppTextField'
 import AppButton from '~/components/app-button/AppButton'
 import { styles } from '~/containers/guest-home-page/registration-form/RegistrationForm.styles'
+import Loader from '~/components/loader/Loader'
 
 type FormFields =
   | 'email'
@@ -22,6 +23,7 @@ type FormFields =
   | 'confirmPassword'
 
 interface RegistrationFormProps {
+  isSubmitting: boolean
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void
   handleChange: (
     field: FormFields
@@ -48,6 +50,7 @@ interface RegistrationFormProps {
 }
 
 const RegistrationForm: React.FC<RegistrationFormProps> = ({
+  isSubmitting,
   handleSubmit,
   handleChange,
   handleBlur,
@@ -203,11 +206,15 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
         }
       />
       <AppButton
-        disabled={!isFormComplete}
+        disabled={!isFormComplete || isSubmitting}
         sx={styles.loginButton}
         type='submit'
       >
-        {t('common.labels.signup')}
+        {isSubmitting ? (
+          <Loader size={20} sx={{ opacity: '0.6' }} />
+        ) : (
+          t('common.labels.signup')
+        )}
       </AppButton>
     </Box>
   )
