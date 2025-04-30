@@ -14,13 +14,13 @@ import { style } from './AddPhotoStep.style'
 const AddPhotoStep = ({ btnsBox }) => {
   const { t } = useTranslation()
   const { handleStepData, stepData, photoLabel } = useStepContext()
-  const [error, setError] = useState('')
   const [preview, setPreview] = useState(null)
   const inputRef = useRef(null)
   const files = useMemo(
-    () => stepData[photoLabel] ?? [],
+    () => stepData[photoLabel]?.data ?? [],
     [stepData, photoLabel]
   )
+  const error = stepData[photoLabel]?.errors?.file
 
   useEffect(() => {
     if (files[0]) {
@@ -34,8 +34,7 @@ const AddPhotoStep = ({ btnsBox }) => {
   const emitter = ({ files: newFiles, error: newError }) => {
     const limitedFiles =
       newFiles.length > 0 ? [newFiles[newFiles.length - 1]] : []
-    handleStepData(photoLabel, limitedFiles)
-    setError(newError)
+    handleStepData(photoLabel, limitedFiles, newError ? { file: newError } : {})
   }
 
   const { dragStart, dragLeave, dragDrop, isDrag, addFiles, deleteFile } =
@@ -52,7 +51,7 @@ const AddPhotoStep = ({ btnsBox }) => {
     if (files[0]) {
       deleteFile(files[0])
     }
-    setError('')
+    handleStepData(photoLabel, [], {})
   }
 
   const handleRootClick = () => {

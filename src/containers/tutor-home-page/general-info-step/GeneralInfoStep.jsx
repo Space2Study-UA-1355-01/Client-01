@@ -10,20 +10,23 @@ import { useStepContext } from '~/context/step-context'
 
 import useForm from '~/hooks/use-form'
 import { nameField, textField } from '~/utils/validations/common'
+import { useEffect } from 'react'
 
 const GeneralInfoStep = ({ btnsBox }) => {
   const { stepData, handleStepData } = useStepContext()
-  const { data: contextData } = stepData.generalInfo
-  const { firstName, lastName, city, country, professionalSummary } =
-    contextData
+  const contextData = stepData.generalInfo.data
+  const contextErrors = stepData.generalInfo.errors
 
   const {
+    data,
     handleBlur,
     handleInputChange,
     errors: useFormErrors,
-    handleErrors
+    handleErrors,
+    validationTrigger
   } = useForm({
     initialValues: contextData,
+    initialErrors: contextErrors,
     validations: {
       firstName: nameField,
       lastName: nameField,
@@ -31,16 +34,19 @@ const GeneralInfoStep = ({ btnsBox }) => {
     }
   })
 
+  useEffect(() => {
+    handleStepData('generalInfo', data, useFormErrors)
+  }, [data, useFormErrors])
+
   const { t } = useTranslation()
 
   function handleFirstNameChange(e) {
-    const newValue = e.target.value
-    handleStepData('generalInfo', { ...contextData, firstName: newValue })
     handleInputChange('firstName')(e)
   }
 
   function handleFirstNameBlur(e) {
     handleBlur('firstName')(e)
+    validationTrigger(['firstName', 'lastName'])
   }
 
   function handleProfessionalSummaryBlur(e) {
@@ -48,7 +54,6 @@ const GeneralInfoStep = ({ btnsBox }) => {
   }
 
   function handleLastNameChange(e) {
-    handleStepData('generalInfo', { ...contextData, lastName: e.target.value })
     handleInputChange('lastName')(e)
   }
 
@@ -57,19 +62,16 @@ const GeneralInfoStep = ({ btnsBox }) => {
   }
 
   function handleCountrySelect(e) {
-    handleStepData('generalInfo', { ...contextData, country: e.target.value })
+    handleInputChange('country')(e)
   }
 
   function handleCitySelect(e) {
-    handleStepData('generalInfo', { ...contextData, city: e.target.value })
+    handleInputChange('city')(e)
   }
 
   const handleProfessionalSummaryChange = (e) => {
     const newValue = e.target.value
-    handleStepData('generalInfo', {
-      ...contextData,
-      professionalSummary: newValue
-    })
+    handleInputChange('professionalSummary')(e)
 
     if (newValue.length > 200) {
       handleErrors('professionalSummary', 'common.errorMessages.longText')
@@ -99,7 +101,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
               onBlur={handleFirstNameBlur}
               onChange={handleFirstNameChange}
               required
-              value={firstName}
+              value={data.firstName}
             />
             <TextField
               error={Boolean(useFormErrors.lastName)}
@@ -109,7 +111,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
               onBlur={handleLastNameBlur}
               onChange={handleLastNameChange}
               required
-              value={lastName}
+              value={data.lastName}
             />
           </Stack>
 
@@ -120,7 +122,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
               onChange={handleCountrySelect}
               required
               select
-              value={country}
+              value={data.country}
             >
               <MenuItem value='Portugal'>Portugal</MenuItem>
               <MenuItem value='Spain'>Spain</MenuItem>
@@ -132,7 +134,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
               onChange={handleCitySelect}
               required
               select
-              value={city}
+              value={data.city}
             >
               <MenuItem value='Lisbon'>Lisbon</MenuItem>
               <MenuItem value='Faro'>Faro</MenuItem>
@@ -141,12 +143,12 @@ const GeneralInfoStep = ({ btnsBox }) => {
           </Stack>
 
           <TextField
-            error={useFormErrors.professionalSummary}
+            error={Boolean(useFormErrors.professionalSummary)}
             fullWidth
             helperText={
               useFormErrors.professionalSummary
                 ? t(useFormErrors.professionalSummary)
-                : `${professionalSummary.length}/200`
+                : `${data.professionalSummary.length}/200`
             }
             label={t('becomeTutor.generalInfo.textFieldLabel')}
             maxLength={200}
@@ -155,7 +157,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
             onChange={handleProfessionalSummaryChange}
             rows={4}
             sx={styles.textArea}
-            value={professionalSummary}
+            value={data.professionalSummary}
           />
         </Stack>
 

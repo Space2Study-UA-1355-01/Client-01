@@ -48,7 +48,7 @@ const useSteps = ({ steps }) => {
   }
 
   const submitPhoto = () => {
-    const selectedFile = stepData.photo?.[0]
+    const selectedFile = stepData.photo?.data[0]
 
     if (selectedFile) {
       uploadPhotoFetch(selectedFile)
