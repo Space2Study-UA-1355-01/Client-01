@@ -15,6 +15,8 @@ import { useState } from 'react'
 import { useAppSelector } from '~/hooks/use-redux'
 import { student } from '~/constants'
 
+import { useModalContext } from '~/context/modal-context'
+import useConfirm from '~/hooks/use-confirm'
 const languages = [
   { id: '1', label: 'English' },
   { id: '2', label: 'Ukrainian' },
@@ -29,6 +31,8 @@ const LanguageStep = ({ btnsBox }) => {
   const [tempLang, setTempLang] = useState(null)
   const { t } = useTranslation()
   const { handleStepData, stepData } = useStepContext()
+  const { setUnsavedChanges } = useModalContext()
+  const { setNeedConfirmation } = useConfirm()
 
   const { userRole } = useAppSelector((state) => state.appMain)
 
@@ -56,6 +60,8 @@ const LanguageStep = ({ btnsBox }) => {
 
     if (!selectedLanguages.length || isStudent) {
       handleStepData(languageLabel, [newValue])
+      setUnsavedChanges(true)
+      setNeedConfirmation(true)
       setTempLang(null)
     } else {
       setTempLang(newValue)
@@ -65,6 +71,8 @@ const LanguageStep = ({ btnsBox }) => {
   const handleDeleteLanguage = (langId) => {
     const updated = selectedLanguages.filter((lang) => lang.id !== langId)
     handleStepData(languageLabel, updated)
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
     setTempLang(null)
   }
 
@@ -75,6 +83,8 @@ const LanguageStep = ({ btnsBox }) => {
     ) {
       const updatedLangs = [...selectedLanguages, tempLang]
       handleStepData(languageLabel, updatedLangs)
+      setUnsavedChanges(true)
+      setNeedConfirmation(true)
       setTempLang(null)
     }
   }

@@ -15,6 +15,8 @@ import img from '~/assets/img/tutor-home-page/become-tutor/general-info.svg'
 import { ComponentEnum } from '~/types'
 
 import { useStepContext } from '~/context/step-context'
+import { useModalContext } from '~/context/modal-context'
+import useConfirm from '~/hooks/use-confirm'
 
 import useForm from '~/hooks/use-form'
 import useDebounce from '~/hooks/use-debounce'
@@ -22,6 +24,8 @@ import { nameField, textField } from '~/utils/validations/common'
 
 const GeneralInfoStep = ({ btnsBox }) => {
   const { stepData, handleStepData } = useStepContext()
+  const { setUnsavedChanges } = useModalContext()
+  const { setNeedConfirmation } = useConfirm()
   const { data: contextData } = stepData.generalInfo
   const { firstName, lastName, city, country, professionalSummary } =
     contextData
@@ -58,6 +62,9 @@ const GeneralInfoStep = ({ btnsBox }) => {
       [fieldName]: value
     })
 
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
+
     handleInputChange(fieldName)(e)
   }
 
@@ -69,6 +76,8 @@ const GeneralInfoStep = ({ btnsBox }) => {
       ...contextData,
       country: newValue ? newValue.iso2 : ''
     })
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
 
     if (newValue) {
       fetchCities('', newValue.iso2, 1)
@@ -80,6 +89,8 @@ const GeneralInfoStep = ({ btnsBox }) => {
       ...contextData,
       city: newValue ? newValue.name : ''
     })
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   const handleFieldBlur = (fieldName) => (e) => {

@@ -8,6 +8,9 @@ import AppChipList from '~/components/app-chips-list/AppChipList'
 import studyCategoryImg from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
 import { styles } from './SubjectsStep.styles'
 
+import { useModalContext } from '~/context/modal-context'
+import useConfirm from '~/hooks/use-confirm'
+
 export const categoriesMock = [
   { title: 'History', value: 'history' },
   { title: 'Mathematics', value: 'mathematics' },
@@ -72,6 +75,8 @@ const SubjectsStep = ({ btnsBox }) => {
   const { t } = useTranslation()
   const { stepData, handleStepData } = useStepContext()
   const subjectLabel = 'subjects'
+  const { setUnsavedChanges } = useModalContext()
+  const { setNeedConfirmation } = useConfirm()
   const subjects = Array.isArray(stepData[subjectLabel])
     ? stepData[subjectLabel]
     : []
@@ -92,16 +97,22 @@ const SubjectsStep = ({ btnsBox }) => {
   const handleCategoryChange = (newValue) => {
     setSelectedCategory(newValue?.value || null)
     setSelectedSubject(null)
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   const handleSubjectChange = (newValue) => {
     setSelectedSubject(newValue?.title || null)
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   const handleButtonClick = () => {
     if (selectedSubject) {
       const updatedSubjects = [...subjects, selectedSubject]
       handleStepData(subjectLabel, updatedSubjects)
+      setUnsavedChanges(true)
+      setNeedConfirmation(true)
       setSelectedCategory(null)
       setSelectedSubject(null)
     } else {
@@ -112,6 +123,8 @@ const SubjectsStep = ({ btnsBox }) => {
   const handleChipDelete = (item) => {
     const updatedSubjects = subjects.filter((subject) => subject !== item)
     handleStepData(subjectLabel, updatedSubjects, {})
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   const handleScroll = useCallback(
