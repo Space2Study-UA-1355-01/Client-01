@@ -14,11 +14,13 @@ const useSteps = ({ steps }) => {
   const { closeModal } = useModalContext()
   const { stepData } = useStepContext()
   const { setAlert } = useSnackBarContext()
-  const { userId } = useAppSelector((state) => state.appMain)
+  const { userId, userRole } = useAppSelector((state) => state.appMain)
 
   const updateUser = useCallback(
-    (data) => userService.updateUser(userId, data),
-    [userId]
+    (data) => {
+      return userService.updateUser(userId, userRole, data)
+    },
+    [userId, userRole]
   )
   const uploadPhoto = useCallback((file) => uploadPhotoService.upload(file), [])
 
@@ -100,8 +102,8 @@ const useSteps = ({ steps }) => {
         city: city ?? ''
       },
       professionalSummary,
-      mainSubjects: stepData.subjects,
-      nativeLanguage: stepData.language ?? 'English'
+      mainSubjects: ['6810dce9d65509aab2cf0c72'],
+      nativeLanguage: stepData.language?.map((lang) => lang.label) ?? []
     }
 
     !hasErrors && fetchData(data)
