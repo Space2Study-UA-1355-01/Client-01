@@ -6,11 +6,12 @@ import TitleWithDescription from '~/components/title-with-description/TitleWithD
 
 import { styles } from '~/components/card-with-link/CardWithLink.styles'
 
-interface CardWithLinkProps {
+export interface CardWithLinkProps {
+  _id: string
   img: string
   title: string
   description: string
-  link: string
+  link?: string
 }
 
 const CardWithLink: FC<CardWithLinkProps> = ({
