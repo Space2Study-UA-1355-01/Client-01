@@ -7,7 +7,7 @@ import { styles } from '~/components/page-wrapper/PageWrapper.styles'
 import { useModalContext } from '~/context/modal-context'
 
 const PageWrapper = (
-  { children, sx, maxWidth, ...rest }: ContainerProps,
+  { children, sx, maxWidth = 'xl', ...rest }: ContainerProps,
   ref: Ref<HTMLDivElement>
 ) => {
   const { closeModal } = useModalContext()

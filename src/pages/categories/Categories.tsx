@@ -74,7 +74,7 @@ const Categories = () => {
   }
 
   return (
-    <PageWrapper>
+    <PageWrapper maxWidth='lg'>
       <OfferRequestBlock />
 
       <TitleWithDescription
