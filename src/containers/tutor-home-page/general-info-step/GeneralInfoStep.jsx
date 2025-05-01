@@ -52,7 +52,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
 
   useEffect(() => {
     handleStepData('generalInfo', data, useFormErrors)
-  }, [data, useFormErrors])
+  }, [data, useFormErrors, handleStepData])
 
   const { t } = useTranslation()
 

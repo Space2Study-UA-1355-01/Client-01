@@ -18,6 +18,7 @@ const StepWrapper = ({ children, steps }) => {
     })
   const { next, back, setActiveStep, handleSubmit } = stepOperation
   const { t } = useTranslation()
+  const hasErrors = stepErrors.some(Boolean)
 
   const stepLabels = steps.map((step, index) => (
     <Box
@@ -33,6 +34,7 @@ const StepWrapper = ({ children, steps }) => {
 
   const nextButton = isLastStep ? (
     <AppButton
+      disabled={hasErrors}
       loading={loading}
       onClick={handleSubmit}
       size='small'
