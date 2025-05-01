@@ -7,7 +7,7 @@ import { styles } from '~/components/page-wrapper/PageWrapper.styles'
 import { useModalContext } from '~/context/modal-context'
 
 const PageWrapper = (
-  { children, sx, ...rest }: ContainerProps,
+  { children, sx, maxWidth, ...rest }: ContainerProps,
   ref: Ref<HTMLDivElement>
 ) => {
   const { closeModal } = useModalContext()
@@ -18,8 +18,7 @@ const PageWrapper = (
 
   return (
     <Container
-    // подумати як це зробити reusable типу 
-      // maxWidth='xl'
+      maxWidth={maxWidth}
       ref={ref}
       sx={spliceSx(styles.container, sx)}
       {...rest}
