@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 
@@ -18,18 +18,17 @@ import DirectionLink from '~/components/direction-link/DirectionLink'
 import AppToolbar from '~/components/app-toolbar/AppToolbar'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
 
+import { getNameById, getIdByName } from '~/utils/helper-functions'
+
 const Categories = () => {
   const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedCategoryId = searchParams.get('id') || ''
   const [isFetched, setIsFetched] = useState(false)
 
-  // Transform for API response
-  const transform = useCallback(
-    (res: { data: CategoryNameInterface[] }): CategoryNameInterface[] =>
-      res.data,
-    []
-  )
+  const transform: (
+    data: CategoryNameInterface[] | { data: CategoryNameInterface[] }
+  ) => CategoryNameInterface[] = (res) => (Array.isArray(res) ? res : res.data)
 
   const {
     loading: categoriesNamesLoading,
@@ -40,38 +39,13 @@ const Categories = () => {
     transform
   })
 
-  // === Data lookup helpers ===
-  const getNameById = useCallback(
-    (id: string): string => {
-      const item = (categoriesNamesItems as CategoryNameInterface[]).find(
-        (item) => item._id === id
-      )
-      return item?.name ?? ''
-    },
-    [categoriesNamesItems]
-  )
-
-  const getIdByName = useCallback(
-    (name: string): string => {
-      const item = (categoriesNamesItems as CategoryNameInterface[]).find(
-        (item) => item.name.toLowerCase().trim() === name.toLowerCase().trim()
-      )
-      return item?._id ?? ''
-    },
-    [categoriesNamesItems]
-  )
-
   const options: string[] = useMemo(
-    () =>
-      (categoriesNamesItems as CategoryNameInterface[]).map(
-        (item) => item.name
-      ),
+    () => categoriesNamesItems.map((item) => item.name),
     [categoriesNamesItems]
   )
 
-  const search = getNameById(selectedCategoryId)
+  const search = getNameById(categoriesNamesItems, selectedCategoryId)
 
-  // === Effects ===
   useEffect(() => {
     if (selectedCategoryId && !isFetched) {
       void fetchData()
@@ -79,10 +53,8 @@ const Categories = () => {
     }
   }, [selectedCategoryId, fetchData, isFetched])
 
-  // === Event handlers ===
-
   const updateSearchParams = (value: string): void => {
-    const itemId = getIdByName(value)
+    const itemId = getIdByName(categoriesNamesItems, value)
 
     if (value) {
       const idToSet = itemId || ''
@@ -94,9 +66,9 @@ const Categories = () => {
     }
   }
 
-  const handleAutocompleteFocus = async (): Promise<void> => {
+  const handleAutocompleteFocus = (): void => {
     if (!isFetched) {
-      await fetchData()
+      void fetchData()
       setIsFetched(true)
     }
   }

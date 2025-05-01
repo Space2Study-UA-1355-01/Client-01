@@ -10,7 +10,8 @@ import {
   Question,
   Categories,
   ScreenBasedLimits,
-  RemoveColumnRules
+  RemoveColumnRules,
+  CategoryNameInterface
 } from '~/types'
 
 export const parseJwt = <T,>(token: string): T => {
@@ -253,3 +254,21 @@ export const getGroupedByDate = <T extends { createdAt: string }>(
 
     return result
   }, [])
+
+export const getNameById = (
+  items: CategoryNameInterface[],
+  id: string
+): string => {
+  return items.find((item) => item._id === id)?.name ?? ''
+}
+
+export const getIdByName = (
+  items: CategoryNameInterface[],
+  name: string
+): string => {
+  return (
+    items.find(
+      (item) => item.name.toLowerCase().trim() === name.toLowerCase().trim()
+    )?._id ?? ''
+  )
+}
