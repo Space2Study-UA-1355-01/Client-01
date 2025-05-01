@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useMemo } from 'react'
-import { Box, Typography, CircularProgress, Alert } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useStepContext } from '~/context/step-context'
 
@@ -33,8 +33,7 @@ const SubjectsStep = ({ btnsBox }) => {
   const {
     response: categories,
     fetchData: fetchCategories,
-    error: categoriesError,
-    loading
+    error: categoriesError
   } = useCategoriesStepper({
     fetchOnMount: false
   })
@@ -63,23 +62,19 @@ const SubjectsStep = ({ btnsBox }) => {
     }
   }, [categories, categoriesError, page])
 
-  const {
-    response: subcategories,
-    error: subjectsError,
-    loading: subjectsLoading,
-    fetchData: fetchSubcategories
-  } = useSubjectsStepper({
-    category: selectedCategory?.value,
-    fetchOnMount: false,
-    transform: (data) => {
-      return data.map((subject) => {
-        return {
-          title: subject.name,
-          value: subject.category || 'unknown'
-        }
-      })
-    }
-  })
+  const { response: subcategories, fetchData: fetchSubcategories } =
+    useSubjectsStepper({
+      category: selectedCategory?.value,
+      fetchOnMount: false,
+      transform: (data) => {
+        return data.map((subject) => {
+          return {
+            title: subject.name,
+            value: subject.category || 'unknown'
+          }
+        })
+      }
+    })
 
   useEffect(() => {
     if (selectedCategory?.value) {
@@ -146,16 +141,6 @@ const SubjectsStep = ({ btnsBox }) => {
       >
         {t('common.categoryStep.title')}
       </Typography>
-
-      {categoriesError && (
-        <Alert severity='error'>
-          {t('common.categoryStep.errorCategories')}
-        </Alert>
-      )}
-      {subjectsError && (
-        <Alert severity='error'>{t('common.categoryStep.errorSubjects')}</Alert>
-      )}
-      {(loading || subjectsLoading) && <CircularProgress />}
 
       <Box sx={styles.container}>
         <Box sx={styles.containerImg}>
