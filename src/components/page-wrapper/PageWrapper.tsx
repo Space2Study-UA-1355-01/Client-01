@@ -18,7 +18,8 @@ const PageWrapper = (
 
   return (
     <Container
-      maxWidth='xl'
+    // подумати як це зробити reusable типу 
+      // maxWidth='xl'
       ref={ref}
       sx={spliceSx(styles.container, sx)}
       {...rest}

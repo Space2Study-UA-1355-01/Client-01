@@ -5,7 +5,15 @@ import useAxios from '~/hooks/use-axios'
 import { categoryService } from '~/services/category-service'
 import { CategoryNameInterface } from '~/types'
 
-const useCategoriesNames = ({ fetchOnMount = true } = {}) => {
+interface UseCategoriesNamesProps<T> {
+  fetchOnMount?: boolean
+  transform?: (data: CategoryNameInterface[]) => T[]
+}
+
+const useCategoriesNames = <T = CategoryNameInterface,>({
+  fetchOnMount = true,
+  transform
+}: UseCategoriesNamesProps<T> = {}) => {
   const getCategoriesNames = useCallback(
     () => categoryService.getCategoriesNames(),
     []
@@ -16,7 +24,8 @@ const useCategoriesNames = ({ fetchOnMount = true } = {}) => {
   >({
     service: getCategoriesNames,
     fetchOnMount,
-    defaultResponse: defaultResponses.array
+    defaultResponse: defaultResponses.array,
+    transform
   })
 
   return { loading, response, fetchData, error }

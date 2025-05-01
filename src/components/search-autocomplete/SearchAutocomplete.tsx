@@ -5,7 +5,8 @@ import {
   SetStateAction,
   SyntheticEvent,
   ChangeEvent,
-  KeyboardEvent
+  KeyboardEvent,
+  useEffect
 } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -51,6 +52,10 @@ const SearchAutocomplete = ({
 
   const { t } = useTranslation()
   const { isMobile } = useBreakpoints()
+
+  useEffect(() => {
+    setSearchInput(search)
+  }, [search])
 
   const filterOptions = (
     options: string[],
