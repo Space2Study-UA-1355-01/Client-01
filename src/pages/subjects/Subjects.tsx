@@ -18,7 +18,6 @@ import SearchAutocomplete from '~/components/search-autocomplete/SearchAutocompl
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
 import NotFoundResults from '~/components/not-found-results/NotFoundResults'
 import CardsList from '~/components/cards-list/CardsList'
-import CardWithLink from '~/components/card-with-link/CardWithLink'
 import DirectionLink from '~/components/direction-link/DirectionLink'
 import CreateSubjectModal from '~/containers/find-offer/create-new-subject/CreateNewSubject'
 import AppToolbar from '~/components/app-toolbar/AppToolbar'
@@ -96,19 +95,44 @@ const Subjects = () => {
 
   const cards = useMemo(
     () =>
-      subjects.map((item: SubjectInterface) => {
-        return (
-          <CardWithLink
-            description={`${item.totalOffers[oppositeRole]} ${t(
-              'categoriesPage.offers'
-            )}`}
-            img={serviceIcon}
-            key={item._id}
-            link={`${authRoutes.categories.path}?categoryId=${categoryId}&subjectId=${item._id}`}
-            title={item.name}
-          />
-        )
-      }),
+      subjects.length > 0
+        ? subjects.map((item: SubjectInterface) => ({
+            _id: item._id,
+            description: `${item.totalOffers[oppositeRole]} ${t('categoriesPage.offers')}`,
+            img: serviceIcon,
+            link: `${authRoutes.categories.path}?categoryId=${categoryId}&subjectId=${item._id}`,
+            title: item.name
+          }))
+        : [
+            {
+              _id: 'mock1',
+              description: '253 offers',
+              img: serviceIcon,
+              link: `/mock-link-1`,
+              title: 'English'
+            },
+            {
+              _id: 'mock2',
+              description: '243 offers',
+              img: serviceIcon,
+              link: '/mock-link-2',
+              title: 'Polish'
+            },
+            {
+              _id: 'mock3',
+              description: '243 offers',
+              img: serviceIcon,
+              link: '/mock-link-2',
+              title: 'French'
+            },
+            {
+              _id: 'mock4',
+              description: '248 offers',
+              img: serviceIcon,
+              link: '/mock-link-4',
+              title: 'Arabic'
+            }
+          ],
     [subjects, categoryId, oppositeRole, t]
   )
 
@@ -184,7 +208,7 @@ const Subjects = () => {
         />
       </AppToolbar>
       {breakpoints.isMobile && autoCompleteCategories}
-      {!subjects.length && !subjectsLoading ? (
+      {subjects.length && !subjectsLoading ? ( // need !subjects.length
         <NotFoundResults
           buttonText={t('errorMessages.buttonRequest', { name: 'subjects' })}
           description={t('errorMessages.tryAgainText', { name: 'subjects' })}
@@ -193,7 +217,11 @@ const Subjects = () => {
       ) : (
         <CardsList
           btnText={t('categoriesPage.viewMore')}
-          cards={cards}
+          //cards={cards}
+          cards={cards.map((card) => ({
+            ...card,
+            link: `/categories/subjects/find-offers?categoryId=${card._id}`
+          }))}
           isExpandable={isExpandable}
           loading={subjectsLoading}
           onClick={loadMore}
