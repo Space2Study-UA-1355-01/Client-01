@@ -304,7 +304,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
             />
           </Stack>
           <TextField
-            error={Boolean(useFormErrors.professionalSummary)}
+            error={useFormErrors.professionalSummary}
             fullWidth
             helperText={
               useFormErrors.professionalSummary
