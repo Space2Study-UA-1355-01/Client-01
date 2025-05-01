@@ -27,17 +27,6 @@ const useSubjectsStepper = <T = SubjectNameStepperInterface>({
   transform
 }: UseSubjectsNamesProps<T>): UseSubjectsNamesResult<T> => {
   const getSubjectsNames = useCallback(() => {
-    //console.log('Fetching subjects for category:', category)
-    // if (!category) {
-    //   console.warn('No category provided, returning empty response')
-    //   return Promise.resolve({
-    //     data: [],
-    //     total: 0,
-    //     page: 1,
-    //     limit: 10,
-    //     totalPages: 1
-    //   })
-    // }
     return subjectService.getSubjectsNames(category)
   }, [category])
 
