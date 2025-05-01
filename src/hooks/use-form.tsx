@@ -27,6 +27,7 @@ interface UseFormOutput<T> {
   handleSubmit: (event: React.FormEvent<HTMLDivElement>) => void
   resetData: (keys?: (keyof T)[]) => void
   handleDataChange: <K extends object>(newData: K) => void
+  validationTrigger: (fields?: (keyof T)[]) => { [K in keyof T]?: string }
 }
 
 export const useForm = <T extends object>({
@@ -160,6 +161,20 @@ export const useForm = <T extends object>({
     }))
   }
 
+  const validationTrigger = (fields?: (keyof T)[]) => {
+    const fieldsToValidate =
+      fields ?? (Object.keys(validations ?? {}) as (keyof T)[])
+    const newErrors = { ...errors }
+
+    fieldsToValidate.forEach((key) => {
+      const validation = validateValue(key, data[key])
+      newErrors[key] = validation ?? ''
+    })
+
+    setErrors(newErrors)
+    return newErrors
+  }
+
   return {
     data,
     isDirty,
@@ -170,7 +185,8 @@ export const useForm = <T extends object>({
     handleBlur,
     handleErrors,
     handleSubmit,
-    resetData
+    resetData,
+    validationTrigger
   }
 }
 
