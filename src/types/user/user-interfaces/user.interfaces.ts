@@ -87,4 +87,6 @@ export interface AccessToken {
   id: string
   role: UserRole
   isFirstLogin: boolean
+  firstName: string
+  lastName: string
 }
