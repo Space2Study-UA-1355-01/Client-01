@@ -62,7 +62,7 @@ const SearchAutocomplete = ({
     state: FilterOptionsState<string>
   ) => {
     const defaultFilterOptions = createFilterOptions<string>()
-    return defaultFilterOptions(options, state).slice(0, 6)
+    return defaultFilterOptions(options, state).slice(0)
   }
 
   const onInputChange = (_: ChangeEvent<HTMLInputElement>, value: string) => {
