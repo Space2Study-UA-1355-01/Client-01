@@ -15,6 +15,8 @@ import img from '~/assets/img/tutor-home-page/become-tutor/general-info.svg'
 import { ComponentEnum } from '~/types'
 
 import { useStepContext } from '~/context/step-context'
+import { useModalContext } from '~/context/modal-context'
+import useConfirm from '~/hooks/use-confirm'
 
 import useForm from '~/hooks/use-form'
 import useDebounce from '~/hooks/use-debounce'
@@ -24,6 +26,8 @@ const GeneralInfoStep = ({ btnsBox }) => {
   const { stepData, handleStepData } = useStepContext()
   const contextData = stepData.generalInfo.data
   const contextErrors = stepData.generalInfo.errors
+  const { setUnsavedChanges } = useModalContext()
+  const { setNeedConfirmation } = useConfirm()
 
   const [countries, setCountries] = useState([])
   const [cities, setCities] = useState([])
@@ -57,6 +61,9 @@ const GeneralInfoStep = ({ btnsBox }) => {
   const { t } = useTranslation()
 
   const handleFieldChange = (fieldName) => (e) => {
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
+
     handleInputChange(fieldName)(e)
   }
 
@@ -67,12 +74,16 @@ const GeneralInfoStep = ({ btnsBox }) => {
     handleInputChange('country')({
       target: { value: newValue ? newValue.iso2 : '' }
     })
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   function handleCitySelect(_, newValue) {
     handleInputChange('city')({
       target: { value: newValue ? newValue.name : '' }
     })
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   const handleFieldBlur = (fieldName) => (e) => {

@@ -11,10 +11,14 @@ import useCategoriesStepper from '~/hooks/use-categories-stepper'
 import useSubjectsStepper from '~/hooks/use-subjects-stepper'
 import { styles } from './SubjectsStep.styles'
 
+import { useModalContext } from '~/context/modal-context'
+import useConfirm from '~/hooks/use-confirm'
 const SubjectsStep = ({ btnsBox }) => {
   const { t } = useTranslation()
   const { stepData, handleStepData } = useStepContext()
   const subjectLabel = 'subjects'
+  const { setUnsavedChanges } = useModalContext()
+  const { setNeedConfirmation } = useConfirm()
   const subjects = Array.isArray(stepData[subjectLabel])
     ? stepData[subjectLabel].map((item) =>
         typeof item === 'string' ? { name: item, categoryId: null } : item
@@ -85,10 +89,14 @@ const SubjectsStep = ({ btnsBox }) => {
   const handleCategoryChange = useCallback((newValue) => {
     setSelectedCategory(newValue)
     setSelectedSubject(null)
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }, [])
 
   const handleSubjectChange = useCallback((newValue) => {
     setSelectedSubject(newValue?.title || null)
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }, [])
 
   const handleButtonClick = () => {
@@ -102,6 +110,8 @@ const SubjectsStep = ({ btnsBox }) => {
       }
       const updatedSubjects = [...subjects, newSubject]
       handleStepData(subjectLabel, updatedSubjects)
+      setUnsavedChanges(true)
+      setNeedConfirmation(true)
       setSelectedCategory(null)
       setSelectedSubject(null)
     } else {
@@ -112,6 +122,8 @@ const SubjectsStep = ({ btnsBox }) => {
   const handleChipDelete = (item) => {
     const updatedSubjects = subjects.filter((subject) => subject.name !== item)
     handleStepData(subjectLabel, updatedSubjects)
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   const handleScroll = useCallback(

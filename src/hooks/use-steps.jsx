@@ -94,6 +94,8 @@ const useSteps = ({ steps }) => {
     const { firstName, lastName, country, city, professionalSummary } =
       stepData.generalInfo.data
 
+    console.log('test', stepData.subjects)
+
     const data = {
       firstName,
       lastName,
@@ -102,7 +104,8 @@ const useSteps = ({ steps }) => {
         city: city ?? ''
       },
       professionalSummary,
-      mainSubjects: stepData.subjects,
+      mainSubjects:
+        stepData.subjects?.map((subject) => subject.categoryId) ?? [],
       nativeLanguage: stepData.language?.map((lang) => lang.label) ?? []
     }
 
