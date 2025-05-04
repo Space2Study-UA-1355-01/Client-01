@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, useMemo } from 'react'
 import { Box, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useStepContext } from '~/context/step-context'
+import { useDebounce } from '~/hooks/use-debounce'
 
 import AppAutoCompleteCategories from '~/components/app-autocomplete-categories/AppAutoCompleteCategories'
 import AppButton from '~/components/app-button/AppButton'
@@ -38,6 +39,20 @@ const SubjectsStep = ({ btnsBox }) => {
     fetchOnMount: false
   })
 
+  const { response: subcategories, fetchData: fetchSubcategories } =
+    useSubjectsStepper({
+      category: selectedCategory?.value,
+      fetchOnMount: false,
+      transform: (data) => {
+        return data.map((subject) => {
+          return {
+            title: subject.name,
+            value: subject.category || 'unknown'
+          }
+        })
+      }
+    })
+
   useEffect(() => {
     fetchCategories({ page, limit: categoriesPerPage })
       .then(() => {
@@ -62,28 +77,33 @@ const SubjectsStep = ({ btnsBox }) => {
     }
   }, [categories, categoriesError, page])
 
-  const { response: subcategories, fetchData: fetchSubcategories } =
-    useSubjectsStepper({
-      category: selectedCategory?.value,
-      fetchOnMount: false,
-      transform: (data) => {
-        return data.map((subject) => {
-          return {
-            title: subject.name,
-            value: subject.category || 'unknown'
-          }
-        })
-      }
-    })
-
-  useEffect(() => {
+  const memoizedFetchSubcategories = useCallback(() => {
     if (selectedCategory?.value) {
       fetchSubcategories()
     }
-  }, [selectedCategory, fetchSubcategories])
+  }, [fetchSubcategories, selectedCategory?.value])
+
+  const debouncedFetchSubcategories = useDebounce(
+    memoizedFetchSubcategories,
+    500
+  )
+
+  useEffect(() => {
+    if (selectedCategory?.value) {
+      debouncedFetchSubcategories()
+    }
+  }, [selectedCategory?.value])
 
   const handleCategoryChange = useCallback((newValue) => {
-    setSelectedCategory(newValue)
+    console.log('handleCategoryChange called with:', newValue)
+    if (!newValue || !newValue.value) {
+      setSelectedCategory(null)
+      setSelectedSubject(null)
+      return
+    }
+    setSelectedCategory((prev) =>
+      prev?.value === newValue.value ? prev : newValue
+    )
     setSelectedSubject(null)
   }, [])
 
