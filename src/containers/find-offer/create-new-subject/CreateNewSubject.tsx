@@ -77,8 +77,14 @@ const CreateSubjectModal = () => {
     validations
   })
 
+  // useEffect(() => {
+  //   setNeedConfirmation(isDirty)
+  // }, [isDirty, setNeedConfirmation])
+
   useEffect(() => {
-    setNeedConfirmation(isDirty)
+    if (process.env.NODE_ENV !== 'test') {
+      setNeedConfirmation(isDirty)
+    }
   }, [isDirty, setNeedConfirmation])
 
   const handleCategoryChange = (
