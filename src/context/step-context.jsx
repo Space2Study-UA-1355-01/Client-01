@@ -1,15 +1,27 @@
 import { createContext, useCallback, useContext, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 const StepContext = createContext()
 
 const StepProvider = ({ children, initialValues, stepLabels }) => {
+  const { firstName, lastName } = useSelector((state) => state.appMain)
+
+  const startInitialValues = {
+    ...initialValues,
+    firstName: firstName || '',
+    lastName: lastName || ''
+  }
+
   const [generalData, setGeneralData] = useState({
-    data: initialValues,
+    data: startInitialValues,
     errors: {}
   })
   const [subject, setSubject] = useState([])
   const [language, setLanguage] = useState([])
-  const [photo, setPhoto] = useState([])
+  const [photo, setPhoto] = useState({
+    data: [],
+    errors: {}
+  })
   const [generalLabel, subjectLabel, languageLabel, photoLabel] = stepLabels
 
   const stepData = {
@@ -32,7 +44,7 @@ const StepProvider = ({ children, initialValues, stepLabels }) => {
           setLanguage(data)
           break
         case photoLabel:
-          setPhoto(data)
+          setPhoto({ data, errors })
           break
         default:
           return
