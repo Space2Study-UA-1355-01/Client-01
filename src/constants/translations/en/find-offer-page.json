@@ -42,12 +42,16 @@
     "rating": "Rating",
     "priceAsc": "Price low-high",
     "priceDesc": "Price high-low",
-    "name":"Name"
+    "name": "Name"
   },
-  "notFound":{
+  "popularCategories": {
+    "title": "Popular Categories",
+    "viewAllCategories": "View all categories"
+  },
+  "notFound": {
     "description": "We couldn’t find what you were searching for."
   },
-  "otherOffers":{
-    "title":"Other offers"
+  "otherOffers": {
+    "title": "Other offers"
   }
 }
