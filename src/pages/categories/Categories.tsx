@@ -1,4 +1,6 @@
 import PageWrapper from '~/components/page-wrapper/PageWrapper'
+import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
+
 import CardsList from '~/components/cards-list/CardsList'
 import { CardWithLinkProps } from '~/components/card-with-link/CardWithLink'
 
@@ -22,6 +24,7 @@ const Categories = () => {
 
   return (
     <PageWrapper>
+      <OfferRequestBlock />
       <CardsList
         btnText='Load more'
         cards={mockCards.map((card) => ({
