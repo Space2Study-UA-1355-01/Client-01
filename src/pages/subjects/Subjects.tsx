@@ -217,7 +217,6 @@ const Subjects = () => {
       ) : (
         <CardsList
           btnText={t('categoriesPage.viewMore')}
-          //cards={cards}
           cards={cards.map((card) => ({
             ...card,
             link: `/categories/subjects/find-offers?categoryId=${card._id}`
