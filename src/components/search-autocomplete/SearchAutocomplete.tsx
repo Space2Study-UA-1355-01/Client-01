@@ -5,7 +5,8 @@ import {
   SetStateAction,
   SyntheticEvent,
   ChangeEvent,
-  KeyboardEvent
+  KeyboardEvent,
+  useEffect
 } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -34,7 +35,7 @@ import {
 interface SearchAutocompleteProps
   extends Omit<AutocompleteProps<string, false, true, true>, 'renderInput'> {
   search: string
-  setSearch: Dispatch<SetStateAction<string>>
+  setSearch: ((value: string) => void) | Dispatch<SetStateAction<string>>
   onSearchChange?: () => void
   textFieldProps: TextFieldProps
   renderInput?: (params: AutocompleteRenderInputParams) => ReactNode
@@ -52,12 +53,16 @@ const SearchAutocomplete = ({
   const { t } = useTranslation()
   const { isMobile } = useBreakpoints()
 
+  useEffect(() => {
+    setSearchInput(search)
+  }, [search])
+
   const filterOptions = (
     options: string[],
     state: FilterOptionsState<string>
   ) => {
     const defaultFilterOptions = createFilterOptions<string>()
-    return defaultFilterOptions(options, state).slice(0, 6)
+    return defaultFilterOptions(options, state).slice(0)
   }
 
   const onInputChange = (_: ChangeEvent<HTMLInputElement>, value: string) => {
