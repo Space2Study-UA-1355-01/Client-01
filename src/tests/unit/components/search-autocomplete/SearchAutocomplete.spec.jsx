@@ -1,12 +1,21 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import SearchAutocomplete from '~/components/search-autocomplete/SearchAutocomplete'
 import useBreakpoints from '~/hooks/use-breakpoints'
 
 vi.mock('~/hooks/use-breakpoints', () => ({
   __esModule: true,
   default: vi.fn().mockReturnValue({ isMobile: false })
+}))
+
+vi.mock('@mui/icons-material/Search', () => ({
+  __esModule: true,
+  default: () => <span data-testid='mock-search-icon' />
+}))
+vi.mock('@mui/icons-material/Clear', () => ({
+  __esModule: true,
+  default: () => <span data-testid='mock-clear-icon' />
 }))
 
 describe('SearchAutocomplete', () => {
@@ -123,8 +132,8 @@ describe('SearchAutocomplete', () => {
     const input = screen.getByRole('combobox')
     await userEvent.type(input, 'abc')
 
-    const buttons = screen.getAllByRole('button')
-    const clearBtn = buttons.find((btn) => btn.innerHTML.includes('svg'))
+    const clearIcon = screen.getByTestId('mock-clear-icon')
+    const clearBtn = clearIcon.closest('button')
 
     await userEvent.click(clearBtn)
     expect(setSearchValue).toHaveBeenCalledWith('')
@@ -152,24 +161,47 @@ describe('SearchAutocomplete', () => {
     )
     expect(input).toHaveValue('Information Technology')
   })
-  it('should render mobile search button with icon and trigger onSearch when clicked', async () => {
-    useBreakpoints.mockReturnValue({ isMobile: true })
+  describe('SearchAutocomplete on mobile', () => {
+    beforeEach(() => {
+      useBreakpoints.mockReturnValue({ isMobile: true })
+    })
+    it('should render mobile search button with icon and trigger onSearch when clicked', async () => {
+      render(
+        <SearchAutocomplete
+          search={searchValue}
+          setSearch={setSearchValue}
+          textFieldProps={textFieldProps}
+        />
+      )
+      const input = screen.getByRole('combobox')
+      await userEvent.type(input, 'abc')
+      expect(input).toHaveValue('abc')
 
-    render(
-      <SearchAutocomplete
-        search={searchValue}
-        setSearch={setSearchValue}
-        textFieldProps={textFieldProps}
-      />
-    )
-    const input = screen.getByRole('combobox')
-    await userEvent.type(input, 'abc')
-    expect(input).toHaveValue('abc')
+      const icon = screen.getByTestId('mock-search-icon')
+      const searchButton = icon.closest('button')
 
-    const buttons = screen.getAllByRole('button')
-    const searchButton = buttons[1]
+      await userEvent.click(searchButton)
+      expect(setSearchValue).toHaveBeenCalledWith('abc')
+    })
+    it('should render mobile clear icon and reset the input when clicked', async () => {
+      render(
+        <SearchAutocomplete
+          search={searchValue}
+          setSearch={setSearchValue}
+          textFieldProps={textFieldProps}
+        />
+      )
+      const input = screen.getByRole('combobox')
+      await userEvent.type(input, 'abc')
+      expect(input).toHaveValue('abc')
 
-    await userEvent.click(searchButton)
-    expect(setSearchValue).toHaveBeenCalledWith('abc')
+      const clearIcon = screen.getByTestId('mock-clear-icon')
+      const clearBtn = clearIcon.closest('button')
+
+      await userEvent.click(clearBtn)
+
+      expect(input).toHaveValue('')
+      expect(setSearchValue).toHaveBeenCalledWith('')
+    })
   })
 })
