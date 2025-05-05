@@ -26,7 +26,8 @@ const GeneralInfoStep = ({ btnsBox }) => {
   const { stepData, handleStepData } = useStepContext()
   const { setUnsavedChanges } = useModalContext()
   const { setNeedConfirmation } = useConfirm()
-  const { data: contextData } = stepData.generalInfo
+  const contextData = stepData.generalInfo.data
+  const contextErrors = stepData.generalInfo.errors
   const { firstName, lastName, city, country, professionalSummary } =
     contextData
 
@@ -40,17 +41,24 @@ const GeneralInfoStep = ({ btnsBox }) => {
   const apiPath = import.meta.env.VITE_API_BASE_PATH
   const maxTextLength = 200
   const {
+    data,
     handleBlur,
     handleInputChange,
+    validationTrigger,
     errors: useFormErrors
   } = useForm({
     initialValues: contextData,
+    initialErrors: contextErrors,
     validations: {
       firstName: nameField,
       lastName: nameField,
       professionalSummary: textField(0, maxTextLength)
     }
   })
+
+  useEffect(() => {
+    handleStepData('generalInfo', data, useFormErrors)
+  }, [data, useFormErrors, handleStepData])
 
   const { t } = useTranslation()
 
@@ -64,7 +72,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
 
     setUnsavedChanges(true)
     setNeedConfirmation(true)
-
+    
     handleInputChange(fieldName)(e)
   }
 
@@ -72,10 +80,10 @@ const GeneralInfoStep = ({ btnsBox }) => {
     setCities([])
     setCitiesPage(1)
 
-    handleStepData('generalInfo', {
-      ...contextData,
-      country: newValue ? newValue.iso2 : ''
+    handleInputChange('country')({
+      target: { value: newValue ? newValue.iso2 : '' }
     })
+    
     setUnsavedChanges(true)
     setNeedConfirmation(true)
 
@@ -85,15 +93,15 @@ const GeneralInfoStep = ({ btnsBox }) => {
   }
 
   function handleCitySelect(_, newValue) {
-    handleStepData('generalInfo', {
-      ...contextData,
-      city: newValue ? newValue.name : ''
+    handleInputChange('city')({
+      target: { value: newValue ? newValue.name : '' }
     })
     setUnsavedChanges(true)
     setNeedConfirmation(true)
   }
 
   const handleFieldBlur = (fieldName) => (e) => {
+    validationTrigger(['lastName'])
     handleBlur(fieldName)(e)
   }
 
@@ -149,7 +157,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
       if (type === 'cities' && !loadingCities) {
         const nextPage = citiesPage + 1
         setCitiesPage(nextPage)
-        fetchCities('', country, nextPage)
+        fetchCities('', data.country, nextPage)
       }
     }
   }
@@ -190,7 +198,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
 
     const searchTerm = event.target.value
 
-    if (!country) {
+    if (!data.country) {
       setCities([])
       setCitiesPage(1)
       return
@@ -199,11 +207,11 @@ const GeneralInfoStep = ({ btnsBox }) => {
     if (!searchTerm) {
       setCities([])
       setCitiesPage(1)
-      fetchCities('', country, 1)
+      fetchCities('', data.country, 1)
       return
     }
 
-    fetchCitiesDebounced(searchTerm, country)
+    fetchCitiesDebounced(searchTerm, data.country)
   }
 
   useEffect(() => {
@@ -211,15 +219,15 @@ const GeneralInfoStep = ({ btnsBox }) => {
   }, [fetchCountries])
 
   useEffect(() => {
-    if (country) {
+    if (data.country) {
       setCities([])
       setCitiesPage(1)
-      fetchCities('', country, 1)
+      fetchCities('', data.country, 1)
     }
-  }, [country, fetchCities])
+  }, [data.country, fetchCities])
 
-  const selectedCountry = countries.find((c) => c.iso2 === country) || null
-  const selectedCity = cities.find((c) => c.name === city) || null
+  const selectedCountry = countries.find((c) => c.iso2 === data.country) || null
+  const selectedCity = cities.find((c) => c.name === data.city) || null
 
   return (
     <Box sx={styles.container}>
@@ -242,7 +250,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
               onBlur={handleFieldBlur('firstName')}
               onChange={handleFieldChange('firstName')}
               required
-              value={firstName}
+              value={data.firstName}
             />
             <TextField
               error={Boolean(useFormErrors.lastName)}
@@ -252,7 +260,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
               onBlur={handleFieldBlur('lastName')}
               onChange={handleFieldChange('lastName')}
               required
-              value={lastName}
+              value={data.lastName}
             />
           </Stack>
 
@@ -326,7 +334,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
             helperText={
               useFormErrors.professionalSummary
                 ? t(useFormErrors.professionalSummary)
-                : `${professionalSummary.length}/${maxTextLength}`
+                : `${data.professionalSummary.length}/${maxTextLength}`
             }
             label={t('becomeTutor.generalInfo.textFieldLabel')}
             maxLength={maxTextLength}
@@ -335,7 +343,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
             onChange={handleFieldChange('professionalSummary')}
             rows={4}
             sx={styles.textArea}
-            value={professionalSummary}
+            value={data.professionalSummary}
           />
         </Stack>
 

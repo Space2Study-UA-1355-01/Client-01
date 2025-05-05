@@ -9,7 +9,10 @@ const StepProvider = ({ children, initialValues, stepLabels }) => {
   })
   const [subject, setSubject] = useState([])
   const [language, setLanguage] = useState([])
-  const [photo, setPhoto] = useState([])
+  const [photo, setPhoto] = useState({
+    data: [],
+    errors: {}
+  })
   const [generalLabel, subjectLabel, languageLabel, photoLabel] = stepLabels
 
   const stepData = {
@@ -32,7 +35,7 @@ const StepProvider = ({ children, initialValues, stepLabels }) => {
           setLanguage(data)
           break
         case photoLabel:
-          setPhoto(data)
+          setPhoto({ data, errors })
           break
         default:
           return

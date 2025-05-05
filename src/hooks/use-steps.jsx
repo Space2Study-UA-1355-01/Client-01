@@ -14,11 +14,13 @@ const useSteps = ({ steps }) => {
   const { closeModal } = useModalContext()
   const { stepData } = useStepContext()
   const { setAlert } = useSnackBarContext()
-  const { userId } = useAppSelector((state) => state.appMain)
+  const { userId, userRole } = useAppSelector((state) => state.appMain)
 
   const updateUser = useCallback(
-    (data) => userService.updateUser(userId, data),
-    [userId]
+    (data) => {
+      return userService.updateUser(userId, userRole, data)
+    },
+    [userId, userRole]
   )
   const uploadPhoto = useCallback((file) => uploadPhotoService.upload(file), [])
 
@@ -46,7 +48,7 @@ const useSteps = ({ steps }) => {
   }
 
   const submitPhoto = () => {
-    const selectedFile = stepData.photo?.[0]
+    const selectedFile = stepData.photo?.data[0]
 
     if (selectedFile) {
       uploadPhotoFetch(selectedFile)
@@ -101,7 +103,7 @@ const useSteps = ({ steps }) => {
       },
       professionalSummary,
       mainSubjects: stepData.subjects,
-      nativeLanguage: stepData.language ?? 'English'
+      nativeLanguage: stepData.language?.map((lang) => lang.label) ?? []
     }
 
     !hasErrors && fetchData(data)

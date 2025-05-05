@@ -23,9 +23,10 @@ const AddPhotoStep = ({ btnsBox }) => {
   const [preview, setPreview] = useState(null)
   const inputRef = useRef(null)
   const files = useMemo(
-    () => stepData[photoLabel] ?? [],
+    () => stepData[photoLabel]?.data ?? [],
     [stepData, photoLabel]
   )
+  const error = stepData[photoLabel]?.errors?.file
 
   useEffect(() => {
     if (files[0]) {
@@ -39,9 +40,10 @@ const AddPhotoStep = ({ btnsBox }) => {
   const emitter = ({ files: newFiles, error: newError }) => {
     const limitedFiles =
       newFiles.length > 0 ? [newFiles[newFiles.length - 1]] : []
-    handleStepData(photoLabel, limitedFiles)
+
+    handleStepData(photoLabel, limitedFiles, newError ? { file: newError } : {})
     setUnsavedChanges(true)
-    setNeedConfirmation(true)
+    setNeedConfirmacion(true)
     setError(newError)
   }
 
@@ -61,7 +63,7 @@ const AddPhotoStep = ({ btnsBox }) => {
       setUnsavedChanges(true)
       setNeedConfirmation(true)
     }
-    setError('')
+    handleStepData(photoLabel, [], {})
   }
 
   const handleRootClick = () => {
