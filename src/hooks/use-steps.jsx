@@ -2,11 +2,11 @@ import { useCallback, useState } from 'react'
 
 import useAxios from '~/hooks/use-axios'
 import { useAppSelector } from '~/hooks/use-redux'
-
 import { useModalContext } from '~/context/modal-context'
 import { useStepContext } from '~/context/step-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import { userService } from '~/services/user-service'
+import { uploadPhotoService } from '~/services/upload-photo-service'
 import { snackbarVariants } from '~/constants'
 
 const useSteps = ({ steps }) => {
@@ -20,6 +20,7 @@ const useSteps = ({ steps }) => {
     (data) => userService.updateUser(userId, data),
     [userId]
   )
+  const uploadPhoto = useCallback((file) => uploadPhotoService.upload(file), [])
 
   const handleResponseError = (error) => {
     setAlert({
@@ -36,12 +37,38 @@ const useSteps = ({ steps }) => {
     closeModal()
   }
 
+  const handleResponseWarning = () => {
+    setAlert({
+      severity: snackbarVariants.warning,
+      message: 'becomeTutor.warningMessage'
+    })
+    closeModal()
+  }
+
+  const submitPhoto = () => {
+    const selectedFile = stepData.photo?.[0]
+
+    if (selectedFile) {
+      uploadPhotoFetch(selectedFile)
+    } else {
+      handleResponse()
+    }
+  }
+
   const { loading, fetchData } = useAxios({
     service: updateUser,
     fetchOnMount: false,
     defaultResponse: null,
-    onResponse: handleResponse,
+    onResponse: submitPhoto,
     onResponseError: handleResponseError
+  })
+
+  const { loading: uploadLoading, fetchData: uploadPhotoFetch } = useAxios({
+    service: uploadPhoto,
+    fetchOnMount: false,
+    defaultResponse: null,
+    onResponse: handleResponse,
+    onResponseError: handleResponseWarning
   })
 
   const stepErrors = Object.values(stepData).map(
@@ -66,16 +93,15 @@ const useSteps = ({ steps }) => {
       stepData.generalInfo.data
 
     const data = {
-      photo: stepData.photo[0] ? stepData.photo[0] : '',
       firstName,
       lastName,
       address: {
         country: country ?? '',
         city: city ?? ''
       },
-      professionalSummary: professionalSummary,
+      professionalSummary,
       mainSubjects: stepData.subjects,
-      nativeLanguage: stepData.language ?? ''
+      nativeLanguage: stepData.language ?? 'English'
     }
 
     !hasErrors && fetchData(data)
@@ -88,7 +114,14 @@ const useSteps = ({ steps }) => {
     setActiveStep
   }
 
-  return { activeStep, stepErrors, isLastStep, stepOperation, loading }
+  return {
+    activeStep,
+    stepErrors,
+    isLastStep,
+    stepOperation,
+    loading,
+    uploadLoading
+  }
 }
 
 export default useSteps
