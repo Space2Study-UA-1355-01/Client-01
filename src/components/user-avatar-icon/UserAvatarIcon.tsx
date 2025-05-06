@@ -4,12 +4,7 @@ import { useAppSelector } from '~/hooks/use-redux'
 
 const UserAvatarIcon: FC = () => {
   const { firstName, lastName, photo } = useAppSelector(
-    (state) =>
-      state.appMain as {
-        firstName: string
-        lastName: string
-        photo: string
-      }
+    (state) => state.appMain
   )
   const [initials, setInitials] = useState('')
   useEffect(() => {

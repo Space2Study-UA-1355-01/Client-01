@@ -34,12 +34,23 @@ const useSteps = ({ steps }) => {
   }
 
   const handleResponse = async () => {
-    await loadUserProfileData(dispatch, userId, userRole)
-    setAlert({
-      severity: snackbarVariants.success,
-      message: 'becomeTutor.successMessage'
-    })
-    closeModal()
+    try {
+      await loadUserProfileData(dispatch, userId, userRole)
+
+      setAlert({
+        severity: snackbarVariants.success,
+        message: 'becomeTutor.successMessage'
+      })
+    } catch (error) {
+      console.error('Failed to load user profile data', error)
+
+      setAlert({
+        severity: snackbarVariants.error,
+        message: 'errors.warningLoadingUserData'
+      })
+    } finally {
+      closeModal()
+    }
   }
 
   const handleResponseWarning = () => {
