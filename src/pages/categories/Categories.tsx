@@ -99,14 +99,14 @@ const Categories = () => {
   useEffect(() => {
     setCards([])
     setPage(1)
-    fetchCategories(1)
+    void fetchCategories(1)
   }, [fetchCategories, selectedCategoryId])
 
   const handleLoadMore = () => {
     if (!hasMore || loading) return
     const nextPage = page + 1
     setPage(nextPage)
-    fetchCategories(nextPage)
+    void fetchCategories(nextPage)
   }
 
   const showLoadMoreButton = !selectedCategoryId && hasMore && cards.length > 0
