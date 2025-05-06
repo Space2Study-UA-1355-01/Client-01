@@ -69,7 +69,6 @@ const GeneralInfoStep = ({ btnsBox }) => {
     })
     setUnsavedChanges(true)
     setNeedConfirmation(true)
-    
     handleInputChange(fieldName)(e)
   }
 
