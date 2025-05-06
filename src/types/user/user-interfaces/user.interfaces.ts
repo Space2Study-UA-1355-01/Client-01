@@ -40,6 +40,7 @@ export interface UserResponse {
   createdAt: string
   updatedAt: string
   FAQ: DataByRole<Faq[]>
+  appLanguage?: string
 }
 
 export interface UpdateUserParams
@@ -89,4 +90,11 @@ export interface AccessToken {
   isFirstLogin: boolean
   firstName: string
   lastName: string
+}
+
+export interface UserProfile {
+  firstName: string
+  lastName: string
+  photo: string
+  appLanguage: string
 }
