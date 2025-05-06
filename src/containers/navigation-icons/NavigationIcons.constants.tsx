@@ -3,6 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import LoginIcon from '@mui/icons-material/Login'
 import { IconButtonProps } from '@mui/material/IconButton'
 import UserAvatarIcon from '~/components/user-avatar-icon/UserAvatarIcon'
+import languageService from '~/services/language-service'
 
 import { styles } from '~/containers/navigation-icons/NavigationIcons.styles'
 
@@ -24,10 +25,13 @@ interface NavigationIconButton {
 }
 
 const languageIcon = {
-  disabled: true,
+  disabled: false,
   tooltip: 'iconsTooltip.language',
-  icon: <LanguageIcon color='disabled' />,
-  buttonProps: () => ({ sx: styles.studentIcons })
+  icon: <LanguageIcon />,
+  buttonProps: () => ({
+    onClick: languageService.toggleLanguage,
+    sx: styles.studentIcons
+  })
 }
 
 const menuIcon: NavigationIconButton = {
