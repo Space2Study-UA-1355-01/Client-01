@@ -169,19 +169,20 @@ const SubjectsStep = ({ btnsBox }) => {
       setSelectedCategory((prev) =>
         prev?.value === newValue.value ? prev : newValue
       )
-  setSelectedSubject(null)
-  setUnsavedChanges(true)
-  setNeedConfirmation(true)
-}, [setUnsavedChanges, setNeedConfirmation]);
+    setSelectedSubject(null)
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
+    },
+    [setUnsavedChanges, setNeedConfirmation]
+  );
 
   const handleSubjectChange = useCallback((newValue) => {
       setSelectedSubject(newValue?.title || null)
       setUnsavedChanges(true)
       setNeedConfirmation(true)
-  }, [
-    setUnsavedChanges, 
-    setNeedConfirmation
-  ])
+    }, 
+    [setUnsavedChanges, setNeedConfirmation]
+  )
 
   const handleButtonClick = () => {
     if (
