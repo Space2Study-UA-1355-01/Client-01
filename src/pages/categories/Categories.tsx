@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 
@@ -8,8 +8,9 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { styles } from '~/pages/categories/Categories.styles'
 import { authRoutes } from '~/router/constants/authRoutes'
 import useCategoriesNames from '~/hooks/use-categories-names'
+import { axiosClient } from '~/plugins/axiosClient'
 
-import { CategoryNameInterface, SizeEnum } from '~/types'
+import { CategoryNameInterface, SizeEnum, CategoryInterface } from '~/types'
 
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
 import PageWrapper from '~/components/page-wrapper/PageWrapper'
@@ -17,14 +18,98 @@ import SearchAutocomplete from '~/components/search-autocomplete/SearchAutocompl
 import DirectionLink from '~/components/direction-link/DirectionLink'
 import AppToolbar from '~/components/app-toolbar/AppToolbar'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
+import CardsList from '~/components/cards-list/CardsList'
+import { CardWithLinkProps } from '~/components/card-with-link/CardWithLink'
+import { CategoryIconsMap } from '~/components/category-card/Icons'
 
 import { getNameById, getIdByName } from '~/utils/helper-functions'
+
+const getAccessTokenFromCookie = () => {
+  const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/)
+  return match ? match[1] : ''
+}
+
+const LIMIT = 6
+const apiPath = import.meta.env.VITE_API_BASE_PATH
 
 const Categories = () => {
   const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const selectedCategoryId = searchParams.get('id') || ''
   const [isFetched, setIsFetched] = useState(false)
+
+  const [cards, setCards] = useState<CardWithLinkProps[]>([])
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+
+  const fetchCategories = useCallback(
+    async (pageToLoad = 1) => {
+      setLoading(true)
+      try {
+        const headers = {
+          Authorization: `Bearer ${getAccessTokenFromCookie()}`
+        }
+
+        let data: CategoryInterface[] = []
+        if (selectedCategoryId) {
+          const res = await axiosClient.get<CategoryInterface>(
+            `${apiPath}/categories/${selectedCategoryId}`,
+            { headers }
+          )
+          data = [res.data]
+          setHasMore(false)
+        } else {
+          const res = await axiosClient.get<{
+            data: CategoryInterface[]
+            totalPages: number
+          }>(`${apiPath}/categories?page=${pageToLoad}&limit=${LIMIT}`, {
+            headers
+          })
+          data = res.data.data
+          const isLastPage = pageToLoad >= res.data.totalPages
+          setHasMore(!isLastPage)
+        }
+
+        const transformed = data.map(
+          (card: CategoryInterface): CardWithLinkProps => ({
+            _id: card._id,
+            name: card.name,
+            icon: CategoryIconsMap[card.name],
+            description: `${Number(card.totalOffers)} Offers`,
+            link: `${apiPath}/categories/${card._id}/subjects/names`,
+            appearance: card.appearance
+          })
+        )
+
+        setCards((prev) =>
+          pageToLoad === 1 || selectedCategoryId
+            ? transformed
+            : [...prev, ...transformed]
+        )
+      } catch (error) {
+        console.error('Failed to fetch categories:', error)
+      } finally {
+        setLoading(false)
+      }
+    },
+    [selectedCategoryId]
+  )
+
+  useEffect(() => {
+    setCards([])
+    setPage(1)
+    void fetchCategories(1)
+  }, [fetchCategories, selectedCategoryId])
+
+  const handleLoadMore = () => {
+    if (!hasMore || loading) return
+    const nextPage = page + 1
+    setPage(nextPage)
+    void fetchCategories(nextPage)
+  }
+
+  const showLoadMoreButton = !selectedCategoryId && hasMore && cards.length > 0
 
   const transform: (
     data: CategoryNameInterface[] | { data: CategoryNameInterface[] }
@@ -104,6 +189,13 @@ const Categories = () => {
           }}
         />
       </AppToolbar>
+      <CardsList
+        btnText={t('categoriesPage.viewMore')}
+        cards={cards}
+        isExpandable={showLoadMoreButton}
+        loading={loading}
+        onClick={handleLoadMore}
+      />
     </PageWrapper>
   )
 }
