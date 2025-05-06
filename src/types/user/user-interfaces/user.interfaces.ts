@@ -52,9 +52,12 @@ export interface UpdateUserParams
     | 'address'
     | 'professionalSummary'
     | 'nativeLanguage'
+    | 'appLanguage'
   > {
   mainSubjects: SubjectNameInterface[]
 }
+
+export type UpdateUserLanguageParams = Pick<UserResponse, 'appLanguage'>
 
 export interface LoginParams {
   email: string

@@ -1,6 +1,6 @@
 import { FC, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-
+import languageService from '~/services/language-service'
 import Box from '@mui/material/Box'
 
 import LoginDialog from '~/containers/guest-home-page/login-dialog/LoginDialog'
@@ -23,11 +23,17 @@ const GuestIcons: FC<GuestIconsProps> = ({ setSidebarOpen }) => {
     openModal({ component: <LoginDialog /> })
   }, [openModal])
 
+  const changeLanguage = () => languageService.toggleLanguage()
+
   const icons = guestIcons.map(
     (item) =>
       !item.disabled && (
         <NavigationIcon
-          buttonProps={item.buttonProps({ openLoginDialog, setSidebarOpen })}
+          buttonProps={item.buttonProps({
+            openLoginDialog,
+            setSidebarOpen,
+            changeLanguage
+          })}
           icon={item.icon}
           key={item.tooltip}
           tooltip={t(item.tooltip)}
