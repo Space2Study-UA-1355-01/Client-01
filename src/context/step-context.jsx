@@ -1,10 +1,19 @@
 import { createContext, useCallback, useContext, useState } from 'react'
+import { useSelector } from 'react-redux'
 
 const StepContext = createContext()
 
 const StepProvider = ({ children, initialValues, stepLabels }) => {
+  const { firstName, lastName } = useSelector((state) => state.appMain)
+
+  const startInitialValues = {
+    ...initialValues,
+    firstName: firstName || '',
+    lastName: lastName || ''
+  }
+
   const [generalData, setGeneralData] = useState({
-    data: initialValues,
+    data: startInitialValues,
     errors: {}
   })
   const [subject, setSubject] = useState([])

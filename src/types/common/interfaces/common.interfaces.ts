@@ -5,6 +5,14 @@ export interface ItemsWithCount<T> {
   items: T[]
 }
 
+export interface CategorySubjectStepper<T> {
+  data: T[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
 export interface CommonEntityFields {
   _id: string
   createdAt: string
@@ -47,6 +55,26 @@ export interface SubjectInterface {
 export interface SubjectNameInterface {
   _id: string
   name: string
+}
+
+export interface SubjectNameStepperInterface {
+  _id: string
+  name: string
+  category: string
+  totalOffers?: {
+    student: number
+    tutor: number
+  }
+  createdAt?: string
+  updatedAt?: string
+}
+
+export interface SubjectsNamesResponse {
+  data: SubjectNameInterface[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
 }
 
 export interface ReviewInterface {
@@ -106,5 +134,3 @@ export interface Link {
   name: string
   url: string
 }
-
-// export type Attachment = CourseResources | Question
