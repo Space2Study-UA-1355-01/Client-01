@@ -95,6 +95,8 @@
   },
   "categoryStep": {
     "title": "Please choose the main subjects based on the category. You can add others later",
+    "labelCategory": "Main tutor category",
+    "labelSubject": "Subject",
     "buttonText": "Add one more subject"
   }
 }

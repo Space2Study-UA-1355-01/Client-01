@@ -28,7 +28,7 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
   textFieldProps,
   valueField,
   labelField,
-  value,
+  //value,
   service,
   axiosProps,
   ...props
@@ -45,13 +45,13 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service])
 
-  const valueOption = useMemo(
-    () =>
-      response.find(
-        (option) => (valueField ? option[valueField] : option) === value
-      ) || null,
-    [response, value, valueField]
-  )
+  // const valueOption = useMemo(
+  //   () =>
+  //     response.find(
+  //       (option) => (valueField ? option[valueField] : option) === value
+  //     ) || null,
+  //   [response, value, valueField]
+  // )
 
   const getOptionLabel = useMemo(
     () => (option: T) => (labelField ? option[labelField] : option) || '',
@@ -76,9 +76,9 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
       isOptionEqualToValue={isOptionEqualToValue}
       loading={loading}
       onFocus={handleFocus}
-      options={response}
+      //options={response}
       textFieldProps={textFieldProps}
-      value={valueOption}
+      //value={valueOption}
       {...props}
     />
   )
