@@ -181,7 +181,6 @@ const SubjectsStep = ({ btnsBox }) => {
     setSelectedSubject(newValue?.title || null)
     setUnsavedChanges(true)
     setNeedConfirmation(true)
-  }
   }, 
   [setUnsavedChanges, setNeedConfirmation])
 
