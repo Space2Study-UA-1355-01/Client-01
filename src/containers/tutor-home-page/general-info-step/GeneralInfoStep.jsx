@@ -28,8 +28,6 @@ const GeneralInfoStep = ({ btnsBox }) => {
   const { setNeedConfirmation } = useConfirm()
   const contextData = stepData.generalInfo.data
   const contextErrors = stepData.generalInfo.errors
-  const { firstName, lastName, city, country, professionalSummary } =
-    contextData
 
   const [countries, setCountries] = useState([])
   const [cities, setCities] = useState([])
@@ -69,7 +67,6 @@ const GeneralInfoStep = ({ btnsBox }) => {
       ...contextData,
       [fieldName]: value
     })
-
     setUnsavedChanges(true)
     setNeedConfirmation(true)
     
@@ -83,7 +80,6 @@ const GeneralInfoStep = ({ btnsBox }) => {
     handleInputChange('country')({
       target: { value: newValue ? newValue.iso2 : '' }
     })
-    
     setUnsavedChanges(true)
     setNeedConfirmation(true)
 
