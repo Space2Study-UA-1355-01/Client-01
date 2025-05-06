@@ -21,6 +21,7 @@ const UserAvatarIcon: FC = () => {
   return (
     <Avatar
       alt={`${firstName} ${lastName}`}
+      data-testid='AvatarIcon'
       src={photo}
       sx={{ width: 40, height: 40 }}
     >
