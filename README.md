@@ -259,9 +259,11 @@ Only the release should merge into the main branch!!!
 - **How do I do _specifically_ so and so?**
   - No problem! Just do this.
 
----
+
 
 #### License
+
+
 
 - **[MIT license](http://opensource.org/licenses/mit-license.php)**
 - Copyright 2023 © <a href="https://softserve.academy/" target="_blank"> SoftServe IT Academy</a>.
