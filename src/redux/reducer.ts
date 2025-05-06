@@ -90,6 +90,8 @@ export const mainSlice = createSlice({
       state.isFirstLogin = initialState.isFirstLogin
       state.firstName = initialState.firstName
       state.lastName = initialState.lastName
+      state.photo = initialState.photo
+      state.appLanguage = initialState.appLanguage
     },
     markFirstLoginComplete(state) {
       state.isFirstLogin = false
