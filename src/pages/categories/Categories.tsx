@@ -80,7 +80,6 @@ const Categories = () => {
             icon: CategoryIconsMap[card.name] || ComputerIcon,
             description: `${Number(card.totalOffers)} Offers`,
             link: `${apiPath}/categories/${card._id}/subjects/names`,
-            //link: `localhost:3000/categories/${card._id}/subjects/names`,
             appearance: card.appearance
           })
         )
