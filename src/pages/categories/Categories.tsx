@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom'
 
 import { Box } from '@mui/material'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import DefaultCategoryIcon from '@mui/icons-material/Category'
 
 import { styles } from '~/pages/categories/Categories.styles'
 import { authRoutes } from '~/router/constants/authRoutes'
@@ -75,7 +76,7 @@ const Categories = () => {
           (card: CategoryInterface): CardWithLinkProps => ({
             _id: card._id,
             name: card.name,
-            icon: CategoryIconsMap[card.name],
+            icon: CategoryIconsMap[card.name] || DefaultCategoryIcon,
             description: `${Number(card.totalOffers)} Offers`,
             link: `${apiPath}/categories/${card._id}/subjects/names`,
             appearance: card.appearance
