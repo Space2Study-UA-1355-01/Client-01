@@ -8,7 +8,7 @@ export const styles = {
     display: 'flex',
     padding: '25px 33px 25px 32px',
     maxWidth: '360px',
-    maxHeight: '112px',
+    maxHeight: 'auto',
     alignItems: 'center',
     justifyContent: 'flex-start',
     textDecoration: 'none',
