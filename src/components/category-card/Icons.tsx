@@ -10,6 +10,8 @@ import NightlightIcon from '@mui/icons-material/Nightlight'
 import FactCheckIcon from '@mui/icons-material/FactCheck'
 import BiotechIcon from '@mui/icons-material/Biotech'
 import ComputerIcon from '@mui/icons-material/Computer'
+import CampaignIcon from '@mui/icons-material/Campaign'
+import CodeIcon from '@mui/icons-material/Code'
 
 export const CategoryIconsMap: Record<string, React.ElementType> = {
   Mathematics: TagIcon,
@@ -17,11 +19,13 @@ export const CategoryIconsMap: Record<string, React.ElementType> = {
   Music: MusicNoteIcon,
   Languages: TranslateIcon,
   Design: DesignServicesIcon,
-  Finances: AttachMoneyIcon,
+  Finance: AttachMoneyIcon,
   Painting: ColorLensIcon,
   Chemistry: ScienceIcon,
   Astronomy: NightlightIcon,
   Audit: FactCheckIcon,
   Biology: BiotechIcon,
-  'Computer science': ComputerIcon
+  'Computer science': ComputerIcon,
+  Programming: CodeIcon,
+  Marketing: CampaignIcon
 }
