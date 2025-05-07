@@ -46,8 +46,8 @@ export const checkAuth = createAsyncThunk(
     try {
       const { data } = await AuthService.refresh()
       if (data) {
-        dispatch(setUser(data.accessToken))
         const parsed = parseJwt<AccessToken>(data.accessToken)
+        dispatch(setUser(data.accessToken))
         await loadUserProfileData(
           dispatch as AppDispatch,
           parsed.id,

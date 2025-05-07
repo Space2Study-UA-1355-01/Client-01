@@ -11,6 +11,7 @@ type ButtonProps = (props: {
   openMenu?: () => void
   setSidebarOpen?: () => void
   openNotifications?: () => void
+  changeLanguage?: () => void
 }) => IconButtonProps
 
 type BadgeContent = (props: { notifications: number }) => number
@@ -23,11 +24,14 @@ interface NavigationIconButton {
   badgeContent?: BadgeContent
 }
 
-const languageIcon = {
-  disabled: true,
+const languageIcon: NavigationIconButton = {
+  disabled: false,
   tooltip: 'iconsTooltip.language',
-  icon: <LanguageIcon color='disabled' />,
-  buttonProps: () => ({ sx: styles.studentIcons })
+  icon: <LanguageIcon />,
+  buttonProps: ({ changeLanguage }) => ({
+    onClick: changeLanguage,
+    sx: styles.studentIcons
+  })
 }
 
 const menuIcon: NavigationIconButton = {

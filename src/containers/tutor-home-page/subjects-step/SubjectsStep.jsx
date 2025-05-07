@@ -159,8 +159,9 @@ const SubjectsStep = ({ btnsBox }) => {
     }
   }, [selectedCategory?.value, debouncedFetchSubcategories])
 
-  const handleCategoryChange = useCallback((newValue) => {
-    console.log('handleCategoryChange called with:', newValue)
+  const handleCategoryChange = useCallback(
+    (newValue) => {
+      console.log('handleCategoryChange called with:', newValue)
       if (!newValue || !newValue.value) {
         setSelectedCategory(null)
         setSelectedSubject(null)
@@ -176,8 +177,9 @@ const SubjectsStep = ({ btnsBox }) => {
     [setUnsavedChanges, setNeedConfirmation]
   )
 
-  const handleSubjectChange = useCallback((newValue) => {
-    setSelectedSubject(newValue?.title || null)
+  const handleSubjectChange = useCallback(
+    (newValue) => {
+      setSelectedSubject(newValue?.title || null)
       setUnsavedChanges(true)
       setNeedConfirmation(true)
     },

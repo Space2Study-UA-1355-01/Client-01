@@ -19,7 +19,6 @@ const AddPhotoStep = ({ btnsBox }) => {
   const { handleStepData, stepData, photoLabel } = useStepContext()
   const { setUnsavedChanges } = useModalContext()
   const { setNeedConfirmation } = useConfirm()
-  const [error, setError] = useState('')
   const [preview, setPreview] = useState(null)
   const inputRef = useRef(null)
   const files = useMemo(
@@ -40,11 +39,9 @@ const AddPhotoStep = ({ btnsBox }) => {
   const emitter = ({ files: newFiles, error: newError }) => {
     const limitedFiles =
       newFiles.length > 0 ? [newFiles[newFiles.length - 1]] : []
-
     handleStepData(photoLabel, limitedFiles, newError ? { file: newError } : {})
     setUnsavedChanges(true)
-    setNeedConfirmacion(true)
-    setError(newError)
+    setNeedConfirmation(true)
   }
 
   const { dragStart, dragLeave, dragDrop, isDrag, addFiles, deleteFile } =
