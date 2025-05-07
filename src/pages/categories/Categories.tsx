@@ -9,6 +9,7 @@ import { styles } from '~/pages/categories/Categories.styles'
 import { authRoutes } from '~/router/constants/authRoutes'
 import useCategoriesNames from '~/hooks/use-categories-names'
 import { axiosClient } from '~/plugins/axiosClient'
+import { useModalContext } from '~/context/modal-context'
 
 import { CategoryNameInterface, SizeEnum, CategoryInterface } from '~/types'
 
@@ -21,6 +22,8 @@ import OfferRequestBlock from '~/containers/find-offer/offer-request-block/Offer
 import CardsList from '~/components/cards-list/CardsList'
 import { CardWithLinkProps } from '~/components/card-with-link/CardWithLink'
 import { CategoryIconsMap } from '~/components/category-card/Icons'
+import CreateSubjectModal from '~/containers/find-offer/create-new-subject/CreateNewSubject'
+import NotFoundResults from '~/components/not-found-results/NotFoundResults'
 
 import { getNameById, getIdByName } from '~/utils/helper-functions'
 
@@ -42,6 +45,10 @@ const Categories = () => {
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
+
+  const { openModal } = useModalContext()
+  const handleOpenModal = () => openModal({ component: <CreateSubjectModal /> })
+  const [invalidSearch, setInvalidSearch] = useState(false)
 
   const fetchCategories = useCallback(
     async (pageToLoad = 1) => {
@@ -142,10 +149,16 @@ const Categories = () => {
     const itemId = getIdByName(categoriesNamesItems, value)
 
     if (value) {
-      const idToSet = itemId || ''
-      searchParams.set('id', idToSet)
+      if (itemId) {
+        setInvalidSearch(false)
+        searchParams.set('id', itemId)
+      } else {
+        setInvalidSearch(true)
+        searchParams.set('id', '')
+      }
       setSearchParams(searchParams)
     } else {
+      setInvalidSearch(false)
       searchParams.delete('id')
       setSearchParams(searchParams)
     }
@@ -189,13 +202,22 @@ const Categories = () => {
           }}
         />
       </AppToolbar>
-      <CardsList
-        btnText={t('categoriesPage.viewMore')}
-        cards={cards}
-        isExpandable={showLoadMoreButton}
-        loading={loading}
-        onClick={handleLoadMore}
-      />
+
+      {invalidSearch ? (
+        <NotFoundResults
+          buttonText={t('errorMessages.buttonRequest', { name: 'categories' })}
+          description={t('errorMessages.tryAgainText', { name: 'categories' })}
+          onClick={handleOpenModal}
+        />
+      ) : (
+        <CardsList
+          btnText={t('categoriesPage.viewMore')}
+          cards={cards}
+          isExpandable={showLoadMoreButton}
+          loading={loading}
+          onClick={handleLoadMore}
+        />
+      )}
     </PageWrapper>
   )
 }
