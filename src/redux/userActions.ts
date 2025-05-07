@@ -11,11 +11,12 @@ export const loadUserProfileData = async (
 ) => {
   try {
     const { data } = await userService.getUserById(userId, userRole)
+    console.log(`loadUserProfileData`, data)
     const { firstName, lastName, photo, appLanguage } = data
     dispatch(
       setUserProfileData({
-        firstName: firstName ?? '',
-        lastName: lastName ?? '',
+        firstName,
+        lastName,
         photo: photo ?? '',
         appLanguage: appLanguage ?? ''
       })
