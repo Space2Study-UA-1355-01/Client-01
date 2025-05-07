@@ -24,6 +24,8 @@ import { CategoryIconsMap } from '~/components/category-card/Icons'
 
 import { getNameById, getIdByName } from '~/utils/helper-functions'
 
+import ComputerIcon from '@mui/icons-material/Computer'
+
 const getAccessTokenFromCookie = () => {
   const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/)
   return match ? match[1] : ''
@@ -75,9 +77,10 @@ const Categories = () => {
           (card: CategoryInterface): CardWithLinkProps => ({
             _id: card._id,
             name: card.name,
-            icon: CategoryIconsMap[card.name],
+            icon: CategoryIconsMap[card.name] || ComputerIcon,
             description: `${Number(card.totalOffers)} Offers`,
             link: `${apiPath}/categories/${card._id}/subjects/names`,
+            //link: `localhost:3000/categories/${card._id}/subjects/names`,
             appearance: card.appearance
           })
         )

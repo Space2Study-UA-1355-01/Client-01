@@ -33,8 +33,8 @@ const CardsList: FC<CardsListProps> = ({
         </Box>
       ) : (
         <Box sx={styles.cardsContainer}>
-          {cards.map((card, index) => (
-            <CardWithLink key={index} {...card} />
+          {cards.map((card) => (
+            <CardWithLink key={card._id} {...card} />
           ))}
         </Box>
       )}
