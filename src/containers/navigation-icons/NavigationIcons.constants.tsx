@@ -1,8 +1,8 @@
 import LanguageIcon from '@mui/icons-material/Language'
 import MenuIcon from '@mui/icons-material/Menu'
 import LoginIcon from '@mui/icons-material/Login'
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import { IconButtonProps } from '@mui/material/IconButton'
+import UserAvatarIcon from '~/components/user-avatar-icon/UserAvatarIcon'
 
 import { styles } from '~/containers/navigation-icons/NavigationIcons.styles'
 
@@ -56,7 +56,7 @@ export const userIcons: NavigationIconButton[] = [
   languageIcon,
   {
     tooltip: 'iconsTooltip.account',
-    icon: <AccountCircleOutlinedIcon />,
+    icon: <UserAvatarIcon />,
     buttonProps: ({ openMenu }) => ({
       onClick: openMenu,
       sx: styles.studentIcons

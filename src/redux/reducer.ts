@@ -8,7 +8,9 @@ import {
 } from '@reduxjs/toolkit'
 import { AuthService, authService } from '~/services/auth-service'
 import { AxiosError } from 'axios'
-import { AccessToken, ErrorResponse, UserRole } from '~/types'
+import { AccessToken, ErrorResponse, UserRole, UserProfile } from '~/types'
+import { loadUserProfileData } from '~/redux/userActions'
+import { AppDispatch } from '~/redux/store'
 
 interface UserState {
   userId: string
@@ -20,6 +22,8 @@ interface UserState {
   pageLoad: boolean
   firstName: string
   lastName: string
+  photo: string
+  appLanguage: string
 }
 
 const initialState: UserState = {
@@ -31,7 +35,9 @@ const initialState: UserState = {
   error: '',
   isFirstLogin: true,
   firstName: '',
-  lastName: ''
+  lastName: '',
+  photo: '',
+  appLanguage: ''
 }
 
 export const checkAuth = createAsyncThunk(
@@ -41,6 +47,12 @@ export const checkAuth = createAsyncThunk(
       const { data } = await AuthService.refresh()
       if (data) {
         dispatch(setUser(data.accessToken))
+        const parsed = parseJwt<AccessToken>(data.accessToken)
+        await loadUserProfileData(
+          dispatch as AppDispatch,
+          parsed.id,
+          parsed.role
+        )
       }
     } catch (e) {
       const error = e as AxiosError<ErrorResponse>
@@ -78,12 +90,20 @@ export const mainSlice = createSlice({
       state.isFirstLogin = initialState.isFirstLogin
       state.firstName = initialState.firstName
       state.lastName = initialState.lastName
+      state.photo = initialState.photo
+      state.appLanguage = initialState.appLanguage
     },
     markFirstLoginComplete(state) {
       state.isFirstLogin = false
     },
     setPageLoading(state, action: PayloadAction<boolean>) {
       state.pageLoad = action.payload
+    },
+    setUserProfileData(state, action: PayloadAction<UserProfile>) {
+      state.firstName = action.payload.firstName
+      state.lastName = action.payload.lastName
+      state.photo = action.payload.photo
+      state.appLanguage = action.payload.appLanguage
     }
   },
   extraReducers: (builder) => {
@@ -125,7 +145,12 @@ export const mainSlice = createSlice({
 
 const { actions, reducer } = mainSlice
 
-export const { setUser, logout, markFirstLoginComplete, setPageLoading } =
-  actions
+export const {
+  setUser,
+  logout,
+  markFirstLoginComplete,
+  setPageLoading,
+  setUserProfileData
+} = actions
 
 export default reducer

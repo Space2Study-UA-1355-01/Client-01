@@ -1,13 +1,14 @@
 import { useCallback, useState } from 'react'
 
 import useAxios from '~/hooks/use-axios'
-import { useAppSelector } from '~/hooks/use-redux'
+import { useAppDispatch, useAppSelector } from '~/hooks/use-redux'
 import { useModalContext } from '~/context/modal-context'
 import { useStepContext } from '~/context/step-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import { userService } from '~/services/user-service'
 import { uploadPhotoService } from '~/services/upload-photo-service'
 import { snackbarVariants } from '~/constants'
+import { loadUserProfileData } from '~/redux/userActions'
 
 const useSteps = ({ steps }) => {
   const [activeStep, setActiveStep] = useState(0)
@@ -15,6 +16,7 @@ const useSteps = ({ steps }) => {
   const { stepData } = useStepContext()
   const { setAlert } = useSnackBarContext()
   const { userId, userRole } = useAppSelector((state) => state.appMain)
+  const dispatch = useAppDispatch()
 
   const updateUser = useCallback(
     (data) => {
@@ -31,7 +33,8 @@ const useSteps = ({ steps }) => {
     })
   }
 
-  const handleResponse = () => {
+  const handleResponse = async () => {
+    await loadUserProfileData(dispatch, userId, userRole)
     setAlert({
       severity: snackbarVariants.success,
       message: 'becomeTutor.successMessage'
@@ -102,7 +105,8 @@ const useSteps = ({ steps }) => {
         city: city ?? ''
       },
       professionalSummary,
-      mainSubjects: stepData.subjects,
+      mainSubjects:
+        stepData.subjects?.map((subject) => subject.categoryId) ?? [],
       nativeLanguage: stepData.language?.map((lang) => lang.label) ?? []
     }
 
