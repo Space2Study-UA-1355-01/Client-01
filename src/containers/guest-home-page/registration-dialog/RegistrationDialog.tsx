@@ -109,7 +109,6 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
   })
 
   useEffect(() => {
-    console.log('confirmPassword useEffect')
     if (data.confirmPassword.trim()) {
       validationTrigger(['confirmPassword'])
     }
