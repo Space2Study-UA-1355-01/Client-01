@@ -1,87 +1,89 @@
 import { FC } from 'react'
-import {
-  Card,
-  Box,
-  Avatar,
-  Typography,
-  Chip,
-  Button,
-  IconButton,
-  Stack
-} from '@mui/material'
-import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
-import StarIcon from '@mui/icons-material/Star'
-import LanguageIcon from '@mui/icons-material/Language'
 
-import { styles } from '~/components/offer-card/OfferCard.styles'
+import OfferCardRectangle from './offer-card-rectangle/OfferCardRectangle'
+// import OfferCardSquare from './offer-card-square/OfferCardSquare'
 
-const OfferCard: FC = () => (
-  <Card sx={styles.card}>
-    <Box sx={styles.container}>
-      <Box sx={styles.leftSection}>
-        <Avatar
-          alt='Jennifer W.'
-          src='profile-photo-url.jpg'
-          sx={styles.avatar}
-        />
-        <Typography sx={styles.name}>Jennifer W.</Typography>
-        <Box sx={styles.ratingBox}>
-          {Array.from({ length: 4 }, (_, i) => (
-            <StarIcon key={i} sx={styles.starIcon} />
-          ))}
-          <StarIcon sx={{ ...styles.starIcon, color: 'grey.300', mr: 0.5 }} />
-          <Typography sx={styles.ratingText}>3.5</Typography>
-        </Box>
-        <Typography sx={styles.reviews}>10 reviews</Typography>
-      </Box>
-      <Box sx={styles.middleSection}>
-        <Typography sx={styles.title}>
-          Advanced Quantum Mechanics: Theoretical Concepts, Mathematical
-          Formulations in Modern Physics
-        </Typography>
-        <Stack direction='row' spacing={1} sx={{ mb: 1 }}>
-          <Chip label='GERMAN' sx={styles.chip} />
-          <Chip
-            label='BEGINNER - ADVANCED'
-            sx={{
-              ...styles.chip,
-              bgcolor: 'success.100',
-              fontWeight: 400
-            }}
-          />
-        </Stack>
-        <Typography sx={styles.description}>
-          Hello. There are many variations of passages of Lorem Ipsum available,
-          but the majority have suffered alteration in some form, by injected
-          humour, or randomised words which don&apos;t look even slightly
-          believable...
-        </Typography>
-        <Box sx={styles.languageBox}>
-          <LanguageIcon sx={styles.languageIcon} />
-          <Typography color='text.secondary' variant='body2'>
-            Ukrainian, English
-          </Typography>
-        </Box>
-      </Box>
-      <Box sx={styles.rightSection}>
-        <Box sx={styles.priceBox}>
-          <Box>
-            <Typography sx={styles.price}>75 UAH</Typography>
-            <Typography sx={styles.perHour}>/hour</Typography>
-          </Box>
-          <IconButton sx={{ ml: 1 }}>
-            <BookmarkBorderIcon />
-          </IconButton>
-        </Box>
-        <Button sx={styles.showDetailsButton} variant='contained'>
-          Show details
-        </Button>
-        <Button sx={styles.sendMessageButton} variant='outlined'>
-          Send message
-        </Button>
-      </Box>
-    </Box>
-  </Card>
-)
+interface RatingInfo {
+  student: number
+  tutor: number
+}
+
+interface OfferCardProps {
+  price: number // 1
+  proficiencyLevel: string // 2
+  title: string // 3
+  description: string // 4
+  languages: string[] // 5; приходить масив навіть із 1 значенням
+  authorRole: string // витягнути в змінну? аби totalReviews[authorRole] and averageRating[authorRole] (динамічно відобразити)
+  author: {
+    firstName: string // 6
+    lastName: string // 7
+    photo: string
+
+    totalReviews: RatingInfo // 8
+    averageRating: RatingInfo // 9
+  } // приходить обєкт
+  subject: {
+    name: string // german
+  }
+  onShowDetails?: () => void
+  onSendMessage?: () => void
+}
+
+/*
+{
+    "_id": "681c9bdda9db8236f971b34d",
+    "price": 50,
+    "proficiencyLevel": "Beginner",
+    "title": "Sample Offer 1 for UX/UI Design",
+    "description": "This is a description for UX/UI Design offer.",
+    "languages": [
+        "English"
+    ],
+    "authorRole": "student",
+    "author": {
+        "_id": "680648277844011b957034ff",
+        "firstName": "kekekek",
+        "lastName": "kekekek",
+        "photo": "https:/./././"
+        "totalReviews": {
+            "student": 0,
+            "tutor": 0
+        },
+        "averageRating": {
+            "student": 0,
+            "tutor": 0
+        }
+    },
+    "category": {
+        "_id": "681c9bdda9db8236f971b31e",
+        "appearance": {
+            "icon": "#bc9d06",
+            "color": "#d8cb8d"
+        }
+    },
+    "subject": {
+        "_id": "681c9bdda9db8236f971b32e",
+        "name": "UX/UI Design"
+    },
+    "status": "active",
+    "FAQ": [
+        {
+            "question": "What is included?",
+            "answer": "The offer includes full support for the subject.",
+            "_id": "681c9bdda9db8236f971b34e"
+        },
+        {
+            "question": "Who is it for?",
+            "answer": "It is for students of all levels.",
+            "_id": "681c9bdda9db8236f971b34f"
+        }
+    ],
+    "createdAt": "2025-05-08T11:56:13.474Z",
+    "updatedAt": "2025-05-08T11:56:13.474Z"
+}
+ */
+
+const OfferCard: FC<OfferCardProps> = () => <OfferCardRectangle />
 
 export default OfferCard
