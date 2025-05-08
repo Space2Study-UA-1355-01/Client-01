@@ -33,6 +33,7 @@ const getAccessTokenFromCookie = () => {
 
 const LIMIT = 6
 const apiPath = import.meta.env.VITE_API_BASE_PATH
+const clientPath = 'http://localhost:3000'
 
 const Categories = () => {
   const { t } = useTranslation()
@@ -44,6 +45,8 @@ const Categories = () => {
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
+
+  console.log(selectedCategoryId)
 
   const fetchCategories = useCallback(
     async (pageToLoad = 1) => {
@@ -79,7 +82,7 @@ const Categories = () => {
             name: card.name,
             icon: CategoryIconsMap[card.name] || ComputerIcon,
             description: `${Number(card.totalOffers)} Offers`,
-            link: `${apiPath}/categories/${card._id}/subjects/names`,
+            link: `${clientPath}/categories/subjects?categoryId=${card._id}`,
             appearance: card.appearance
           })
         )
