@@ -12,7 +12,7 @@ export interface CardWithLinkProps {
   icon: React.ElementType
   appearance: CategoryAppearance
   name: string
-  description: string
+  description?: string
   link?: string
 }
 

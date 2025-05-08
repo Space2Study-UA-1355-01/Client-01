@@ -28,6 +28,8 @@ import NotFoundResults from '~/components/not-found-results/NotFoundResults'
 
 import { getNameById, getIdByName } from '~/utils/helper-functions'
 
+import ComputerIcon from '@mui/icons-material/Computer'
+
 const getAccessTokenFromCookie = () => {
   const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/)
   return match ? match[1] : ''
@@ -35,6 +37,7 @@ const getAccessTokenFromCookie = () => {
 
 const LIMIT = 6
 const apiPath = import.meta.env.VITE_API_BASE_PATH
+const clientPath = 'http://localhost:3000'
 
 const Categories = () => {
   const { t } = useTranslation()
@@ -85,7 +88,7 @@ const Categories = () => {
             name: card.name,
             icon: CategoryIconsMap[card.name] || DefaultCategoryIcon,
             description: `${Number(card.totalOffers)} Offers`,
-            link: `${apiPath}/categories/${card._id}/subjects/names`,
+            link: `${clientPath}/categories/subjects?categoryId=${card._id}`,
             appearance: card.appearance
           })
         )

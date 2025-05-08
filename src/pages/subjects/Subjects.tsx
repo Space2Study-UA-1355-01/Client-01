@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
-import axios from 'axios'
 
 import Box from '@mui/material/Box'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import StarIcon from '@mui/icons-material/Star'
 
 import { useAppSelector } from '~/hooks/use-redux'
 import useSubjectsNames from '~/hooks/use-subjects-names'
@@ -22,35 +22,66 @@ import CreateSubjectModal from '~/containers/find-offer/create-new-subject/Creat
 import AppToolbar from '~/components/app-toolbar/AppToolbar'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
 import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
-import useBreakpoints from '~/hooks/use-breakpoints'
-import serviceIcon from '~/assets/img/student-home-page/service_icon.png'
-import { getOpositeRole } from '~/utils/helper-functions'
+import { icons } from '~/components/subject-card-icon/icons'
 
+import useBreakpoints from '~/hooks/use-breakpoints'
+import { getOpositeRole } from '~/utils/helper-functions'
+import { mapArrayByField } from '~/utils/map-array-by-field'
 import {
   CategoryNameInterface,
   SizeEnum,
-  SubjectInterface,
-  SubjectNameInterface
+  SubjectNameInterface,
+  CategoryAppearance,
+  CardWithLinkProps
 } from '~/types'
 import { authRoutes } from '~/router/constants/authRoutes'
 import { styles } from '~/pages/subjects/Subjects.styles'
+import { axiosClient } from '~/plugins/axiosClient'
 
 interface SubjectApiResponse {
-  data: { _id: string; name: string }[]
+  data: {
+    _id: string
+    name: string
+    category: {
+      _id: string
+      name: string
+      appearance: CategoryAppearance
+    }
+    totalOffers: { student: number; tutor: number }
+  }[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+interface SubjectsInterfaceWithIcon {
+  _id: string
+  name: string
+  icon: React.ElementType
+  appearance: CategoryAppearance
+  description?: string
+  link?: string
+  totalOffers: { [key: string]: number }
 }
 
 const Subjects = () => {
   const [match, setMatch] = useState<string>('')
   const [categoryName, setCategoryName] = useState<string>('')
   const [isFetched, setIsFetched] = useState<boolean>(false)
-  const [subjects, setSubjects] = useState<SubjectInterface[]>([])
+  const [subjects, setSubjects] = useState<SubjectsInterfaceWithIcon[]>([])
   const [subjectsLoading, setSubjectsLoading] = useState<boolean>(false)
+  const [page, setPage] = useState(1)
+  const [isMore, setIsMore] = useState(true)
+
+  const LIMIT = 4
 
   const { t } = useTranslation()
   const { userRole } = useAppSelector((state) => state.appMain)
   const breakpoints = useBreakpoints()
   const { openModal } = useModalContext()
   const [searchParams, setSearchParams] = useSearchParams()
+
   const categoryId = searchParams.get('categoryId') ?? ''
 
   const oppositeRole = getOpositeRole(userRole) || 'tutor'
@@ -90,65 +121,89 @@ const Subjects = () => {
     }
   }, [categoryId, getSubjectNames])
 
-  const fetchSubjects = useCallback(async () => {
-    if (!categoryId) {
-      console.warn('categoryId is empty, setting empty subjects')
-      setSubjects([])
-      return
-    }
-    setSubjectsLoading(true)
-    try {
-      const response = await axios.get<SubjectApiResponse>(
-        `http://localhost:8080/categories/${categoryId}/subjects/names`,
-        {
-          withCredentials: true
-        }
-      )
+  const fetchSubjects = useCallback(
+    async (pageToLoad = 1) => {
+      setSubjectsLoading(true)
+      try {
+        const endpoint = categoryId
+          ? `/categories/${categoryId}/subjects`
+          : `/subjects`
 
-      if (!response.data || !Array.isArray(response.data.data)) {
-        console.warn(
-          'Server returned empty or invalid response:',
-          response.data
-        )
-        setSubjects([])
-        return
-      }
-
-      const items: SubjectInterface[] = response.data.data.map(
-        (item: { _id: string; name: string }) => ({
-          _id: item._id,
-          name: item.name,
-          totalOffers: { [oppositeRole]: 0 }
+        const response = await axiosClient.get<SubjectApiResponse>(endpoint, {
+          //headers,
+          params: { page: pageToLoad, limit: LIMIT }
         })
-      )
+        console.log('Server response:', response.data)
 
-      setSubjects(items)
-    } catch (error) {
-      console.error('Error fetching subjects:', error)
-      setSubjects([])
-    } finally {
-      setSubjectsLoading(false)
-    }
-  }, [categoryId, oppositeRole])
+        if (!response.data || !Array.isArray(response.data.data)) {
+          console.warn(
+            'Server returned empty or invalid response:',
+            response.data
+          )
+          setSubjects([])
+          return
+        }
+
+        const items: SubjectsInterfaceWithIcon[] = response.data.data.map(
+          (item: {
+            _id: string
+            name: string
+            category: {
+              _id: string
+              name: string
+              appearance: CategoryAppearance
+            }
+            totalOffers: { student: number; tutor: number }
+          }) => ({
+            _id: item._id,
+            name: item.name,
+            icon: icons[item.name] || StarIcon,
+            appearance: item.category.appearance,
+            totalOffers: item.totalOffers
+          })
+        )
+
+        setSubjects((prev) => (pageToLoad === 1 ? items : [...prev, ...items]))
+        setIsMore(pageToLoad < response.data.totalPages)
+      } catch (error) {
+        console.error('Error fetching subjects:', error)
+        setSubjects([])
+      } finally {
+        setSubjectsLoading(false)
+      }
+    },
+    [categoryId, oppositeRole]
+  )
 
   useEffect(() => {
-    void fetchSubjects()
-  }, [fetchSubjects])
+    setSubjects([])
+    setPage(1)
+    setIsMore(true)
+    void fetchSubjects(1)
+  }, [fetchSubjects, categoryId])
+
+  const handleLoadMore = () => {
+    if (!isMore || subjectsLoading) return
+    const nextPage = page + 1
+    setPage(nextPage)
+    void fetchSubjects(nextPage)
+  }
 
   const resetData = () => {
     setSubjects([])
     setMatch('')
   }
 
-  const cards = useMemo(
+  const cards: CardWithLinkProps[] = useMemo(
     () =>
       subjects.length > 0
-        ? subjects.map((item: SubjectInterface) => ({
+        ? subjects.map((item: SubjectsInterfaceWithIcon) => ({
             _id: item._id,
+            icon: item.icon,
+            appearance: item.appearance,
+            name: item.name,
             description: `${item.totalOffers[oppositeRole]} ${t('categoriesPage.offers')}`,
-            img: serviceIcon,
-            link: `${authRoutes.categories.path}?categoryId=${categoryId}&subjectId=${item._id}`,
-            title: item.name
+            link: `/categories/subjects/find-offers?categoryId=${categoryId}&subjectId=${item._id}`
           }))
         : [],
     [subjects, categoryId, oppositeRole, t]
@@ -229,13 +284,10 @@ const Subjects = () => {
       ) : (
         <CardsList
           btnText={t('categoriesPage.viewMore')}
-          cards={cards.map((card) => ({
-            ...card,
-            link: `/categories/subjects/find-offers?categoryId=${categoryId}&subjectId=${card._id}`
-          }))}
-          isExpandable={false}
+          cards={cards}
+          isExpandable={isMore}
           loading={subjectsLoading}
-          onClick={() => {}}
+          onClick={handleLoadMore}
         />
       )}
     </PageWrapper>
