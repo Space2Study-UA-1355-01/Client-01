@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
-
 import axios from 'axios'
 
 import Box from '@mui/material/Box'
@@ -26,7 +25,6 @@ import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
 import useBreakpoints from '~/hooks/use-breakpoints'
 import serviceIcon from '~/assets/img/student-home-page/service_icon.png'
 import { getOpositeRole } from '~/utils/helper-functions'
-import { mapArrayByField } from '~/utils/map-array-by-field'
 
 import {
   CategoryNameInterface,
@@ -57,10 +55,9 @@ const Subjects = () => {
 
   const oppositeRole = getOpositeRole(userRole) || 'tutor'
 
-  const transform = useCallback(
-    (data: SubjectNameInterface[]): string[] => mapArrayByField(data, 'name'),
-    []
-  )
+  const transform: (
+    data: SubjectNameInterface[] | { data: SubjectNameInterface[] }
+  ) => SubjectNameInterface[] = (res) => (Array.isArray(res) ? res : res.data)
 
   const {
     loading: subjectNamesLoading,
@@ -72,12 +69,26 @@ const Subjects = () => {
     transform
   })
 
-  const getSubjectNames = () => {
+  const getSubjectNames = useCallback(() => {
     if (!isFetched) {
       void fetchData()
       setIsFetched(true)
     }
-  }
+  }, [fetchData, isFetched])
+
+  const subjectOptions: string[] = useMemo(
+    () =>
+      categoryId && subjects.length > 0
+        ? subjectsNamesItems.map((item) => item.name)
+        : [],
+    [subjectsNamesItems, categoryId, subjects]
+  )
+
+  useEffect(() => {
+    if (categoryId) {
+      getSubjectNames()
+    }
+  }, [categoryId, getSubjectNames])
 
   const fetchSubjects = useCallback(async () => {
     if (!categoryId) {
@@ -93,7 +104,6 @@ const Subjects = () => {
           withCredentials: true
         }
       )
-      console.log('Server response:', response.data)
 
       if (!response.data || !Array.isArray(response.data.data)) {
         console.warn(
@@ -193,7 +203,7 @@ const Subjects = () => {
         />
         <DirectionLink
           after={<ArrowForwardIcon fontSize={SizeEnum.Small} />}
-          linkTo={authRoutes.categories.path}
+          linkTo={authRoutes.findOffers.path}
           title={t('subjectsPage.subjects.showAllOffers')}
         />
       </Box>
@@ -201,10 +211,8 @@ const Subjects = () => {
         {!breakpoints.isMobile && autoCompleteCategories}
         <SearchAutocomplete
           loading={subjectNamesLoading}
-          onFocus={getSubjectNames}
-          onSearchChange={() => setSubjects([])}
-          options={subjectsNamesItems}
-          search={match}
+          options={subjectOptions}
+          search={match || ''}
           setSearch={setMatch}
           textFieldProps={{
             label: t('subjectsPage.subjects.searchLabel')
