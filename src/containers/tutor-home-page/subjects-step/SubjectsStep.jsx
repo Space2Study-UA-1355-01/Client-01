@@ -77,8 +77,7 @@ export const subjectsMock = {
 
 const SubjectsStep = ({ btnsBox }) => {
   const { t } = useTranslation()
-  const { stepData, handleStepData } = useStepContext()
-  const subjectLabel = 'subjects'
+  const { stepData, handleStepData, subjectLabel } = useStepContext()
   const { setUnsavedChanges } = useModalContext()
   const { setNeedConfirmation } = useConfirm()
   const subjects = Array.isArray(stepData[subjectLabel])
