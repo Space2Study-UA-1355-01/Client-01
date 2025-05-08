@@ -21,13 +21,7 @@ const ProfileContainerDesktop = ({
   return (
     <Box sx={styles.container}>
       <Box sx={styles.avatarContainer}>
-        <Avatar
-          src={
-            userData.photo &&
-            `${import.meta.env.VITE_APP_IMG_USER_URL}${userData.photo}`
-          }
-          sx={styles.img}
-        />
+        <Avatar src={userData.photo} sx={styles.img} />
       </Box>
       {actionIcon}
 

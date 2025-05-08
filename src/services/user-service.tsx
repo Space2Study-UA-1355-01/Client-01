@@ -6,7 +6,8 @@ import {
   GetUsersParams,
   UpdateUserParams,
   UserResponse,
-  UserRole
+  UserRole,
+  UpdateUserLanguageParams
 } from '~/types'
 
 export const userService = {
@@ -38,5 +39,15 @@ export const userService = {
   },
   deleteUsers: (userIds: string): Promise<AxiosResponse<null>> => {
     return axiosClient.post(URLs.users.delete, userIds)
+  },
+  updateUserLanguage: (
+    userId: string,
+    userRole: UserRole,
+    params: UpdateUserLanguageParams
+  ): Promise<AxiosResponse<null>> => {
+    return axiosClient.patch(
+      createUrlPath(URLs.users.update, userId, { role: userRole }),
+      params
+    )
   }
 }

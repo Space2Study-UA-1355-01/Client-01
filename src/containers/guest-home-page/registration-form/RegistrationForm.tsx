@@ -57,8 +57,10 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
   data,
   errors
 }) => {
-  const { inputVisibility: passwordVisibility, showInputText: showPassword } =
-    useInputVisibility()
+  const passwordVisibility = useInputVisibility(Boolean(errors.password))
+  const confirmPasswordVisibility = useInputVisibility(
+    Boolean(errors.confirmPassword)
+  )
 
   const [iAgreeCheck, setIAgreeCheck] = useState(false)
   const { setUnsavedChanges } = useModalContext()
@@ -132,8 +134,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       error: errors.password ? t(errors.password) : '',
       handleChange: handleChange('password'),
       handleBlur: handleBlur('password'),
-      type: showPassword ? 'text' : 'password',
-      InputProps: passwordVisibility,
+      type: passwordVisibility.showInputText ? 'text' : 'password',
+      InputProps: passwordVisibility.inputVisibility,
       sx: { mb: '5px' }
     },
     {
@@ -143,8 +145,8 @@ const RegistrationForm: React.FC<RegistrationFormProps> = ({
       error: errors.confirmPassword ? t(errors.confirmPassword) : '',
       handleChange: handleChange('confirmPassword'),
       handleBlur: handleBlur('confirmPassword'),
-      type: showPassword ? 'text' : 'password',
-      InputProps: passwordVisibility
+      type: confirmPasswordVisibility.showInputText ? 'text' : 'password',
+      InputProps: confirmPasswordVisibility.inputVisibility
     }
   ]
 

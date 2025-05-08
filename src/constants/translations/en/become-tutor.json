@@ -30,5 +30,6 @@
     "fileSizeError": "Maximum file size - 10 MB."
   },
   "successMessage": "Success! Your data were added.",
-  "warningMessage": "Your data has been saved! However, the photo upload did not succeed. Please try again."
+  "warningMessage": "Your data has been saved! However, the photo upload did not succeed. Please try again.",
+  "warningLoadingUserData": "Your data has been saved, but something went wrong while loading your profile. Please refresh the page."
 }

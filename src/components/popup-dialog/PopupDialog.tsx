@@ -7,6 +7,7 @@ import { PaperProps } from '@mui/material'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
 import { useModalContext } from '~/context/modal-context'
+import useConfirm from '~/hooks/use-confirm'
 import { UserRoleEnum } from '~/types'
 import { useTranslation } from 'react-i18next'
 import { styles } from '~/components/popup-dialog/PopupDialog.styles'
@@ -34,6 +35,7 @@ const PopupDialog: FC<PopupDialogProps> = ({
   const { isMobile } = useBreakpoints()
   const { openDialog } = useContext(ConfirmationDialogContext)
   const { unsavedChanges } = useModalContext()
+  const { setNeedConfirmation } = useConfirm()
   const { t } = useTranslation()
 
   const handleClose = () => {
@@ -43,10 +45,12 @@ const PopupDialog: FC<PopupDialogProps> = ({
         message: t('confirmationWindow.unsavedChanges'),
         sendConfirm: (confirmed) => {
           if (confirmed) closeModal()
+          setNeedConfirmation(false)
         }
       })
     } else {
       closeModal()
+      setNeedConfirmation(false)
     }
   }
 
