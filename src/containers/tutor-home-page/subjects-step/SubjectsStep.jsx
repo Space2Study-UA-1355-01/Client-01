@@ -32,17 +32,14 @@ const SubjectsStep = ({ btnsBox }) => {
   const [visibleCategories, setVisibleCategories] = useState([])
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [setCategoriesLoaded] = useState(false)
+  const [categoriesLoaded, setCategoriesLoaded] = useState(false)
 
   const categoriesPerPage = 4
 
-  const {
-    response: categories,
-    fetchData: fetchCategories,
-    error: categoriesError
-  } = useCategoriesStepper({
-    fetchOnMount: false
-  })
+  const { response: categories, fetchData: fetchCategories } =
+    useCategoriesStepper({
+      fetchOnMount: false
+    })
 
   const { response: subcategories, fetchData: fetchSubcategories } =
     useSubjectsStepper({
@@ -59,14 +56,16 @@ const SubjectsStep = ({ btnsBox }) => {
     })
 
   useEffect(() => {
+    if (categoriesLoaded) return
+    setCategoriesLoaded(true)
     fetchCategories({ page, limit: categoriesPerPage })
-      .then(() => {
-        setCategoriesLoaded(true)
-      })
       .catch((error) => {
-        console.error('Error category download:', error)
+        console.error('Error fetching categories:', error)
       })
-  }, [page, fetchCategories, setCategoriesLoaded])
+      .finally(() => {
+        setCategoriesLoaded(false)
+      })
+  }, [page, fetchCategories])
 
   useEffect(() => {
     if (categories && categories.data && categories.data.length > 0) {
@@ -75,12 +74,16 @@ const SubjectsStep = ({ btnsBox }) => {
         value: category._id,
         appearance: category.appearance
       }))
-      setVisibleCategories((prev) =>
-        page === 1 ? fetchedCategories : [...prev, ...fetchedCategories]
-      )
+      setVisibleCategories((prev) => {
+        const existingIds = new Set(prev.map((cat) => cat.value))
+        const newCategories = fetchedCategories.filter(
+          (cat) => !existingIds.has(cat.value)
+        )
+        return page === 1 ? fetchedCategories : [...prev, ...newCategories]
+      })
       setTotalPages(categories.totalPages || 1)
     }
-  }, [categories, categoriesError, page])
+  }, [categories, page])
 
   const memoizedFetchSubcategories = useCallback(() => {
     if (selectedCategory?.value) {
