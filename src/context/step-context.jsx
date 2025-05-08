@@ -54,7 +54,9 @@ const StepProvider = ({ children, initialValues, stepLabels }) => {
   )
 
   return (
-    <StepContext.Provider value={{ stepData, handleStepData, photoLabel }}>
+    <StepContext.Provider
+      value={{ stepData, handleStepData, photoLabel, subjectLabel }}
+    >
       {children}
     </StepContext.Provider>
   )
