@@ -97,6 +97,7 @@ const SubjectsStep = ({ btnsBox }) => {
     if (selectedCategory?.value) {
       debouncedFetchSubcategories()
     }
+    // eslint-disable-next-line
   }, [selectedCategory?.value])
 
   const handleCategoryChange = useCallback(
@@ -117,9 +118,14 @@ const SubjectsStep = ({ btnsBox }) => {
     [setUnsavedChanges, setNeedConfirmation]
   )
 
-  const handleSubjectChange = useCallback((newValue) => {
-    setSelectedSubject(newValue?.title || null)
-  }, [])
+  const handleSubjectChange = useCallback(
+    (newValue) => {
+      setSelectedSubject(newValue?.title || null)
+      setUnsavedChanges(true)
+      setNeedConfirmation(true)
+    },
+    [setUnsavedChanges, setNeedConfirmation]
+  )
 
   const handleButtonClick = () => {
     if (
@@ -144,6 +150,8 @@ const SubjectsStep = ({ btnsBox }) => {
   const handleChipDelete = (item) => {
     const updatedSubjects = subjects.filter((subject) => subject.name !== item)
     handleStepData(subjectLabel, updatedSubjects)
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   const handleScroll = useCallback(
