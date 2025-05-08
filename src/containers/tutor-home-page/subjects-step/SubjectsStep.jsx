@@ -15,66 +15,6 @@ import { styles } from './SubjectsStep.styles'
 import { useModalContext } from '~/context/modal-context'
 import useConfirm from '~/hooks/use-confirm'
 
-export const categoriesMock = [
-  { title: 'History', value: 'history' },
-  { title: 'Mathematics', value: 'mathematics' },
-  { title: 'Physics', value: 'physics' },
-  { title: 'Chemistry', value: 'chemistry' },
-  { title: 'Literature', value: 'literature' },
-  { title: 'Economics', value: 'economics' }
-]
-
-export const subjectsMock = {
-  history: [
-    { title: 'Ancient History', value: 'ancient_history' },
-    { title: 'Medieval History', value: 'medieval_history' },
-    { title: 'Modern History', value: 'modern_history' },
-    { title: 'World War II', value: 'world_war_ii' },
-    { title: 'American History', value: 'american_history' },
-    { title: 'European History', value: 'european_history' }
-  ],
-  mathematics: [
-    { title: 'Algebra', value: 'algebra' },
-    { title: 'Calculus', value: 'calculus' },
-    { title: 'Geometry', value: 'geometry' },
-    { title: 'Statistics', value: 'statistics' },
-    { title: 'Number Theory', value: 'number_theory' },
-    { title: 'Differential Equations', value: 'differential_equations' }
-  ],
-  physics: [
-    { title: 'Mechanics', value: 'mechanics' },
-    { title: 'Electromagnetism', value: 'electromagnetism' },
-    { title: 'Thermodynamics', value: 'thermodynamics' },
-    { title: 'Quantum Physics', value: 'quantum_physics' },
-    { title: 'Optics', value: 'optics' },
-    { title: 'Relativity', value: 'relativity' }
-  ],
-  chemistry: [
-    { title: 'Organic Chemistry', value: 'organic_chemistry' },
-    { title: 'Inorganic Chemistry', value: 'inorganic_chemistry' },
-    { title: 'Physical Chemistry', value: 'physical_chemistry' },
-    { title: 'Biochemistry', value: 'biochemistry' },
-    { title: 'Analytical Chemistry', value: 'analytical_chemistry' },
-    { title: 'Environmental Chemistry', value: 'environmental_chemistry' }
-  ],
-  literature: [
-    { title: 'Classical Literature', value: 'classical_literature' },
-    { title: 'Modern Literature', value: 'modern_literature' },
-    { title: 'Poetry', value: 'poetry' },
-    { title: 'Drama', value: 'drama' },
-    { title: 'American Literature', value: 'american_literature' },
-    { title: 'World Literature', value: 'world_literature' }
-  ],
-  economics: [
-    { title: 'Microeconomics', value: 'microeconomics' },
-    { title: 'Macroeconomics', value: 'macroeconomics' },
-    { title: 'International Economics', value: 'international_economics' },
-    { title: 'Behavioral Economics', value: 'behavioral_economics' },
-    { title: 'Development Economics', value: 'development_economics' },
-    { title: 'Financial Economics', value: 'financial_economics' }
-  ]
-}
-
 const SubjectsStep = ({ btnsBox }) => {
   const { t } = useTranslation()
   const { stepData, handleStepData } = useStepContext()
@@ -157,7 +97,7 @@ const SubjectsStep = ({ btnsBox }) => {
     if (selectedCategory?.value) {
       debouncedFetchSubcategories()
     }
-  }, [selectedCategory?.value, debouncedFetchSubcategories])
+  }, [selectedCategory?.value])
 
   const handleCategoryChange = useCallback(
     (newValue) => {
@@ -177,14 +117,9 @@ const SubjectsStep = ({ btnsBox }) => {
     [setUnsavedChanges, setNeedConfirmation]
   )
 
-  const handleSubjectChange = useCallback(
-    (newValue) => {
-      setSelectedSubject(newValue?.title || null)
-      setUnsavedChanges(true)
-      setNeedConfirmation(true)
-    },
-    [setUnsavedChanges, setNeedConfirmation]
-  )
+  const handleSubjectChange = useCallback((newValue) => {
+    setSelectedSubject(newValue?.title || null)
+  }, [])
 
   const handleButtonClick = () => {
     if (
@@ -207,10 +142,8 @@ const SubjectsStep = ({ btnsBox }) => {
   }
 
   const handleChipDelete = (item) => {
-    const updatedSubjects = subjects.filter((subject) => subject !== item)
-    handleStepData(subjectLabel, updatedSubjects, {})
-    setUnsavedChanges(true)
-    setNeedConfirmation(true)
+    const updatedSubjects = subjects.filter((subject) => subject.name !== item)
+    handleStepData(subjectLabel, updatedSubjects)
   }
 
   const handleScroll = useCallback(
