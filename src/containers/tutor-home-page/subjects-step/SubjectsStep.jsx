@@ -1,12 +1,19 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import { Box, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useStepContext } from '~/context/step-context'
+import { useDebounce } from '~/hooks/use-debounce'
+
 import AppAutoCompleteCategories from '~/components/app-autocomplete-categories/AppAutoCompleteCategories'
 import AppButton from '~/components/app-button/AppButton'
-import AppChipList from '~/components/app-chips-list/AppChipList'
+import AppChiplistCategory from '~/components/app-chiplist-category/AppChiplistCategory'
 import studyCategoryImg from '~/assets/img/tutor-home-page/become-tutor/study-category.svg'
+import useCategoriesStepper from '~/hooks/use-categories-stepper'
+import useSubjectsStepper from '~/hooks/use-subjects-stepper'
 import { styles } from './SubjectsStep.styles'
+
+import { useModalContext } from '~/context/modal-context'
+import useConfirm from '~/hooks/use-confirm'
 
 export const categoriesMock = [
   { title: 'History', value: 'history' },
@@ -72,46 +79,138 @@ const SubjectsStep = ({ btnsBox }) => {
   const { t } = useTranslation()
   const { stepData, handleStepData } = useStepContext()
   const subjectLabel = 'subjects'
+  const { setUnsavedChanges } = useModalContext()
+  const { setNeedConfirmation } = useConfirm()
   const subjects = Array.isArray(stepData[subjectLabel])
-    ? stepData[subjectLabel]
+    ? stepData[subjectLabel].map((item) =>
+        typeof item === 'string' ? { name: item, categoryId: null } : item
+      )
     : []
 
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [selectedSubject, setSelectedSubject] = useState(null)
-  const [visibleCategories, setVisibleCategories] = useState(
-    categoriesMock.slice(0, 4)
-  )
+  const [visibleCategories, setVisibleCategories] = useState([])
   const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [setCategoriesLoaded] = useState(false)
 
   const categoriesPerPage = 4
 
-  const subcategories = selectedCategory
-    ? subjectsMock[selectedCategory] || []
-    : []
+  const {
+    response: categories,
+    fetchData: fetchCategories,
+    error: categoriesError
+  } = useCategoriesStepper({
+    fetchOnMount: false
+  })
 
-  const handleCategoryChange = (newValue) => {
-    setSelectedCategory(newValue?.value || null)
-    setSelectedSubject(null)
-  }
+  const { response: subcategories, fetchData: fetchSubcategories } =
+    useSubjectsStepper({
+      category: selectedCategory?.value,
+      fetchOnMount: false,
+      transform: (data) => {
+        return data.map((subject) => {
+          return {
+            title: subject.name,
+            value: subject.category || 'unknown'
+          }
+        })
+      }
+    })
 
-  const handleSubjectChange = (newValue) => {
-    setSelectedSubject(newValue?.title || null)
-  }
+  useEffect(() => {
+    fetchCategories({ page, limit: categoriesPerPage })
+      .then(() => {
+        setCategoriesLoaded(true)
+      })
+      .catch((error) => {
+        console.error('Error category download:', error)
+      })
+  }, [page, fetchCategories, setCategoriesLoaded])
+
+  useEffect(() => {
+    if (categories && categories.data && categories.data.length > 0) {
+      const fetchedCategories = categories.data.map((category) => ({
+        title: category.name,
+        value: category._id,
+        appearance: category.appearance
+      }))
+      setVisibleCategories((prev) =>
+        page === 1 ? fetchedCategories : [...prev, ...fetchedCategories]
+      )
+      setTotalPages(categories.totalPages || 1)
+    }
+  }, [categories, categoriesError, page])
+
+  const memoizedFetchSubcategories = useCallback(() => {
+    if (selectedCategory?.value) {
+      fetchSubcategories()
+    }
+  }, [fetchSubcategories, selectedCategory?.value])
+
+  const debouncedFetchSubcategories = useDebounce(
+    memoizedFetchSubcategories,
+    500
+  )
+
+  useEffect(() => {
+    if (selectedCategory?.value) {
+      debouncedFetchSubcategories()
+    }
+  }, [selectedCategory?.value, debouncedFetchSubcategories])
+
+  const handleCategoryChange = useCallback(
+    (newValue) => {
+      console.log('handleCategoryChange called with:', newValue)
+      if (!newValue || !newValue.value) {
+        setSelectedCategory(null)
+        setSelectedSubject(null)
+        return
+      }
+      setSelectedCategory((prev) =>
+        prev?.value === newValue.value ? prev : newValue
+      )
+      setSelectedSubject(null)
+      setUnsavedChanges(true)
+      setNeedConfirmation(true)
+    },
+    [setUnsavedChanges, setNeedConfirmation]
+  )
+
+  const handleSubjectChange = useCallback(
+    (newValue) => {
+      setSelectedSubject(newValue?.title || null)
+      setUnsavedChanges(true)
+      setNeedConfirmation(true)
+    },
+    [setUnsavedChanges, setNeedConfirmation]
+  )
 
   const handleButtonClick = () => {
-    if (selectedSubject) {
-      const updatedSubjects = [...subjects, selectedSubject]
+    if (
+      selectedSubject &&
+      !subjects.some((subject) => subject.name === selectedSubject)
+    ) {
+      const newSubject = {
+        name: selectedSubject,
+        categoryId: selectedCategory?.value || null
+      }
+      const updatedSubjects = [...subjects, newSubject]
       handleStepData(subjectLabel, updatedSubjects)
+      setUnsavedChanges(true)
+      setNeedConfirmation(true)
       setSelectedCategory(null)
       setSelectedSubject(null)
     } else {
-      console.log('No subject selected')
+      console.log('No subject selected or subject already added')
     }
   }
 
   const handleChipDelete = (item) => {
     const updatedSubjects = subjects.filter((subject) => subject !== item)
     handleStepData(subjectLabel, updatedSubjects, {})
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   const handleScroll = useCallback(
@@ -119,28 +218,26 @@ const SubjectsStep = ({ btnsBox }) => {
       const listbox = event.currentTarget
       const isAtBottom =
         listbox.scrollTop + listbox.clientHeight >= listbox.scrollHeight - 10
-
-      if (isAtBottom && visibleCategories.length < categoriesMock.length) {
-        const nextPage = page + 1
-        const newCategories = categoriesMock.slice(
-          0,
-          nextPage * categoriesPerPage
-        )
-        setVisibleCategories(newCategories)
-        setPage(nextPage)
+      if (isAtBottom && page < totalPages) {
+        setPage((prev) => prev + 1)
       }
     },
-    [page, visibleCategories.length]
+    [page, totalPages]
   )
 
-  useEffect(() => {
-    setVisibleCategories(categoriesMock.slice(0, categoriesPerPage))
-    setPage(1)
-  }, [])
+  const memoizedVisibleCategories = useMemo(
+    () => visibleCategories,
+    [visibleCategories]
+  )
+  const memoizedSubcategories = useMemo(() => subcategories, [subcategories])
 
   return (
     <Box sx={styles.step}>
-      <Typography component='h2' sx={styles.body2}>
+      <Typography
+        aria-label={t('common.categoryStep.title')}
+        component='h2'
+        sx={styles.body2}
+      >
         {t('common.categoryStep.title')}
       </Typography>
 
@@ -156,32 +253,27 @@ const SubjectsStep = ({ btnsBox }) => {
 
         <Box sx={styles.content}>
           <Box sx={styles.autocompletes}>
-            {categoriesMock.length > 0 ? (
-              <AppAutoCompleteCategories
-                ListboxProps={{
-                  style: { maxHeight: '140px' },
-                  onScroll: handleScroll
-                }}
-                getOptionLabel={(option) => option.title}
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
-                onChange={(_event, newValue) => handleCategoryChange(newValue)}
-                options={visibleCategories}
-                textFieldProps={{
-                  label: 'Main Tutoring Category',
-                  variant: 'outlined'
-                }}
-                value={
-                  categoriesMock.find(
-                    (option) => option.value === selectedCategory
-                  ) || null
-                }
-              />
-            ) : (
-              <p>No categories</p>
-            )}
-
+            <AppAutoCompleteCategories
+              ListboxProps={{
+                style: { maxHeight: '140px' },
+                onScroll: handleScroll
+              }}
+              getOptionLabel={(option) => option.title}
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
+              onChange={(_event, newValue) => handleCategoryChange(newValue)}
+              options={memoizedVisibleCategories}
+              textFieldProps={{
+                label: t('common.categoryStep.labelCategory'),
+                variant: 'outlined'
+              }}
+              value={
+                memoizedVisibleCategories.find(
+                  (option) => option.value === selectedCategory?.value
+                ) || null
+              }
+            />
             <AppAutoCompleteCategories
               ListboxProps={{ style: { maxHeight: '140px' } }}
               disabled={!selectedCategory}
@@ -191,11 +283,14 @@ const SubjectsStep = ({ btnsBox }) => {
                 option.value === value.value
               }
               onChange={(_event, newValue) => handleSubjectChange(newValue)}
-              options={subcategories}
-              textFieldProps={{ label: 'Subject', variant: 'outlined' }}
+              options={memoizedSubcategories}
+              textFieldProps={{
+                label: t('common.categoryStep.labelSubject'),
+                variant: 'outlined'
+              }}
               value={
-                subcategories.find(
-                  (option) => option.value === selectedSubject
+                memoizedSubcategories.find(
+                  (option) => option.title === selectedSubject
                 ) || null
               }
             />
@@ -204,8 +299,9 @@ const SubjectsStep = ({ btnsBox }) => {
               {t('common.categoryStep.buttonText')}
             </AppButton>
 
-            <AppChipList
+            <AppChiplistCategory
               defaultQuantity={3}
+              getLabel={(subject) => subject.name}
               handleChipDelete={handleChipDelete}
               items={subjects}
               sx={styles.chipListWrapper}

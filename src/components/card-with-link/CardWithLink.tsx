@@ -5,27 +5,41 @@ import AppCard from '~/components/app-card/AppCard'
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
 
 import { styles } from '~/components/card-with-link/CardWithLink.styles'
+import { CategoryAppearance } from '~/types'
 
-interface CardWithLinkProps {
-  img: string
-  title: string
-  description: string
-  link: string
+export interface CardWithLinkProps {
+  _id: string
+  icon: React.ElementType
+  appearance: CategoryAppearance
+  name: string
+  description?: string
+  link?: string
 }
 
 const CardWithLink: FC<CardWithLinkProps> = ({
-  img,
-  title,
+  icon,
+  name,
   description,
-  link
+  link,
+  appearance
 }) => {
+  const IconComponent = icon
   return (
     <AppCard link={link}>
-      <Box alt='item image' component='img' src={img} sx={styles.img} />
+      <Box
+        sx={{
+          ...styles.img,
+          backgroundColor: appearance.color
+        }}
+      >
+        <IconComponent
+          sx={{ width: '32px', height: '32px', color: appearance.icon }}
+        />
+      </Box>
       <TitleWithDescription
         description={description}
         style={styles.titleWithDescription}
-        title={title}
+        title={name}
       />
     </AppCard>
   )

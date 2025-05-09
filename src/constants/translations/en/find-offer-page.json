@@ -4,8 +4,14 @@
       "tutor": "Student for private lessons",
       "student": "Tutor for private lessons"
     },
-    "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.",
-    "button": "Create request"
+    "description": {
+      "tutor": "Start building your tutoring business by creating your offer. Select the options that best describes your expertise.",
+      "student": "Find the perfect tutor for your needs by creating a request. Select the options that best describe what you`re looking for."
+    },
+    "button": {
+      "tutor": "Create request",
+      "student": "Create offer"
+    }
   },
   "titleWithDescription": {
     "title": "Explore Offers",
@@ -42,12 +48,16 @@
     "rating": "Rating",
     "priceAsc": "Price low-high",
     "priceDesc": "Price high-low",
-    "name":"Name"
+    "name": "Name"
   },
-  "notFound":{
+  "popularCategories": {
+    "title": "Popular Categories",
+    "viewAllCategories": "View all categories"
+  },
+  "notFound": {
     "description": "We couldn’t find what you were searching for."
   },
-  "otherOffers":{
-    "title":"Other offers"
+  "otherOffers": {
+    "title": "Other offers"
   }
 }

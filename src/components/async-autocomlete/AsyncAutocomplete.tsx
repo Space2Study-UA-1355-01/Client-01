@@ -7,12 +7,17 @@ import useAxios, { UseAxiosProps } from '~/hooks/use-axios'
 import { defaultResponses } from '~/constants'
 import { ServiceFunction, Category } from '~/types'
 
+type BaseAutocompleteProps<
+  T,
+  F extends boolean | undefined
+> = AutocompleteProps<T, undefined, undefined, F>
+
 interface AsyncAutocompleteProps<T, F extends boolean | undefined>
   extends Omit<
-    AutocompleteProps<T, undefined, undefined, F>,
+    BaseAutocompleteProps<T, F>,
     'value' | 'options' | 'renderInput'
   > {
-  service: ServiceFunction<T[]>
+  service: ServiceFunction<{ data: T[] }>
   valueField?: keyof T
   labelField?: keyof T
   value: T[keyof T] | null | Category
@@ -33,7 +38,12 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
   axiosProps,
   ...props
 }: AsyncAutocompleteProps<T, F>) => {
-  const { loading, response, fetchData } = useAxios<T[]>({
+  const { loading, response, fetchData } = useAxios<
+    { data: T[] },
+    undefined,
+    T[]
+  >({
+    transform: (res) => res.data,
     service,
     fetchOnMount: false,
     defaultResponse: defaultResponses.array,
@@ -47,9 +57,11 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
 
   const valueOption = useMemo(
     () =>
-      response.find(
-        (option) => (valueField ? option[valueField] : option) === value
-      ) || null,
+      Array.isArray(response) && response.length > 0
+        ? response.find(
+            (option) => (valueField ? option[valueField] : option) === value
+          ) || null
+        : null,
     [response, value, valueField]
   )
 

@@ -1,8 +1,8 @@
 import LanguageIcon from '@mui/icons-material/Language'
 import MenuIcon from '@mui/icons-material/Menu'
 import LoginIcon from '@mui/icons-material/Login'
-import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined'
 import { IconButtonProps } from '@mui/material/IconButton'
+import UserAvatarIcon from '~/components/user-avatar-icon/UserAvatarIcon'
 
 import { styles } from '~/containers/navigation-icons/NavigationIcons.styles'
 
@@ -11,6 +11,7 @@ type ButtonProps = (props: {
   openMenu?: () => void
   setSidebarOpen?: () => void
   openNotifications?: () => void
+  changeLanguage?: () => void
 }) => IconButtonProps
 
 type BadgeContent = (props: { notifications: number }) => number
@@ -23,11 +24,14 @@ interface NavigationIconButton {
   badgeContent?: BadgeContent
 }
 
-const languageIcon = {
-  disabled: true,
+const languageIcon: NavigationIconButton = {
+  disabled: false,
   tooltip: 'iconsTooltip.language',
-  icon: <LanguageIcon color='disabled' />,
-  buttonProps: () => ({ sx: styles.studentIcons })
+  icon: <LanguageIcon />,
+  buttonProps: ({ changeLanguage }) => ({
+    onClick: changeLanguage,
+    sx: styles.studentIcons
+  })
 }
 
 const menuIcon: NavigationIconButton = {
@@ -56,7 +60,7 @@ export const userIcons: NavigationIconButton[] = [
   languageIcon,
   {
     tooltip: 'iconsTooltip.account',
-    icon: <AccountCircleOutlinedIcon />,
+    icon: <UserAvatarIcon />,
     buttonProps: ({ openMenu }) => ({
       onClick: openMenu,
       sx: styles.studentIcons

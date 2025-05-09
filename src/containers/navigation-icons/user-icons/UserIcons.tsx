@@ -1,6 +1,7 @@
 import { useState, useRef, FC } from 'react'
 import { useTranslation } from 'react-i18next'
-
+import { useAppSelector } from '~/hooks/use-redux'
+import languageService from '~/services/language-service'
 import Box from '@mui/material/Box'
 
 import NavigationIcon from '~/components/navigation-icon/NavigationIcon'
@@ -18,10 +19,16 @@ const UserIcons: FC<UserIconsProps> = ({ setSidebarOpen }) => {
 
   const anchorRef = useRef<HTMLDivElement | null>(null)
   const { t } = useTranslation()
+  const { userId, userRole } = useAppSelector((state) => state.appMain)
 
   const openMenu = () => setMenuAnchorEl(anchorRef.current)
   const closeMenu = () => setMenuAnchorEl(null)
   const openNotifications = () => anchorRef.current
+  const changeLanguage = () => {
+    if (userId && userRole) {
+      languageService.toggleLanguage(userId, userRole)
+    }
+  }
 
   const icons = userIcons.map(
     (item) =>
@@ -33,7 +40,8 @@ const UserIcons: FC<UserIconsProps> = ({ setSidebarOpen }) => {
           buttonProps={item.buttonProps({
             openMenu,
             openNotifications,
-            setSidebarOpen
+            setSidebarOpen,
+            changeLanguage
           })}
           icon={item.icon}
           key={item.tooltip}

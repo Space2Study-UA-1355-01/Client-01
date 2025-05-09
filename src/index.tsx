@@ -8,8 +8,11 @@ import { setupInterceptors } from '~/services/setup-interceptors'
 import { router } from '~/router/router'
 import '~/styles/index.css'
 import '~/plugins/i18n'
+import languageService from '~/services/language-service'
 
 const root = createRoot(document.getElementById('root') as HTMLElement)
+
+languageService.initLanguage()
 
 root.render(
   <React.StrictMode>

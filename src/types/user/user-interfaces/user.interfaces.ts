@@ -40,6 +40,7 @@ export interface UserResponse {
   createdAt: string
   updatedAt: string
   FAQ: DataByRole<Faq[]>
+  appLanguage?: string
 }
 
 export interface UpdateUserParams
@@ -51,9 +52,12 @@ export interface UpdateUserParams
     | 'address'
     | 'professionalSummary'
     | 'nativeLanguage'
+    | 'appLanguage'
   > {
   mainSubjects: SubjectNameInterface[]
 }
+
+export type UpdateUserLanguageParams = Pick<UserResponse, 'appLanguage'>
 
 export interface LoginParams {
   email: string
@@ -87,4 +91,13 @@ export interface AccessToken {
   id: string
   role: UserRole
   isFirstLogin: boolean
+  firstName: string
+  lastName: string
+}
+
+export interface UserProfile {
+  firstName: string
+  lastName: string
+  photo: string
+  appLanguage: string
 }

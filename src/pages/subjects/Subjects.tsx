@@ -1,15 +1,14 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSearchParams } from 'react-router-dom'
 
 import Box from '@mui/material/Box'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import StarIcon from '@mui/icons-material/Star'
 
 import { useAppSelector } from '~/hooks/use-redux'
-import useLoadMore from '~/hooks/use-load-more'
 import useSubjectsNames from '~/hooks/use-subjects-names'
-import { subjectService } from '~/services/subject-service'
 import { categoryService } from '~/services/category-service'
 import { useModalContext } from '~/context/modal-context'
 
@@ -18,46 +17,78 @@ import SearchAutocomplete from '~/components/search-autocomplete/SearchAutocompl
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
 import NotFoundResults from '~/components/not-found-results/NotFoundResults'
 import CardsList from '~/components/cards-list/CardsList'
-import CardWithLink from '~/components/card-with-link/CardWithLink'
 import DirectionLink from '~/components/direction-link/DirectionLink'
 import CreateSubjectModal from '~/containers/find-offer/create-new-subject/CreateNewSubject'
 import AppToolbar from '~/components/app-toolbar/AppToolbar'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
 import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
-import useBreakpoints from '~/hooks/use-breakpoints'
-import serviceIcon from '~/assets/img/student-home-page/service_icon.png'
-import { getOpositeRole, getScreenBasedLimit } from '~/utils/helper-functions'
-import { mapArrayByField } from '~/utils/map-array-by-field'
+import { icons } from '~/components/subject-card-icon/icons'
 
+import useBreakpoints from '~/hooks/use-breakpoints'
+import { getOpositeRole } from '~/utils/helper-functions'
+import { mapArrayByField } from '~/utils/map-array-by-field'
 import {
   CategoryNameInterface,
   SizeEnum,
-  SubjectInterface,
-  SubjectNameInterface
+  SubjectNameInterface,
+  CategoryAppearance,
+  CardWithLinkProps
 } from '~/types'
-import { itemsLoadLimit } from '~/constants'
 import { authRoutes } from '~/router/constants/authRoutes'
 import { styles } from '~/pages/subjects/Subjects.styles'
+import { axiosClient } from '~/plugins/axiosClient'
+
+interface SubjectApiResponse {
+  data: {
+    _id: string
+    name: string
+    category: {
+      _id: string
+      name: string
+      appearance: CategoryAppearance
+    }
+    totalOffers: { student: number; tutor: number }
+  }[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+interface SubjectsInterfaceWithIcon {
+  _id: string
+  name: string
+  icon: React.ElementType
+  appearance: CategoryAppearance
+  description?: string
+  link?: string
+  totalOffers: { [key: string]: number }
+}
 
 const Subjects = () => {
   const [match, setMatch] = useState<string>('')
   const [categoryName, setCategoryName] = useState<string>('')
   const [isFetched, setIsFetched] = useState<boolean>(false)
-  const params = useMemo(() => ({ name: match }), [match])
+  const [subjects, setSubjects] = useState<SubjectsInterfaceWithIcon[]>([])
+  const [subjectsLoading, setSubjectsLoading] = useState<boolean>(false)
+  const [page, setPage] = useState(1)
+  const [isMore, setIsMore] = useState(true)
+
+  const LIMIT = 4
 
   const { t } = useTranslation()
   const { userRole } = useAppSelector((state) => state.appMain)
   const breakpoints = useBreakpoints()
   const { openModal } = useModalContext()
   const [searchParams, setSearchParams] = useSearchParams()
+
   const categoryId = searchParams.get('categoryId') ?? ''
 
-  const cardsLimit = getScreenBasedLimit(breakpoints, itemsLoadLimit)
+  const oppositeRole = getOpositeRole(userRole) || 'tutor'
 
-  const transform = useCallback(
-    (data: SubjectNameInterface[]): string[] => mapArrayByField(data, 'name'),
-    []
-  )
+  const transform: (
+    data: SubjectNameInterface[] | { data: SubjectNameInterface[] }
+  ) => SubjectNameInterface[] = (res) => (Array.isArray(res) ? res : res.data)
 
   const {
     loading: subjectNamesLoading,
@@ -69,46 +100,112 @@ const Subjects = () => {
     transform
   })
 
-  const getSubjectNames = () => {
-    !isFetched && void fetchData()
-    setIsFetched(true)
-  }
+  const getSubjectNames = useCallback(() => {
+    if (!isFetched) {
+      void fetchData()
+      setIsFetched(true)
+    }
+  }, [fetchData, isFetched])
 
-  const getSubjects = useCallback(
-    (data?: Pick<SubjectInterface, 'name'>) =>
-      subjectService.getSubjects(data, categoryId),
-    [categoryId]
+  const subjectOptions: string[] = useMemo(
+    () =>
+      categoryId && subjects.length > 0
+        ? subjectsNamesItems.map((item) => item.name)
+        : [],
+    [subjectsNamesItems, categoryId, subjects]
   )
 
-  const {
-    data: subjects,
-    loading: subjectsLoading,
-    resetData,
-    loadMore,
-    isExpandable
-  } = useLoadMore<SubjectInterface, Pick<SubjectInterface, 'name'>>({
-    service: getSubjects,
-    limit: cardsLimit,
-    params
-  })
+  useEffect(() => {
+    if (categoryId) {
+      getSubjectNames()
+    }
+  }, [categoryId, getSubjectNames])
 
-  const oppositeRole = getOpositeRole(userRole)
+  const fetchSubjects = useCallback(
+    async (pageToLoad = 1) => {
+      setSubjectsLoading(true)
+      try {
+        const endpoint = categoryId
+          ? `/categories/${categoryId}/subjects`
+          : `/subjects`
 
-  const cards = useMemo(
-    () =>
-      subjects.map((item: SubjectInterface) => {
-        return (
-          <CardWithLink
-            description={`${item.totalOffers[oppositeRole]} ${t(
-              'categoriesPage.offers'
-            )}`}
-            img={serviceIcon}
-            key={item._id}
-            link={`${authRoutes.categories.path}?categoryId=${categoryId}&subjectId=${item._id}`}
-            title={item.name}
-          />
+        const response = await axiosClient.get<SubjectApiResponse>(endpoint, {
+          //headers,
+          params: { page: pageToLoad, limit: LIMIT }
+        })
+        console.log('Server response:', response.data)
+
+        if (!response.data || !Array.isArray(response.data.data)) {
+          console.warn(
+            'Server returned empty or invalid response:',
+            response.data
+          )
+          setSubjects([])
+          return
+        }
+
+        const items: SubjectsInterfaceWithIcon[] = response.data.data.map(
+          (item: {
+            _id: string
+            name: string
+            category: {
+              _id: string
+              name: string
+              appearance: CategoryAppearance
+            }
+            totalOffers: { student: number; tutor: number }
+          }) => ({
+            _id: item._id,
+            name: item.name,
+            icon: icons[item.name] || StarIcon,
+            appearance: item.category.appearance,
+            totalOffers: item.totalOffers
+          })
         )
-      }),
+
+        setSubjects((prev) => (pageToLoad === 1 ? items : [...prev, ...items]))
+        setIsMore(pageToLoad < response.data.totalPages)
+      } catch (error) {
+        console.error('Error fetching subjects:', error)
+        setSubjects([])
+      } finally {
+        setSubjectsLoading(false)
+      }
+    },
+    [categoryId, oppositeRole]
+  )
+
+  useEffect(() => {
+    setSubjects([])
+    setPage(1)
+    setIsMore(true)
+    void fetchSubjects(1)
+  }, [fetchSubjects, categoryId])
+
+  const handleLoadMore = () => {
+    if (!isMore || subjectsLoading) return
+    const nextPage = page + 1
+    setPage(nextPage)
+    void fetchSubjects(nextPage)
+  }
+
+  const resetData = () => {
+    setSubjects([])
+    setMatch('')
+  }
+
+  const cards: CardWithLinkProps[] = useMemo(
+    () =>
+      subjects.length > 0
+        ? subjects.map((item: SubjectsInterfaceWithIcon) => ({
+            _id: item._id,
+            icon: item.icon,
+            appearance: item.appearance,
+            name: item.name,
+            description: `${item.totalOffers[oppositeRole]} ${t('categoriesPage.offers')}`,
+            link: `/categories/subjects/find-offers?categoryId=${categoryId}&subjectId=${item._id}`
+          }))
+        : [],
     [subjects, categoryId, oppositeRole, t]
   )
 
@@ -148,15 +245,11 @@ const Subjects = () => {
   return (
     <PageWrapper>
       <OfferRequestBlock />
-
       <TitleWithDescription
         description={t('subjectsPage.subjects.description')}
         style={styles.titleWithDescription}
-        title={t('subjectsPage.subjects.title', {
-          category: categoryName
-        })}
+        title={t('subjectsPage.subjects.title', { category: categoryName })}
       />
-
       <Box sx={styles.navigation}>
         <DirectionLink
           before={<ArrowBackIcon fontSize={SizeEnum.Small} />}
@@ -165,7 +258,7 @@ const Subjects = () => {
         />
         <DirectionLink
           after={<ArrowForwardIcon fontSize={SizeEnum.Small} />}
-          linkTo={authRoutes.categories.path}
+          linkTo={authRoutes.findOffers.path}
           title={t('subjectsPage.subjects.showAllOffers')}
         />
       </Box>
@@ -173,10 +266,8 @@ const Subjects = () => {
         {!breakpoints.isMobile && autoCompleteCategories}
         <SearchAutocomplete
           loading={subjectNamesLoading}
-          onFocus={getSubjectNames}
-          onSearchChange={resetData}
-          options={subjectsNamesItems}
-          search={match}
+          options={subjectOptions}
+          search={match || ''}
           setSearch={setMatch}
           textFieldProps={{
             label: t('subjectsPage.subjects.searchLabel')
@@ -194,9 +285,9 @@ const Subjects = () => {
         <CardsList
           btnText={t('categoriesPage.viewMore')}
           cards={cards}
-          isExpandable={isExpandable}
+          isExpandable={isMore}
           loading={subjectsLoading}
-          onClick={loadMore}
+          onClick={handleLoadMore}
         />
       )}
     </PageWrapper>

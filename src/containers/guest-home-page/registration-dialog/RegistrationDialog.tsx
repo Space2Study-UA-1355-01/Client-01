@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useModalContext } from '~/context/modal-context'
@@ -69,7 +69,8 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
     errors,
     handleInputChange,
     handleBlur,
-    handleSubmit: handleFormSubmit
+    handleSubmit: handleFormSubmit,
+    validationTrigger
   } = useForm({
     initialValues: {
       email: '',
@@ -106,6 +107,13 @@ const RegistrationDialog: FC<RegistrationDialogProps> = ({ defaultRole }) => {
       return Promise.resolve()
     }
   })
+
+  useEffect(() => {
+    if (data.confirmPassword.trim()) {
+      validationTrigger(['confirmPassword'])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.password])
 
   return (
     <Box sx={styles.root}>

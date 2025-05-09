@@ -6,7 +6,10 @@ import {
 export const styles = {
   container: (isClickable: boolean) => ({
     display: 'flex',
-    padding: '20px 30px',
+    padding: '25px 33px 25px 32px',
+    maxWidth: '360px',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     textDecoration: 'none',
     backgroundColor: 'basic.white',
     boxShadow: commonShadow,

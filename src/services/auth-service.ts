@@ -3,8 +3,8 @@ import { AxiosResponse } from 'axios'
 import { appApi } from '~/redux/apiSlice'
 import { logout, setUser } from '~/redux/reducer'
 import { axiosClient } from '~/plugins/axiosClient'
-
-import { createUrlPath } from '~/utils/helper-functions'
+import { loadUserProfileData } from '~/redux/userActions'
+import { createUrlPath, parseJwt } from '~/utils/helper-functions'
 import { URLs } from '~/constants/request'
 import {
   ApiMethodEnum,
@@ -12,7 +12,8 @@ import {
   LoginParams,
   LoginResponse,
   SignupParams,
-  SignupResponse
+  SignupResponse,
+  AccessToken
 } from '~/types'
 
 const { POST } = ApiMethodEnum
@@ -48,6 +49,8 @@ export const authService = appApi.injectEndpoints({
         try {
           const { data } = await queryFulfilled
           dispatch(setUser(data.accessToken))
+          const parsedData: AccessToken = parseJwt(data.accessToken)
+          await loadUserProfileData(dispatch, parsedData.id, parsedData.role)
         } catch {
           dispatch(logout())
         }

@@ -11,16 +11,21 @@ import { useStepContext } from '~/context/step-context'
 import { validationData } from './constants'
 import { style } from './AddPhotoStep.style'
 
+import { useModalContext } from '~/context/modal-context'
+import useConfirm from '~/hooks/use-confirm'
+
 const AddPhotoStep = ({ btnsBox }) => {
   const { t } = useTranslation()
   const { handleStepData, stepData, photoLabel } = useStepContext()
-  const [error, setError] = useState('')
+  const { setUnsavedChanges } = useModalContext()
+  const { setNeedConfirmation } = useConfirm()
   const [preview, setPreview] = useState(null)
   const inputRef = useRef(null)
   const files = useMemo(
-    () => stepData[photoLabel] ?? [],
+    () => stepData[photoLabel]?.data ?? [],
     [stepData, photoLabel]
   )
+  const error = stepData[photoLabel]?.errors?.file
 
   useEffect(() => {
     if (files[0]) {
@@ -34,8 +39,9 @@ const AddPhotoStep = ({ btnsBox }) => {
   const emitter = ({ files: newFiles, error: newError }) => {
     const limitedFiles =
       newFiles.length > 0 ? [newFiles[newFiles.length - 1]] : []
-    handleStepData(photoLabel, limitedFiles)
-    setError(newError)
+    handleStepData(photoLabel, limitedFiles, newError ? { file: newError } : {})
+    setUnsavedChanges(true)
+    setNeedConfirmation(true)
   }
 
   const { dragStart, dragLeave, dragDrop, isDrag, addFiles, deleteFile } =
@@ -51,8 +57,10 @@ const AddPhotoStep = ({ btnsBox }) => {
   const clearFile = () => {
     if (files[0]) {
       deleteFile(files[0])
+      setUnsavedChanges(true)
+      setNeedConfirmation(true)
     }
-    setError('')
+    handleStepData(photoLabel, [], {})
   }
 
   const handleRootClick = () => {
