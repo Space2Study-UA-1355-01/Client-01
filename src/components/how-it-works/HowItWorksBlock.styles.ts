@@ -10,16 +10,16 @@ export const styles = {
   },
   stepContainer: {
     display: {
-      xs: 'flex', // мобілка — колонка
-      md: 'grid', // планшет — сітка 2x2
-      lg: 'flex' // десктоп — горизонтальний ряд
+      xs: 'flex',
+      md: 'grid',
+      lg: 'flex'
     },
     flexDirection: {
       xs: 'column',
-      lg: 'row' // тільки на десктопі
+      lg: 'row'
     },
     gridTemplateColumns: {
-      md: '1fr 1fr' // планшет — 2 в ряд
+      md: '1fr 1fr'
     },
     gap: {
       xs: '54px',

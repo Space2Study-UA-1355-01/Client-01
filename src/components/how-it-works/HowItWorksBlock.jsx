@@ -25,7 +25,7 @@ export const HowItWorksBlock = () => {
         {cards.map((card, index) => (
           <HowItWorksStep
             description={card.description}
-            icon={<img alt={`step-${index}`} src={card.image} />}
+            icon={card.image}
             key={index}
             title={card.title}
           />

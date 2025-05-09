@@ -1,14 +1,15 @@
 import { useTranslation } from 'react-i18next'
 import IconTitleDescription from '../../icon-title-description/IconTitleDescription'
 import { styles } from './HotItWorksStep.styles'
+import { Box } from '@mui/material'
 
-export const HowItWorksStep = ({ icon, title, description }) => {
+export const HowItWorksStep = ({ icon: image, title, description }) => {
   const { t } = useTranslation()
 
   return (
     <IconTitleDescription
       description={t(description)}
-      icon={icon}
+      icon={<Box alt={`step-${title}`} component='img' src={image} />}
       sx={styles}
       title={t(title)}
     />
