@@ -60,6 +60,8 @@ const OfferCardSquare: FC<OfferCardProps> = ({
 
       <Typography sx={styles.title}>{title}</Typography>
 
+      <Box sx={styles.divider} />
+
       <Box sx={styles.chipsRow}>
         <Typography sx={styles.label}>Subject:</Typography>
         <Chip label={subject.name.toUpperCase()} sx={styles.chip} />
@@ -76,8 +78,6 @@ const OfferCardSquare: FC<OfferCardProps> = ({
         />
       </Box>
 
-      <Box sx={styles.divider} />
-
       <Box sx={styles.bottomRow}>
         <Box>
           <Typography sx={styles.price}>
@@ -86,8 +86,12 @@ const OfferCardSquare: FC<OfferCardProps> = ({
           <Typography sx={styles.perHour}>/hour</Typography>
         </Box>
         <Box sx={styles.ratingBox}>
-          <StarIcon sx={styles.starIcon} />
-          <Typography sx={styles.ratingText}>{avgRating.toFixed(1)}</Typography>
+          <Box sx={styles.ratingDetails}>
+            <StarIcon sx={styles.starIcon} />
+            <Typography sx={styles.ratingText}>
+              {avgRating.toFixed(1)}
+            </Typography>
+          </Box>
           <Typography sx={styles.reviewsText}>
             {reviewsCount} reviews
           </Typography>

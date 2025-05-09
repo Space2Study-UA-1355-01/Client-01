@@ -3,6 +3,7 @@ export const styles = {
     width: 360,
     minHeight: 485,
     p: 3,
+    pb: 0,
     borderRadius: 3,
     boxShadow: 1,
     display: 'flex',
@@ -54,33 +55,29 @@ export const styles = {
     ml: 'auto'
   },
   title: {
+    color: 'text.primary',
     fontWeight: 600,
     fontSize: 18,
-    mb: 2,
-    color: 'text.primary',
     lineHeight: 1.2,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical'
+    typography: 'h6'
   },
   chipsRow: {
     display: 'flex',
     alignItems: 'center',
-    gap: 1,
-    mb: 1
+    gap: 1
   },
   label: {
-    fontSize: 13,
+    fontSize: 10,
     color: 'text.secondary',
-    fontWeight: 500,
+    fontWeight: 400,
     letterSpacing: 1,
     textTransform: 'uppercase'
   },
   chip: {
     bgcolor: 'success.200',
-    fontWeight: 600,
+    fontWeight: 500,
     fontSize: 13,
     borderRadius: 2,
     px: 2,
@@ -89,15 +86,14 @@ export const styles = {
     letterSpacing: 1
   },
   divider: {
-    borderBottom: '1px solid',
-    borderColor: 'grey.100',
-    my: 2
+    borderBottom: '2px solid',
+    borderColor: 'grey.100'
   },
   bottomRow: {
     display: 'flex',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    mb: 2
+    mb: 1
   },
   price: {
     fontWeight: 400,
@@ -113,8 +109,12 @@ export const styles = {
   },
   ratingBox: {
     display: 'flex',
-    alignItems: 'center',
-    gap: 0.5
+    flexDirection: 'column',
+    alignItems: 'flex-end'
+  },
+  ratingDetails: {
+    display: 'flex',
+    flexDirection: 'row'
   },
   starIcon: {
     color: 'warning.main',
@@ -124,37 +124,33 @@ export const styles = {
   ratingText: {
     fontWeight: 400,
     fontSize: 20,
-    color: 'text.primary',
-    ml: 0.5,
-    mr: 1
+    color: 'text.primary'
   },
   reviewsText: {
     color: 'text.secondary',
     fontSize: 13,
-    fontWeight: 500,
+    fontWeight: 400,
     textTransform: 'uppercase'
   },
   showDetailsButton: {
     width: '100%',
-    fontWeight: 600,
+    fontWeight: 500,
     fontSize: 16,
-    bgcolor: 'text.primary',
-    color: 'background.paper',
-    mt: 1,
-    mb: 1,
+    bgcolor: 'primary.dark',
+    color: 'primary.contrastText',
     '&:hover': {
-      bgcolor: 'grey.900'
+      bgcolor: 'primary.main'
     }
   },
   sendMessageButton: {
     width: '100%',
-    fontWeight: 600,
+    fontWeight: 500,
     fontSize: 16,
     bgcolor: 'grey.100',
-    color: 'text.primary',
+    color: 'primary.dark',
     borderColor: 'grey.100',
     '&:hover': {
-      borderColor: 'text.primary',
+      borderColor: 'primary.dark',
       bgcolor: 'background.paper'
     }
   }

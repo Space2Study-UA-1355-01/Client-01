@@ -8,88 +8,33 @@ interface RatingInfo {
   tutor: number
 }
 
-type AuthorRole = keyof RatingInfo // 'student' | 'tutor'
+type AuthorRole = keyof RatingInfo
 
 export interface OfferCardProps {
-  price: number // 1
-  proficiencyLevel: string // 2
-  title: string // 3
-  description: string // 4
-  languages: string[] // 5; приходить масив навіть із 1 значенням
-  authorRole: AuthorRole // витягнути в змінну? аби totalReviews[authorRole] and averageRating[authorRole] (динамічно відобразити)
+  price: number
+  proficiencyLevel: string
+  title: string
+  description: string
+  languages: string[]
+  authorRole: AuthorRole
   author: {
-    firstName: string // 6
-    lastName: string // 7
+    firstName: string
+    lastName: string
     photo?: string
 
-    totalReviews: RatingInfo // 8
-    averageRating: RatingInfo // 9
-  } // приходить обєкт
+    totalReviews: RatingInfo
+    averageRating: RatingInfo
+  }
   subject: {
-    name: string // german
+    name: string
   }
   onShowDetails?: () => void
   onSendMessage?: () => void
 }
 
-/*
-{
-    "_id": "681c9bdda9db8236f971b34d",
-    "price": 50,
-    "proficiencyLevel": "Beginner",
-    "title": "Sample Offer 1 for UX/UI Design",
-    "description": "This is a description for UX/UI Design offer.",
-    "languages": [
-        "English"
-    ],
-    "authorRole": "student",
-    "author": {
-        "_id": "680648277844011b957034ff",
-        "firstName": "kekekek",
-        "lastName": "kekekek",
-        "photo": "https:/./././"
-        "totalReviews": {
-            "student": 0,
-            "tutor": 0
-        },
-        "averageRating": {
-            "student": 0,
-            "tutor": 0
-        }
-    },
-    "category": {
-        "_id": "681c9bdda9db8236f971b31e",
-        "appearance": {
-            "icon": "#bc9d06",
-            "color": "#d8cb8d"
-        }
-    },
-    "subject": {
-        "_id": "681c9bdda9db8236f971b32e",
-        "name": "UX/UI Design"
-    },
-    "status": "active",
-    "FAQ": [
-        {
-            "question": "What is included?",
-            "answer": "The offer includes full support for the subject.",
-            "_id": "681c9bdda9db8236f971b34e"
-        },
-        {
-            "question": "Who is it for?",
-            "answer": "It is for students of all levels.",
-            "_id": "681c9bdda9db8236f971b34f"
-        }
-    ],
-    "createdAt": "2025-05-08T11:56:13.474Z",
-    "updatedAt": "2025-05-08T11:56:13.474Z"
-}
- */
-
 const isGridView = true
 
 const OfferCard: FC<OfferCardProps> = (props) => {
-  console.log(props)
   return isGridView ? (
     <OfferCardSquare {...props} />
   ) : (
