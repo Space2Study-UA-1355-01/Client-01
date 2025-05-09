@@ -1,14 +1,14 @@
 import { FC } from 'react'
 
 import OfferCardRectangle from './offer-card-rectangle/OfferCardRectangle'
-// import OfferCardSquare from './offer-card-square/OfferCardSquare'
+import OfferCardSquare from './offer-card-square/OfferCardSquare'
 
 interface RatingInfo {
   student: number
   tutor: number
 }
 
-interface OfferCardProps {
+export interface OfferCardProps {
   price: number // 1
   proficiencyLevel: string // 2
   title: string // 3
@@ -84,6 +84,9 @@ interface OfferCardProps {
 }
  */
 
-const OfferCard: FC<OfferCardProps> = () => <OfferCardRectangle />
+const isGrid = false
+
+const OfferCard: FC<OfferCardProps> = () =>
+  isGrid ? <OfferCardSquare /> : <OfferCardRectangle />
 
 export default OfferCard
