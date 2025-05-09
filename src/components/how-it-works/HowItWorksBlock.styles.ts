@@ -21,6 +21,9 @@ export const styles = {
     gridTemplateColumns: {
       md: '1fr 1fr'
     },
+    justifyItems: {
+      md: 'center'
+    },
     gap: {
       xs: '54px',
       md: '40px'
