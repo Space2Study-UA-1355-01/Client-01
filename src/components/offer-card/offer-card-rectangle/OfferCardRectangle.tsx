@@ -7,84 +7,122 @@ import {
   Chip,
   Button,
   IconButton,
-  Stack
+  Stack,
+  Rating
 } from '@mui/material'
+
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import StarIcon from '@mui/icons-material/Star'
 import LanguageIcon from '@mui/icons-material/Language'
 
-// import UserAvatarIcon from '~/components/user-avatar-icon/UserAvatarIcon' // text on avatar if no url
+import { styles } from './OfferCardRectangle.styles'
+import { OfferCardProps } from '../OfferCard'
+import { useTranslation } from 'react-i18next'
 
-import { styles } from '~/components/offer-card/offer-card-rectangle/OfferCardRectangle.styles'
+const getInitials = (firstName: string, lastName: string) => {
+  const firstInitial = firstName?.charAt(0).toUpperCase() || ''
+  const lastInitial = lastName?.charAt(0).toUpperCase() || ''
+  return `${firstInitial}${lastInitial}`
+}
 
-const OfferCardRectangle: FC = () => (
-  <Card sx={styles.card}>
-    <Box sx={styles.container}>
-      <Box sx={styles.leftSection}>
-        <Avatar
-          alt='Jennifer W.'
-          src='profile-photo-url.jpg'
-          sx={styles.avatar}
-        />
-        <Typography sx={styles.name}>Jennifer W.</Typography>
-        <Box sx={styles.ratingBox}>
-          {Array.from({ length: 4 }, (_, i) => (
-            <StarIcon key={i} sx={styles.starIcon} />
-          ))}
-          <StarIcon sx={{ ...styles.starIcon, color: 'grey.300', mr: 0.5 }} />
-          {/* mui rating component (accepts a number, can render .5 values) */}
-          <Typography sx={styles.ratingText}>3.5</Typography>
-        </Box>
-        <Typography sx={styles.reviews}>10 reviews</Typography>
-      </Box>
-      <Box sx={styles.middleSection}>
-        <Typography sx={styles.title}>
-          Advanced Quantum Mechanics: Theoretical Concepts, Mathematical
-          Formulations in Modern Physics
-        </Typography>
-        <Stack direction='row' spacing={1} sx={{ mb: 1 }}>
-          <Chip label='GERMAN' sx={styles.chip} />
-          <Chip
-            label='BEGINNER - ADVANCED'
-            sx={{
-              ...styles.chip,
-              bgcolor: 'success.100',
-              fontWeight: 400
-            }}
-          />
-        </Stack>
-        <Typography sx={styles.description}>
-          Hello. There are many variations of passages of Lorem Ipsum available,
-          but the majority have suffered alteration in some form, by injected
-          humour, or randomised words which don&apos;t look even slightly
-          believable...
-        </Typography>
-        <Box sx={styles.languageBox}>
-          <LanguageIcon sx={styles.languageIcon} />
-          <Typography color='text.secondary' variant='body2'>
-            Ukrainian, English
+const OfferCardRectangle: FC<OfferCardProps> = ({
+  author: { photo, firstName, lastName, totalReviews, averageRating },
+  price,
+  proficiencyLevel,
+  title,
+  description,
+  languages,
+  authorRole,
+  subject,
+  onShowDetails,
+  onSendMessage
+}) => {
+  const { t } = useTranslation()
+  const reviewsCount = totalReviews[authorRole] ?? 0
+  const avgRating = averageRating[authorRole] ?? 0
+
+  return (
+    <Card sx={styles.card}>
+      <Box sx={styles.container}>
+        <Box sx={styles.leftSection}>
+          <Avatar
+            alt={`${firstName} ${lastName}`}
+            src={photo}
+            sx={styles.avatar}
+          >
+            {!photo && getInitials(firstName, lastName)}
+          </Avatar>
+
+          <Typography sx={styles.name}>
+            {firstName} {lastName.at(0)}.
           </Typography>
-        </Box>
-      </Box>
-      <Box sx={styles.rightSection}>
-        <Box sx={styles.priceBox}>
-          <Box>
-            <Typography sx={styles.price}>75 UAH</Typography>
-            <Typography sx={styles.perHour}>/hour</Typography>
+          <Box sx={styles.ratingBox}>
+            <Rating
+              emptyIcon={
+                <StarIcon fontSize='inherit' sx={{ color: 'grey.300' }} />
+              }
+              icon={<StarIcon fontSize='inherit' />}
+              name='read-only-rating'
+              precision={0.5}
+              readOnly
+              sx={{ mr: 0.5 }}
+              value={avgRating}
+            />
+            <Typography sx={styles.ratingText}>{avgRating}</Typography>
           </Box>
-          <IconButton sx={{ ml: 1 }}>
-            <BookmarkBorderIcon />
-          </IconButton>
+          <Typography sx={styles.reviews}>{reviewsCount} reviews</Typography>
         </Box>
-        <Button sx={styles.showDetailsButton} variant='contained'>
-          Show details
-        </Button>
-        <Button sx={styles.sendMessageButton} variant='outlined'>
-          Send message
-        </Button>
+        <Box sx={styles.middleSection}>
+          <Typography sx={styles.title}>{title}</Typography>
+          <Stack direction='row' spacing={1} sx={{ mb: 1 }}>
+            <Chip label={subject.name.toUpperCase()} sx={styles.chip} />
+            <Chip
+              label={proficiencyLevel.toUpperCase()}
+              sx={{
+                ...styles.chip,
+                bgcolor: 'success.100',
+                fontWeight: 400
+              }}
+            />
+          </Stack>
+          <Typography sx={styles.description}>{description}</Typography>
+          <Box sx={styles.languageBox}>
+            <LanguageIcon sx={styles.languageIcon} />
+            <Typography color='text.secondary' variant='body2'>
+              {languages.join(', ')}
+            </Typography>
+          </Box>
+        </Box>
+        <Box sx={styles.rightSection}>
+          <Box sx={styles.priceBox}>
+            <Box>
+              <Typography sx={styles.price}>
+                {price} {t('common.uah')}
+              </Typography>
+              <Typography sx={styles.perHour}>/{t('common.hour')}</Typography>
+            </Box>
+            <IconButton sx={{ ml: 1 }}>
+              <BookmarkBorderIcon />
+            </IconButton>
+          </Box>
+          <Button
+            onClick={onShowDetails}
+            sx={styles.showDetailsButton}
+            variant='contained'
+          >
+            {t('common.labels.viewDetails')}
+          </Button>
+          <Button
+            onClick={onSendMessage}
+            sx={styles.sendMessageButton}
+            variant='outlined'
+          >
+            {t('common.labels.sendMessage')}
+          </Button>
+        </Box>
       </Box>
-    </Box>
-  </Card>
-)
+    </Card>
+  )
+}
 
 export default OfferCardRectangle

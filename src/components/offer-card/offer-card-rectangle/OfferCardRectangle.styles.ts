@@ -40,15 +40,6 @@ export const styles = {
     borderRadius: 1,
     alignSelf: 'center'
   },
-  starIcon: {
-    color: 'warning.500',
-    fontSize: 20,
-    mr: 0.2,
-    '&:last-of-type': {
-      color: 'grey.300',
-      mr: 0.5
-    }
-  },
   ratingText: {
     fontWeight: 500,
     borderRadius: 1,

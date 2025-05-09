@@ -8,17 +8,19 @@ interface RatingInfo {
   tutor: number
 }
 
+type AuthorRole = keyof RatingInfo // 'student' | 'tutor'
+
 export interface OfferCardProps {
   price: number // 1
   proficiencyLevel: string // 2
   title: string // 3
   description: string // 4
   languages: string[] // 5; приходить масив навіть із 1 значенням
-  authorRole: string // витягнути в змінну? аби totalReviews[authorRole] and averageRating[authorRole] (динамічно відобразити)
+  authorRole: AuthorRole // витягнути в змінну? аби totalReviews[authorRole] and averageRating[authorRole] (динамічно відобразити)
   author: {
     firstName: string // 6
     lastName: string // 7
-    photo: string
+    photo?: string
 
     totalReviews: RatingInfo // 8
     averageRating: RatingInfo // 9
@@ -84,9 +86,15 @@ export interface OfferCardProps {
 }
  */
 
-const isGrid = false
+const isGridView = true
 
-const OfferCard: FC<OfferCardProps> = () =>
-  isGrid ? <OfferCardSquare /> : <OfferCardRectangle />
+const OfferCard: FC<OfferCardProps> = (props) => {
+  console.log(props)
+  return isGridView ? (
+    <OfferCardSquare {...props} />
+  ) : (
+    <OfferCardRectangle {...props} />
+  )
+}
 
 export default OfferCard
