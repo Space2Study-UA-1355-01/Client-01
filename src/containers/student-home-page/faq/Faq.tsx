@@ -6,9 +6,32 @@ import TitleWithDescription from '~/components/title-with-description/TitleWithD
 import { studentRoutes } from '~/router/constants/studentRoutes'
 
 import { styles } from '~/containers/student-home-page/faq/Faq.styles'
+import Accordions from '~/components/accordion/Accordions'
+import { ExpandMoreRounded } from '@mui/icons-material'
+import { accordionItems } from './accordionItems'
+import { AccordionItem, TypographyVariantEnum } from '~/types'
+import { useState } from 'react'
+import { useAppSelector } from '~/hooks/use-redux'
 
 const Faq = () => {
+  const [activeAccordionItems, setActiveAccordionItems] = useState<number[]>([])
+  const { userRole } = useAppSelector((state) => state.appMain)
+
+  const accordionItemsByRole: AccordionItem[] = accordionItems[userRole]
+
   const { t } = useTranslation()
+
+  const onChange = (activeItem: number) => {
+    setActiveAccordionItems((prevActiveItems) => {
+      if (prevActiveItems.includes(activeItem)) {
+        return prevActiveItems.filter(
+          (prevActiveItem) => prevActiveItem !== activeItem
+        )
+      } else {
+        return [...prevActiveItems, activeItem]
+      }
+    })
+  }
 
   return (
     <Box
@@ -17,9 +40,17 @@ const Faq = () => {
       sx={styles.container}
     >
       <TitleWithDescription
-        description={t('studentHomePage.faq.subtitle')}
+        description={t(`${userRole}HomePage.faq.subtitle`)}
         style={styles.titleWithDescription}
-        title={t('studentHomePage.faq.title')}
+        title={t(`${userRole}HomePage.faq.title`)}
+      />
+      <Accordions
+        activeIndex={activeAccordionItems}
+        descriptionVariant={TypographyVariantEnum.Body1}
+        icon={<ExpandMoreRounded />}
+        items={accordionItemsByRole}
+        onChange={onChange}
+        titleVariant={TypographyVariantEnum.H6}
       />
     </Box>
   )

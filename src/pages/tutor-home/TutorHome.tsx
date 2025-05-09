@@ -11,6 +11,8 @@ import { translationKey } from '~/components/find-block/find-student-constants'
 import { HowItWorksBlock } from '~/components/how-it-works/HowItWorksBlock'
 import { Container } from '@mui/material'
 
+import Faq from '~/containers/student-home-page/faq/Faq'
+
 const TutorHome = () => {
   const { openModal } = useModalContext()
   const { isFirstLogin, userRole } = useAppSelector((state) => state.appMain)
@@ -30,6 +32,7 @@ const TutorHome = () => {
     <Container data-testid='tutorHome' sx={{ flex: 1 }}>
       <FindBlock translationKey={translationKey} />
       <HowItWorksBlock />
+      <Faq />
     </Container>
   )
 }
