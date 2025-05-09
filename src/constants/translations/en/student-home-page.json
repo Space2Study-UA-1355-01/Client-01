@@ -30,7 +30,7 @@
     },
     "writeFeedback": {
       "title": "Write Feedback",
-      "description": "Write a review and share your impressions to help others with their choice."
+      "description": "Вescribe what you would like to study and send a request to the tutor."
     }
   },
   "faq": {
@@ -41,7 +41,7 @@
     "bookLesson": "How to book a lesson",
     "bookLessonDescription": "Respond to the tutor’s offer by creating a cooperation, where you confirm the required level of training and price, or set your own. It’s crucial to have a clear communication channel and discuss expectations, including pricing and scheduling.",
     "rules": "Rules for students",
-    "rulesDescription": "Students have the right to choose the offer they like and agree to its terms. Students also have the right to create their own requests for a course, to which the tutor will respond. Students cannot use learning materials for commercial purposes or distribution and should avoid posting obscene messages, photos, or comments.", 
+    "rulesDescription": "Students have the right to choose the offer they like and agree to its terms. Students also have the right to create their own requests for a course, to which the tutor will respond. Students cannot use learning materials for commercial purposes or distribution and should avoid posting obscene messages, photos, or comments.",
     "howPayLessons": "How you can pay for lessons",
     "howPayLessonsDescription": "Payment methods for tuition are negotiated between the tutor and the student during the cooperation setup. Space2Study platform’s primary role is to facilitate the search for the desired courses and does not impose any commissions on approved collaborations."
   }

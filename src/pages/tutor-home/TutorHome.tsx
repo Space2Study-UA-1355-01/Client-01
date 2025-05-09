@@ -4,11 +4,12 @@ import { useAppSelector } from '~/hooks/use-redux'
 import { useModalContext } from '~/context/modal-context'
 
 import UserStepsWrapper from '~/components/user-steps-wrapper/UserStepsWrapper'
-import PageWrapper from '~/components/page-wrapper/PageWrapper'
 import FindBlock from '~/components/find-block/FindBlock'
 
 import { styles } from '~/pages/tutor-home/TutorHome.styles'
 import { translationKey } from '~/components/find-block/find-student-constants'
+import { HowItWorksBlock } from '~/components/how-it-works/HowItWorksBlock'
+import { Container } from '@mui/material'
 
 const TutorHome = () => {
   const { openModal } = useModalContext()
@@ -26,9 +27,10 @@ const TutorHome = () => {
   }, [openModal, isFirstLogin, userRole])
 
   return (
-    <PageWrapper data-testid='tutorHome'>
+    <Container data-testid='tutorHome' sx={{ flex: 1 }}>
       <FindBlock translationKey={translationKey} />
-    </PageWrapper>
+      <HowItWorksBlock />
+    </Container>
   )
 }
 
