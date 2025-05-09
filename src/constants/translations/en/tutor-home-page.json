@@ -23,15 +23,15 @@
       "title": "Create a Tutor Account",
       "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
     },
-    "getNewStudents":{
-      "title":"Get New Students",
-      "description":"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+    "getNewStudents": {
+      "title": "Get New Students",
+      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
     },
-    "receiveFeedbacks":{
-      "title":"Receive Feedbacks",
-      "description":"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
-    },
-    
+    "receiveFeedbacks": {
+      "title": "Receive Feedbacks",
+      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+    }
+  },
   "faq": {
     "title": "Frequently Asked Questions",
     "subtitle": "Everything you need to know about learning journey in Space2Study as a tutor",
@@ -43,6 +43,5 @@
     "rulesDescription": "Tutors are expected to respect the platform’s guidelines. Always maintain professional communication, deliver lessons as agreed, and avoid sharing or using copyrighted materials without permission. Refrain from inappropriate content or behavior.",
     "getPaid": "How you can be paid for lessons",
     "getPaidDescription": "You and the student agree on payment terms during the cooperation setup. Space2Study does not charge commission fees. Ensure clear communication about the payment method, frequency, and conditions for a smooth experience."
-
   }
 }
