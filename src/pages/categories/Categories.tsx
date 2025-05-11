@@ -28,8 +28,6 @@ import NotFoundResults from '~/components/not-found-results/NotFoundResults'
 
 import { getNameById, getIdByName } from '~/utils/helper-functions'
 
-import ComputerIcon from '@mui/icons-material/Computer'
-
 const getAccessTokenFromCookie = () => {
   const match = document.cookie.match(/(?:^|; )access_token=([^;]*)/)
   return match ? match[1] : ''
