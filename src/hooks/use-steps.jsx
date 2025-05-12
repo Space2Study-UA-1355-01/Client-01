@@ -13,7 +13,7 @@ import { loadUserProfileData } from '~/redux/userActions'
 const useSteps = ({ steps }) => {
   const [activeStep, setActiveStep] = useState(0)
   const { closeModal } = useModalContext()
-  const { stepData } = useStepContext()
+  const { stepData, subjectLabel } = useStepContext()
   const { setAlert } = useSnackBarContext()
   const { userId, userRole } = useAppSelector((state) => state.appMain)
   const dispatch = useAppDispatch()
@@ -117,7 +117,7 @@ const useSteps = ({ steps }) => {
       },
       professionalSummary,
       mainSubjects:
-        stepData.subjects?.map((subject) => subject.categoryId) ?? [],
+        stepData[subjectLabel]?.map((subject) => subject.categoryId) ?? [],
       nativeLanguage: stepData.language?.map((lang) => lang.label) ?? []
     }
 
