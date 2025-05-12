@@ -23,6 +23,7 @@ import AppToolbar from '~/components/app-toolbar/AppToolbar'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
 import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
 import { icons } from '~/components/subject-card-icon/icons'
+import { CardWithLinkProps } from '~/components/card-with-link/CardWithLink'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
 import { getOpositeRole } from '~/utils/helper-functions'
@@ -30,8 +31,7 @@ import {
   CategoryNameInterface,
   SizeEnum,
   SubjectNameInterface,
-  CategoryAppearance,
-  CardWithLinkProps
+  CategoryAppearance
 } from '~/types'
 import { authRoutes } from '~/router/constants/authRoutes'
 import { styles } from '~/pages/subjects/Subjects.styles'
@@ -193,20 +193,32 @@ const Subjects = () => {
     setMatch('')
   }
 
-  const cards: CardWithLinkProps[] = useMemo(
-    () =>
-      subjects.length > 0
-        ? subjects.map((item: SubjectsInterfaceWithIcon) => ({
-            _id: item._id,
-            icon: item.icon,
-            appearance: item.appearance,
-            name: item.name,
-            description: `${item.totalOffers[oppositeRole]} ${t('categoriesPage.offers')}`,
-            link: `/categories/subjects/find-offers?categoryId=${categoryId}&subjectId=${item._id}`
-          }))
-        : [],
-    [subjects, categoryId, oppositeRole, t]
-  )
+  const cards: CardWithLinkProps[] = useMemo(() => {
+    let filteredSubjects = match
+      ? subjects.filter((item) =>
+          item.name.toLowerCase().includes(match.toLowerCase())
+        )
+      : subjects
+
+    filteredSubjects = filteredSubjects.sort((a, b) => {
+      const offersA = a.totalOffers[oppositeRole] || 0
+      const offersB = b.totalOffers[oppositeRole] || 0
+      return offersB - offersA
+    })
+
+    setIsMore(filteredSubjects.length !== 1)
+
+    return filteredSubjects.length > 0
+      ? filteredSubjects.map((item: SubjectsInterfaceWithIcon) => ({
+          _id: item._id,
+          icon: item.icon,
+          appearance: item.appearance,
+          name: item.name,
+          description: `${item.totalOffers[oppositeRole]} ${t('categoriesPage.offers')}`,
+          link: `/categories/subjects/find-offers?categoryId=${categoryId}&subjectId=${item._id}`
+        }))
+      : []
+  }, [subjects, match, categoryId, oppositeRole, t])
 
   const onCategoryChange = (
     _: React.SyntheticEvent,
