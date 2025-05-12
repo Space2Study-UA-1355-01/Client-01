@@ -30,7 +30,7 @@ const TitleBlock: FC<TitleBlockProps> = ({
     <Box className='section' sx={{ ...styles.container, ...style }}>
       <Box sx={styles.info}>
         <TitleWithDescription
-          description={t(`${translationKey}.description.${userRole}`)}
+          description={t(`${translationKey}.description`)}
           style={styles.titleWithDescription}
           title={t(`${translationKey}.title.${userRole}`)}
         />
