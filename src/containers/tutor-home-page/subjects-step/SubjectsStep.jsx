@@ -65,6 +65,7 @@ const SubjectsStep = ({ btnsBox }) => {
       .finally(() => {
         setCategoriesLoaded(false)
       })
+    // eslint-disable-next-line
   }, [page, fetchCategories])
 
   useEffect(() => {
