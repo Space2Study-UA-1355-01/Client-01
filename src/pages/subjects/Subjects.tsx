@@ -242,7 +242,7 @@ const Subjects = () => {
   const handleOpenModal = () => openModal({ component: <CreateSubjectModal /> })
 
   return (
-    <PageWrapper>
+    <PageWrapper maxWidth='lg'>
       <OfferRequestBlock />
       <TitleWithDescription
         description={t('subjectsPage.subjects.description')}

@@ -38,7 +38,7 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
   axiosProps,
   ...props
 }: AsyncAutocompleteProps<T, F>) => {
-  const { loading, response, fetchData } = useAxios<
+  const { loading, response, fetchData, error } = useAxios<
     { data: T[] },
     undefined,
     T[]
@@ -82,13 +82,15 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
     fetchOnFocus && fetchFocusCondition && void fetchData()
   }
 
+  const optionsData = error?.status === 404 ? [] : response
+
   return (
     <AppAutoComplete
       getOptionLabel={getOptionLabel}
       isOptionEqualToValue={isOptionEqualToValue}
       loading={loading}
       onFocus={handleFocus}
-      options={response}
+      options={optionsData}
       textFieldProps={textFieldProps}
       value={valueOption}
       {...props}
