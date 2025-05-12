@@ -12,6 +12,26 @@
     "description": "Explore tutoring categories you're passionate about.",
     "viewMore": "View more"
   },
+  "howItWorks": {
+    "title": "How it works",
+    "description": "4 steps to easy tutoring with Space2Study",
+    "signUp": {
+      "title": "Sign up",
+      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+    },
+    "createAccount": {
+      "title": "Create a Tutor Account",
+      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+    },
+    "getNewStudents": {
+      "title": "Get New Students",
+      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+    },
+    "receiveFeedbacks": {
+      "title": "Receive Feedbacks",
+      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+    }
+  },
   "faq": {
     "title": "Frequently Asked Questions",
     "subtitle": "Everything you need to know about learning journey in Space2Study as a tutor",
