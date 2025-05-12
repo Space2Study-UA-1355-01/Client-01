@@ -192,6 +192,18 @@ const Subjects = () => {
     setMatch('')
   }
 
+  useEffect(() => {
+    const filteredCount = match
+      ? subjects.filter((item) =>
+          item.name.toLowerCase().includes(match.toLowerCase())
+        ).length
+      : subjects.length
+
+    if (filteredCount <= LIMIT) {
+      setIsMore(false)
+    }
+  }, [match, subjects])
+
   const cards: CardWithLinkProps[] = useMemo(() => {
     let filteredSubjects = match
       ? subjects.filter((item) =>
@@ -204,8 +216,6 @@ const Subjects = () => {
       const offersB = b.totalOffers[oppositeRole] || 0
       return offersB - offersA
     })
-
-    setIsMore(filteredSubjects.length !== 1)
 
     return filteredSubjects.length > 0
       ? filteredSubjects.map((item: SubjectsInterfaceWithIcon) => ({
