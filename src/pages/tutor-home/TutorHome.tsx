@@ -9,6 +9,7 @@ import FindBlock from '~/components/find-block/FindBlock'
 
 import { styles } from '~/pages/tutor-home/TutorHome.styles'
 import { translationKey } from '~/components/find-block/find-student-constants'
+import Faq from '~/containers/student-home-page/faq/Faq'
 
 const TutorHome = () => {
   const { openModal } = useModalContext()
@@ -28,6 +29,7 @@ const TutorHome = () => {
   return (
     <PageWrapper data-testid='tutorHome'>
       <FindBlock translationKey={translationKey} />
+      <Faq />
     </PageWrapper>
   )
 }

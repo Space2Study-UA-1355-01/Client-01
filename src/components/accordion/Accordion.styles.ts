@@ -65,7 +65,6 @@ export const styles: AccordionSx = {
     description: {
       pb: '24px',
       color: 'primary.900',
-      typography: 'body2',
       fontWeight: 400
     },
     active: {

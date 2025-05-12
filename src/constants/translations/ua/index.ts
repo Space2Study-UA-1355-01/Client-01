@@ -29,6 +29,7 @@ import guestHomePage from './guest-home-page.json'
 import table from './table.json'
 import subjectsPage from './subjects-page.json'
 import confirmationWindow from './confirmation-window.json'
+import studentHomePage from './student-home-page.json'
 
 const ua = {
   translations: {
@@ -62,7 +63,8 @@ const ua = {
     guestHomePage,
     table,
     subjectsPage,
-    confirmationWindow
+    confirmationWindow,
+    studentHomePage
   }
 }
 
