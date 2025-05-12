@@ -27,42 +27,19 @@ import { CardWithLinkProps } from '~/components/card-with-link/CardWithLink'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
 import { getOpositeRole } from '~/utils/helper-functions'
+import { axiosClient } from '~/plugins/axiosClient'
 import {
   CategoryNameInterface,
   SizeEnum,
   SubjectNameInterface,
   CategoryAppearance
 } from '~/types'
+import {
+  SubjectApiResponse,
+  SubjectsInterfaceWithIcon
+} from '~/types/common/interfaces/common.interfaces'
 import { authRoutes } from '~/router/constants/authRoutes'
 import { styles } from '~/pages/subjects/Subjects.styles'
-import { axiosClient } from '~/plugins/axiosClient'
-
-interface SubjectApiResponse {
-  data: {
-    _id: string
-    name: string
-    category: {
-      _id: string
-      name: string
-      appearance: CategoryAppearance
-    }
-    totalOffers: { student: number; tutor: number }
-  }[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
-}
-
-interface SubjectsInterfaceWithIcon {
-  _id: string
-  name: string
-  icon: React.ElementType
-  appearance: CategoryAppearance
-  description?: string
-  link?: string
-  totalOffers: { [key: string]: number }
-}
 
 const Subjects = () => {
   const [match, setMatch] = useState<string>('')
@@ -192,17 +169,21 @@ const Subjects = () => {
     setMatch('')
   }
 
-  useEffect(() => {
-    const filteredCount = match
-      ? subjects.filter((item) =>
-          item.name.toLowerCase().includes(match.toLowerCase())
-        ).length
-      : subjects.length
+  const shouldShowLoadMore = useMemo(() => {
+    if (!match) return isMore
 
-    if (filteredCount <= LIMIT) {
-      setIsMore(false)
+    const filteredSubjects = subjects.filter((item) =>
+      item.name.toLowerCase().includes(match.toLowerCase())
+    )
+
+    const isExactMatch = subjectOptions.some(
+      (option) => option.toLowerCase() === match.toLowerCase()
+    )
+    if (isExactMatch && filteredSubjects.length === 1) {
+      return false
     }
-  }, [match, subjects])
+    return isMore
+  }, [match, subjects, subjectOptions, isMore])
 
   const cards: CardWithLinkProps[] = useMemo(() => {
     let filteredSubjects = match
@@ -305,7 +286,7 @@ const Subjects = () => {
         <CardsList
           btnText={t('categoriesPage.viewMore')}
           cards={cards}
-          isExpandable={isMore}
+          isExpandable={shouldShowLoadMore}
           loading={subjectsLoading}
           onClick={handleLoadMore}
         />
