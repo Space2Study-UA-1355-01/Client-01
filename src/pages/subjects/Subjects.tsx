@@ -26,7 +26,6 @@ import { icons } from '~/components/subject-card-icon/icons'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
 import { getOpositeRole } from '~/utils/helper-functions'
-import { mapArrayByField } from '~/utils/map-array-by-field'
 import {
   CategoryNameInterface,
   SizeEnum,
@@ -172,7 +171,7 @@ const Subjects = () => {
         setSubjectsLoading(false)
       }
     },
-    [categoryId, oppositeRole]
+    [categoryId]
   )
 
   useEffect(() => {
