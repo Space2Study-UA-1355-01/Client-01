@@ -73,7 +73,7 @@ const Subjects = () => {
   const [page, setPage] = useState(1)
   const [isMore, setIsMore] = useState(true)
 
-  const LIMIT = 4
+  const LIMIT = 12
 
   const { t } = useTranslation()
   const { userRole } = useAppSelector((state) => state.appMain)
@@ -129,7 +129,6 @@ const Subjects = () => {
           : `/subjects`
 
         const response = await axiosClient.get<SubjectApiResponse>(endpoint, {
-          //headers,
           params: { page: pageToLoad, limit: LIMIT }
         })
         console.log('Server response:', response.data)
