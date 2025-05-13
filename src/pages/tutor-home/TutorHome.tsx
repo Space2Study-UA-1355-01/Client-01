@@ -12,6 +12,7 @@ import { HowItWorksBlock } from '~/components/how-it-works/HowItWorksBlock'
 import { Container } from '@mui/material'
 
 import Faq from '~/containers/student-home-page/faq/Faq'
+import { PopularCategories } from '~/containers/find-offer/popular-categories/PopularCategories'
 
 const TutorHome = () => {
   const { openModal } = useModalContext()
@@ -31,6 +32,7 @@ const TutorHome = () => {
   return (
     <Container data-testid='tutorHome' sx={{ flex: 1 }}>
       <FindBlock translationKey={translationKey} />
+      <PopularCategories limit={6} />
       <HowItWorksBlock />
       <Faq />
     </Container>
