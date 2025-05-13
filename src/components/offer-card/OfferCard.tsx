@@ -1,4 +1,5 @@
 import { FC } from 'react'
+import { useMediaQuery } from '@mui/material'
 
 import OfferCardRectangle from './offer-card-rectangle/OfferCardRectangle'
 import OfferCardSquare from './offer-card-square/OfferCardSquare'
@@ -8,7 +9,7 @@ interface RatingInfo {
   tutor: number
 }
 
-type AuthorRole = keyof RatingInfo
+export type AuthorRole = keyof RatingInfo
 
 export interface OfferCardProps {
   price: number
@@ -32,14 +33,16 @@ export interface OfferCardProps {
   onSendMessage?: () => void
 }
 
-const isGridView = true
-
-const OfferCard: FC<OfferCardProps> = (props) => {
-  return isGridView ? (
-    <OfferCardSquare {...props} />
-  ) : (
-    <OfferCardRectangle {...props} />
-  )
+const OfferCard: FC<OfferCardProps & { isGridView: boolean }> = ({
+  isGridView,
+  ...props
+}) => {
+  const isLargeScreen = useMediaQuery('(min-width: 660px)')
+  if (isGridView || !isLargeScreen) {
+    return <OfferCardSquare {...props} />
+  } else {
+    return <OfferCardRectangle {...props} />
+  }
 }
 
 export default OfferCard
