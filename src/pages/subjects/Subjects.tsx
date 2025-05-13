@@ -23,46 +23,23 @@ import AppToolbar from '~/components/app-toolbar/AppToolbar'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
 import AsyncAutocomplete from '~/components/async-autocomlete/AsyncAutocomplete'
 import { icons } from '~/components/subject-card-icon/icons'
+import { CardWithLinkProps } from '~/components/card-with-link/CardWithLink'
 
 import useBreakpoints from '~/hooks/use-breakpoints'
 import { getOpositeRole } from '~/utils/helper-functions'
+import { axiosClient } from '~/plugins/axiosClient'
 import {
   CategoryNameInterface,
   SizeEnum,
   SubjectNameInterface,
-  CategoryAppearance,
-  CardWithLinkProps
+  CategoryAppearance
 } from '~/types'
+import {
+  SubjectApiResponse,
+  SubjectsInterfaceWithIcon
+} from '~/types/common/interfaces/common.interfaces'
 import { authRoutes } from '~/router/constants/authRoutes'
 import { styles } from '~/pages/subjects/Subjects.styles'
-import { axiosClient } from '~/plugins/axiosClient'
-
-interface SubjectApiResponse {
-  data: {
-    _id: string
-    name: string
-    category: {
-      _id: string
-      name: string
-      appearance: CategoryAppearance
-    }
-    totalOffers: { student: number; tutor: number }
-  }[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
-}
-
-interface SubjectsInterfaceWithIcon {
-  _id: string
-  name: string
-  icon: React.ElementType
-  appearance: CategoryAppearance
-  description?: string
-  link?: string
-  totalOffers: { [key: string]: number }
-}
 
 const Subjects = () => {
   const [match, setMatch] = useState<string>('')
@@ -73,7 +50,7 @@ const Subjects = () => {
   const [page, setPage] = useState(1)
   const [isMore, setIsMore] = useState(true)
 
-  const LIMIT = 4
+  const LIMIT = 12
 
   const { t } = useTranslation()
   const { userRole } = useAppSelector((state) => state.appMain)
@@ -129,7 +106,6 @@ const Subjects = () => {
           : `/subjects`
 
         const response = await axiosClient.get<SubjectApiResponse>(endpoint, {
-          //headers,
           params: { page: pageToLoad, limit: LIMIT }
         })
         console.log('Server response:', response.data)
@@ -193,20 +169,46 @@ const Subjects = () => {
     setMatch('')
   }
 
-  const cards: CardWithLinkProps[] = useMemo(
-    () =>
-      subjects.length > 0
-        ? subjects.map((item: SubjectsInterfaceWithIcon) => ({
-            _id: item._id,
-            icon: item.icon,
-            appearance: item.appearance,
-            name: item.name,
-            description: `${item.totalOffers[oppositeRole]} ${t('categoriesPage.offers')}`,
-            link: `/categories/subjects/find-offers?categoryId=${categoryId}&subjectId=${item._id}`
-          }))
-        : [],
-    [subjects, categoryId, oppositeRole, t]
-  )
+  const shouldShowLoadMore = useMemo(() => {
+    if (!match) return isMore
+
+    const filteredSubjects = subjects.filter((item) =>
+      item.name.toLowerCase().includes(match.toLowerCase())
+    )
+
+    const isExactMatch = subjectOptions.some(
+      (option) => option.toLowerCase() === match.toLowerCase()
+    )
+    if (isExactMatch && filteredSubjects.length === 1) {
+      return false
+    }
+    return isMore
+  }, [match, subjects, subjectOptions, isMore])
+
+  const cards: CardWithLinkProps[] = useMemo(() => {
+    let filteredSubjects = match
+      ? subjects.filter((item) =>
+          item.name.toLowerCase().includes(match.toLowerCase())
+        )
+      : subjects
+
+    filteredSubjects = filteredSubjects.sort((a, b) => {
+      const offersA = a.totalOffers[oppositeRole] || 0
+      const offersB = b.totalOffers[oppositeRole] || 0
+      return offersB - offersA
+    })
+
+    return filteredSubjects.length > 0
+      ? filteredSubjects.map((item: SubjectsInterfaceWithIcon) => ({
+          _id: item._id,
+          icon: item.icon,
+          appearance: item.appearance,
+          name: item.name,
+          description: `${item.totalOffers[oppositeRole]} ${t('categoriesPage.offers')}`,
+          link: `/categories/subjects/find-offers?categoryId=${categoryId}&subjectId=${item._id}`
+        }))
+      : []
+  }, [subjects, match, categoryId, oppositeRole, t])
 
   const onCategoryChange = (
     _: React.SyntheticEvent,
@@ -284,7 +286,7 @@ const Subjects = () => {
         <CardsList
           btnText={t('categoriesPage.viewMore')}
           cards={cards}
-          isExpandable={isMore}
+          isExpandable={shouldShowLoadMore}
           loading={subjectsLoading}
           onClick={handleLoadMore}
         />
