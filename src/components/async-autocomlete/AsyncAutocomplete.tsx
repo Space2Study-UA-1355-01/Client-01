@@ -39,11 +39,11 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
   ...props
 }: AsyncAutocompleteProps<T, F>) => {
   const { loading, response, fetchData, error } = useAxios<
-    { data: T[] },
+    T[] | { data: T[] },
     undefined,
     T[]
   >({
-    transform: (res) => res.data,
+    transform: (res) => (Array.isArray(res) ? res : res.data),
     service,
     fetchOnMount: false,
     defaultResponse: defaultResponses.array,
