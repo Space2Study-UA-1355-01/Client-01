@@ -9,7 +9,7 @@ import FindBlock from '~/components/find-block/FindBlock'
 import { styles } from '~/pages/tutor-home/TutorHome.styles'
 import { translationKey } from '~/components/find-block/find-student-constants'
 import { HowItWorksBlock } from '~/components/how-it-works/HowItWorksBlock'
-import { Container } from '@mui/material'
+import { Container, Stack } from '@mui/material'
 
 import Faq from '~/containers/student-home-page/faq/Faq'
 
@@ -29,10 +29,12 @@ const TutorHome = () => {
   }, [openModal, isFirstLogin, userRole])
 
   return (
-    <Container data-testid='tutorHome' sx={{ flex: 1 }}>
-      <FindBlock translationKey={translationKey} />
-      <HowItWorksBlock />
-      <Faq />
+    <Container data-testid='tutorHome' sx={{ flex: 1, pt: '80px' }}>
+      <Stack spacing='80px'>
+        <FindBlock translationKey={translationKey} />
+        <HowItWorksBlock />
+        <Faq />
+      </Stack>
     </Container>
   )
 }

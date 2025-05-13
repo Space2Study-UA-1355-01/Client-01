@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Container from '@mui/material/Container'
+import { Stack } from '@mui/material'
 
 import { useAppSelector } from '~/hooks/use-redux'
 import { useModalContext } from '~/context/modal-context'
@@ -31,11 +32,13 @@ const StudentHome = () => {
   }, [openModal, isFirstLogin, userRole])
 
   return (
-    <Container data-testid='studentHome' sx={{ flex: 1 }}>
-      <FindBlock translationKey={translationKey} />
-      {/* Popular Categories */}
-      <HowItWorksBlock />
-      <Faq />
+    <Container data-testid='studentHome' sx={{ flex: 1, pt: '80px' }}>
+      <Stack spacing='80px'>
+        <FindBlock translationKey={translationKey} />
+        {/* Popular Categories */}
+        <HowItWorksBlock />
+        <Faq />
+      </Stack>
     </Container>
   )
 }
