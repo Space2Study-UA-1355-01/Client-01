@@ -17,7 +17,7 @@ interface AsyncAutocompleteProps<T, F extends boolean | undefined>
     BaseAutocompleteProps<T, F>,
     'value' | 'options' | 'renderInput'
   > {
-  service: ServiceFunction<{ data: T[] }>
+  service: ServiceFunction<T[] | { data: T[] }>
   valueField?: keyof T
   labelField?: keyof T
   value: T[keyof T] | null | Category
