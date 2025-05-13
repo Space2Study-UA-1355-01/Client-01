@@ -43,6 +43,33 @@ export interface CategoryNameInterface {
   name: string
 }
 
+export interface SubjectApiResponse {
+  data: {
+    _id: string
+    name: string
+    category: {
+      _id: string
+      name: string
+      appearance: CategoryAppearance
+    }
+    totalOffers: { student: number; tutor: number }
+  }[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface SubjectsInterfaceWithIcon {
+  _id: string
+  name: string
+  icon: React.ElementType
+  appearance: CategoryAppearance
+  description?: string
+  link?: string
+  totalOffers: { [key: string]: number }
+}
+
 export interface SubjectInterface {
   _id: string
   name: string
@@ -55,6 +82,10 @@ export interface SubjectInterface {
 export interface SubjectNameInterface {
   _id: string
   name: string
+  category?: {
+    _id: string
+    name: string
+  }
 }
 
 export interface SubjectNameStepperInterface {

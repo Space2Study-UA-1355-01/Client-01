@@ -23,5 +23,8 @@ export const subjectService = {
     subject: string
     category: string
     description: string
-  }) => axiosClient.post(URLs.subjects.post, data)
+  }) => axiosClient.post(URLs.subjects.post, data),
+  getAllSubjects: () => {
+    return axiosClient.get(`${URLs.subjects.get}`)
+  }
 }
