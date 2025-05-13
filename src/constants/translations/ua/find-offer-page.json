@@ -47,6 +47,7 @@
   },
   "popularCategories": {
     "title": "Популярні Категорії",
+    "description": "Вивчення категорій, які вам подобаються",
     "viewAllCategories": "Дивитись усі категорії"
   },
   "otherOffers": {

@@ -2,17 +2,18 @@ import { useEffect } from 'react'
 
 import { useAppSelector } from '~/hooks/use-redux'
 import { useModalContext } from '~/context/modal-context'
+import { Container } from '@mui/material'
 
 import UserStepsWrapper from '~/components/user-steps-wrapper/UserStepsWrapper'
 import FindBlock from '~/components/find-block/FindBlock'
 
-import { styles } from '~/pages/tutor-home/TutorHome.styles'
 import { translationKey } from '~/components/find-block/find-student-constants'
 import { HowItWorksBlock } from '~/components/how-it-works/HowItWorksBlock'
-import { Container } from '@mui/material'
 
 import Faq from '~/containers/student-home-page/faq/Faq'
-import { PopularCategories } from '~/containers/find-offer/popular-categories/PopularCategories'
+import PopularCategories from '~/containers/find-offer/popular-categories/PopularCategories'
+
+import { styles } from './TutorHome.styles'
 
 const TutorHome = () => {
   const { openModal } = useModalContext()
