@@ -21,6 +21,7 @@
   "searchToolbar": {
     "label": "Search by tutor name"
   },
+  "backToAllCategories": "Back to all categories",
   "topMenu": {
     "tutorsOffers": "Tutors’ offers",
     "studentsRequests": "Students’ requests"
