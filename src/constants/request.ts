@@ -25,7 +25,8 @@ export const URLs = {
   },
   subjects: {
     get: '/subjects',
-    getNames: '/subjects/names'
+    getNames: '/subjects/names',
+    post: '/subjects'
   },
   resources: {
     questions: {

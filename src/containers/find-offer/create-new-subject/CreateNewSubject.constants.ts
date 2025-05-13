@@ -5,7 +5,7 @@ export const validations = {
     emptyField(value, 'offerPage.errorMessages.category'),
   subject: (value: string) =>
     emptyField(value, 'offerPage.errorMessages.subject'),
-  info: (value: string) =>
+  description: (value: string) =>
     emptyField(
       value,
       'offerPage.errorMessages.description',

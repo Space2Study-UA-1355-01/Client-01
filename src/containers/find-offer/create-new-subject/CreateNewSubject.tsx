@@ -27,6 +27,7 @@ import { snackbarVariants } from '~/constants'
 import { categoryService } from '~/services/category-service'
 import { validations } from '~/containers/find-offer/create-new-subject/CreateNewSubject.constants'
 import { styles } from '~/containers/find-offer/create-new-subject/CreateNewSubject.styles'
+import { subjectService } from '~/services/subject-service'
 
 const CreateSubjectModal = () => {
   const { closeModal } = useModalContext()
@@ -49,7 +50,8 @@ const CreateSubjectModal = () => {
     closeModal()
   }
 
-  const sendSubjectRequest = (): Promise<AxiosResponse> => null
+  const sendSubjectRequest = (): Promise<AxiosResponse> =>
+    subjectService.postSubject(data)
 
   const { loading, fetchData } = useAxios({
     service: sendSubjectRequest,
@@ -71,7 +73,7 @@ const CreateSubjectModal = () => {
     initialValues: {
       subject: '',
       category: '',
-      info: ''
+      description: ''
     },
     onSubmit: fetchData,
     validations
@@ -86,11 +88,15 @@ const CreateSubjectModal = () => {
     value: CategoryNameInterface | null | string
   ) => {
     if (typeof value === 'object') {
-      handleNonInputValueChange('category', value?.name ?? '')
+      handleNonInputValueChange('category', value?._id ?? '')
+      console.log('first if ')
     } else {
-      handleNonInputValueChange('category', value)
+      console.log('second if ')
+      handleNonInputValueChange('category', '')
     }
   }
+
+  console.log(errors)
 
   return (
     <Box sx={styles.root}>
@@ -110,6 +116,7 @@ const CreateSubjectModal = () => {
         <Typography sx={styles.inputTitle}>
           {t('categoriesPage.newSubject.subject')}
         </Typography>
+        {/* subject input */}
         <AppTextField
           errorMsg={t(errors.subject)}
           fullWidth
@@ -121,9 +128,9 @@ const CreateSubjectModal = () => {
         <Typography sx={styles.inputTitle}>
           {t('categoriesPage.newSubject.category')}
         </Typography>
+        {/* categories input  */}
         <AsyncAutocomplete
           fetchOnFocus
-          freeSolo
           labelField='name'
           onBlur={handleBlur('category')}
           onChange={handleCategoryChange}
@@ -135,18 +142,19 @@ const CreateSubjectModal = () => {
             helperText: t(errors.category) || ' '
           }}
           value={data.category}
-          valueField='name'
+          valueField='_id'
         />
+        {/* additional info input */}
         <AppTextArea
-          errorMsg={t(errors.info)}
+          errorMsg={t(errors.description)}
           fullWidth
           label={t('offerDetailsPage.enrollOffer.labels.info')}
           maxLength={1000}
-          onBlur={handleBlur('info')}
-          onChange={handleInputChange('info')}
+          onBlur={handleBlur('description')}
+          onChange={handleInputChange('description')}
           sx={styles.textArea}
           title={t('categoriesPage.newSubject.info')}
-          value={data.info}
+          value={data.description}
         />
         <AppButton
           loading={loading}

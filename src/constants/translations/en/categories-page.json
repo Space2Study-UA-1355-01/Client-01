@@ -11,7 +11,7 @@
     "description": "If you can’t find a specific category or subject that you need, you can submit a request to our team to review your request and take necessary actions.",
     "subject": "Create a new subject",
     "category": "Add subject to existing category or create a new one.",
-    "info": "Provide a brief explanation of why you believe this subject or category should be added.",
+    "info": "Provide a brief explanation of why you believe this subject should be added.",
     "labels": { "subject": "New subject" }
   }
 }
