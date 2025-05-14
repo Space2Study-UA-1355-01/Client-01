@@ -2,11 +2,13 @@ import { renderWithProviders } from '~tests/test-utils'
 import { screen } from '@testing-library/react'
 import HomeRoute from '~/router/helpers/HomeRoute'
 
-const mockedUseNavigate = vi.fn()
-vi.mock('react-router-dom', async () => ({
-  ...(await vi.importActual('react-router-dom')),
-  useNavigate: () => mockedUseNavigate
-}))
+vi.mock('react-router-dom', async () => {
+  const actual = await vi.importActual('react-router-dom')
+  return {
+    ...actual,
+    Navigate: ({ to }) => <div>Redirected to {to}</div>
+  }
+})
 
 const userId = '63f5d0ebb'
 const studentState = {
@@ -29,27 +31,27 @@ describe('HomeRoute component', () => {
     expect(welcomeDescription).toBeInTheDocument()
   })
 
-  it('should navigate to "student" when userRole is corresponding', () => {
+  it('should redirect to "student" when userRole is student', () => {
     renderWithProviders(<HomeRoute />, {
       preloadedState: studentState
     })
 
-    expect(mockedUseNavigate).toHaveBeenCalledWith('student')
+    expect(screen.getByText('Redirected to student')).toBeInTheDocument()
   })
 
-  it('should navigate to "tutor" when userRole is corresponded', () => {
+  it('should redirect to "tutor" when userRole is tutor', () => {
     renderWithProviders(<HomeRoute />, {
       preloadedState: tutorState
     })
 
-    expect(mockedUseNavigate).toHaveBeenCalledWith('tutor')
+    expect(screen.getByText('Redirected to tutor')).toBeInTheDocument()
   })
 
-  it('should navigate to "admin" when userRole is corresponded', () => {
+  it('should redirect to "admin" when userRole is admin', () => {
     renderWithProviders(<HomeRoute />, {
       preloadedState: adminState
     })
 
-    expect(mockedUseNavigate).toHaveBeenCalledWith('admin')
+    expect(screen.getByText('Redirected to admin')).toBeInTheDocument()
   })
 })

@@ -18,5 +18,8 @@ export const subjectService = {
   ): Promise<AxiosResponse<SubjectNameInterface[]>> => {
     const category = createUrlPath(URLs.categories.get, categoryId)
     return axiosClient.get(`${category}${URLs.subjects.getNames}`)
+  },
+  getAllSubjects: () => {
+    return axiosClient.get(`${URLs.subjects.get}`)
   }
 }

@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Container from '@mui/material/Container'
+import { Stack } from '@mui/material'
 
 import { useAppSelector } from '~/hooks/use-redux'
 import { useModalContext } from '~/context/modal-context'
@@ -10,7 +11,6 @@ import PopularCategories from '~/containers/find-offer/popular-categories/Popula
 
 import { translationKey } from '~/components/find-block/find-tutor-constants'
 import { HowItWorksBlock } from '~/components/how-it-works/HowItWorksBlock'
-import { Stack } from '@mui/material'
 
 const StudentHome = () => {
   const { openModal } = useModalContext()
