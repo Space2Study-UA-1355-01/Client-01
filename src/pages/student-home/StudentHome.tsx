@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Container from '@mui/material/Container'
+import { Stack } from '@mui/material'
 
 import { useAppSelector } from '~/hooks/use-redux'
 import { useModalContext } from '~/context/modal-context'

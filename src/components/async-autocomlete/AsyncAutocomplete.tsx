@@ -17,7 +17,7 @@ interface AsyncAutocompleteProps<T, F extends boolean | undefined>
     BaseAutocompleteProps<T, F>,
     'value' | 'options' | 'renderInput'
   > {
-  service: ServiceFunction<{ data: T[] }>
+  service: ServiceFunction<T[] | { data: T[] }>
   valueField?: keyof T
   labelField?: keyof T
   value: T[keyof T] | null | Category
@@ -38,12 +38,12 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
   axiosProps,
   ...props
 }: AsyncAutocompleteProps<T, F>) => {
-  const { loading, response, fetchData } = useAxios<
-    { data: T[] },
+  const { loading, response, fetchData, error } = useAxios<
+    T[] | { data: T[] },
     undefined,
     T[]
   >({
-    transform: (res) => res.data,
+    transform: (res) => (Array.isArray(res) ? res : res.data),
     service,
     fetchOnMount: false,
     defaultResponse: defaultResponses.array,
@@ -82,13 +82,15 @@ const AsyncAutocomplete = <T, F extends boolean | undefined = undefined>({
     fetchOnFocus && fetchFocusCondition && void fetchData()
   }
 
+  const optionsData = error?.status === 404 ? [] : response
+
   return (
     <AppAutoComplete
       getOptionLabel={getOptionLabel}
       isOptionEqualToValue={isOptionEqualToValue}
       loading={loading}
       onFocus={handleFocus}
-      options={response}
+      options={optionsData}
       textFieldProps={textFieldProps}
       value={valueOption}
       {...props}

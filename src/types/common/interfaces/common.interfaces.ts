@@ -89,6 +89,10 @@ export interface SubjectInterface {
 export interface SubjectNameInterface {
   _id: string
   name: string
+  category?: {
+    _id: string
+    name: string
+  }
 }
 
 export interface SubjectNameStepperInterface {

@@ -9,6 +9,7 @@ import FindBlock from '~/components/find-block/FindBlock'
 
 import { translationKey } from '~/components/find-block/find-student-constants'
 import { HowItWorksBlock } from '~/components/how-it-works/HowItWorksBlock'
+import { Container, Stack } from '@mui/material'
 
 import Faq from '~/containers/student-home-page/faq/Faq'
 import PopularCategories from '~/containers/find-offer/popular-categories/PopularCategories'
