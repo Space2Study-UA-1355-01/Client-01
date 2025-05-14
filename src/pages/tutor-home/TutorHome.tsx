@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { useAppSelector } from '~/hooks/use-redux'
 import { useModalContext } from '~/context/modal-context'
-import { Container } from '@mui/material'
+import { Container, Stack } from '@mui/material'
 
 import UserStepsWrapper from '~/components/user-steps-wrapper/UserStepsWrapper'
 import FindBlock from '~/components/find-block/FindBlock'
@@ -31,11 +31,13 @@ const TutorHome = () => {
   }, [openModal, isFirstLogin, userRole])
 
   return (
-    <Container data-testid='tutorHome' sx={{ flex: 1 }}>
-      <FindBlock translationKey={translationKey} />
-      <PopularCategories limit={6} />
-      <HowItWorksBlock />
-      <Faq />
+    <Container data-testid='tutorHome' sx={{ flex: 1, pt: '80px' }}>
+      <Stack spacing='80px'>
+        <FindBlock translationKey={translationKey} />
+        <PopularCategories limit={6} />
+        <HowItWorksBlock />
+        <Faq />
+      </Stack>
     </Container>
   )
 }

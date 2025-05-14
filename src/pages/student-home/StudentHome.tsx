@@ -10,6 +10,7 @@ import PopularCategories from '~/containers/find-offer/popular-categories/Popula
 
 import { translationKey } from '~/components/find-block/find-tutor-constants'
 import { HowItWorksBlock } from '~/components/how-it-works/HowItWorksBlock'
+import { Stack } from '@mui/material'
 
 const StudentHome = () => {
   const { openModal } = useModalContext()
@@ -32,11 +33,13 @@ const StudentHome = () => {
   }, [openModal, isFirstLogin, userRole])
 
   return (
-    <Container data-testid='studentHome' sx={{ flex: 1 }}>
-      <FindBlock translationKey={translationKey} />
-      <PopularCategories limit={6} />
-      <HowItWorksBlock />
-      <Faq />
+    <Container data-testid='studentHome' sx={{ flex: 1, pt: '80px' }}>
+      <Stack spacing='80px'>
+        <FindBlock translationKey={translationKey} />
+        <PopularCategories limit={6} />
+        <HowItWorksBlock />
+        <Faq />
+      </Stack>
     </Container>
   )
 }
