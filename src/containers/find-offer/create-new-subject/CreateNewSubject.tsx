@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography'
 
 import useAxios from '~/hooks/use-axios'
 import useForm from '~/hooks/use-form'
-import useConfirm from '~/hooks/use-confirm'
 import { useModalContext } from '~/context/modal-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import Image from '~/assets/img/signup-dialog/student.svg'
@@ -30,8 +29,7 @@ import { styles } from '~/containers/find-offer/create-new-subject/CreateNewSubj
 import { subjectService } from '~/services/subject-service'
 
 const CreateSubjectModal = () => {
-  const { closeModal } = useModalContext()
-  const { setNeedConfirmation } = useConfirm()
+  const { closeModal, setUnsavedChanges } = useModalContext()
   const { setAlert } = useSnackBarContext()
   const { t } = useTranslation()
 
@@ -80,8 +78,8 @@ const CreateSubjectModal = () => {
   })
 
   useEffect(() => {
-    setNeedConfirmation(isDirty)
-  }, [isDirty, setNeedConfirmation])
+    setUnsavedChanges(isDirty)
+  }, [isDirty, setUnsavedChanges])
 
   const handleCategoryChange = (
     _: React.SyntheticEvent,
@@ -89,14 +87,10 @@ const CreateSubjectModal = () => {
   ) => {
     if (typeof value === 'object') {
       handleNonInputValueChange('category', value?._id ?? '')
-      console.log('first if ')
     } else {
-      console.log('second if ')
       handleNonInputValueChange('category', '')
     }
   }
-
-  console.log(errors)
 
   return (
     <Box sx={styles.root}>
