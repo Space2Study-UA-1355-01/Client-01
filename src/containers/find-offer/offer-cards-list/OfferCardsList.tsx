@@ -1,4 +1,4 @@
-import { FC, useMemo } from 'react'
+import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Box, Stack, Pagination } from '@mui/material'
 import usePagination from '~/hooks/table/use-pagination'
@@ -30,10 +30,8 @@ const OfferCardsList: FC<OfferCardsListProps> = ({
     defaultPage: 1
   })
 
-  const paginatedOffers = useMemo(() => {
-    const startIndex = (page - 1) * rowsPerPage
-    return offers.slice(startIndex, startIndex + rowsPerPage)
-  }, [offers, page, rowsPerPage])
+  const startIndex = (page - 1) * rowsPerPage
+  const paginatedOffers = offers.slice(startIndex, startIndex + rowsPerPage)
 
   if (loading) {
     return (
