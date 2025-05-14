@@ -73,7 +73,7 @@ const PopularCategories = ({ limit = 6 }: PopularCategoriesProps) => {
     void fetchCategories()
   }, [fetchCategories, selectedCategoryId])
 
-  cards.sort((a, b) => {
+  const sortedCards = [...cards].sort((a, b) => {
     const aOffers = a.totalOffers ?? 0
     const bOffers = b.totalOffers ?? 0
     return bOffers - aOffers
@@ -91,7 +91,7 @@ const PopularCategories = ({ limit = 6 }: PopularCategoriesProps) => {
       {loading && <Typography>Loading...</Typography>}
       <CardsList
         btnText={t('findOffers.popularCategories.viewAllCategories')}
-        cards={cards}
+        cards={sortedCards}
         onClick={() => navigate('/categories')}
       />
     </Box>
