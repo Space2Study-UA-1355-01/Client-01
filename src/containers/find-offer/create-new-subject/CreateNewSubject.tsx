@@ -36,7 +36,7 @@ const CreateSubjectModal = () => {
   const handleResponseError = (error: ErrorResponse) => {
     setAlert({
       severity: snackbarVariants.error,
-      message: error ? `errors.${error.code}` : ''
+      message: error ? error.message : ''
     })
   }
 
@@ -69,7 +69,7 @@ const CreateSubjectModal = () => {
     handleSubmit
   } = useForm({
     initialValues: {
-      subject: '',
+      name: '',
       category: '',
       description: ''
     },
@@ -110,19 +110,17 @@ const CreateSubjectModal = () => {
         <Typography sx={styles.inputTitle}>
           {t('categoriesPage.newSubject.subject')}
         </Typography>
-        {/* subject input */}
         <AppTextField
-          errorMsg={t(errors.subject)}
+          errorMsg={t(errors.name)}
           fullWidth
           label={t('categoriesPage.newSubject.labels.subject')}
-          onBlur={handleBlur('subject')}
-          onChange={handleInputChange('subject')}
-          value={data.subject}
+          onBlur={handleBlur('name')}
+          onChange={handleInputChange('name')}
+          value={data.name}
         />
         <Typography sx={styles.inputTitle}>
           {t('categoriesPage.newSubject.category')}
         </Typography>
-        {/* categories input  */}
         <AsyncAutocomplete
           fetchOnFocus
           labelField='name'
@@ -138,7 +136,6 @@ const CreateSubjectModal = () => {
           value={data.category}
           valueField='_id'
         />
-        {/* additional info input */}
         <AppTextArea
           errorMsg={t(errors.description)}
           fullWidth

@@ -25,7 +25,7 @@ export const subjectService = {
     return axiosClient.get(`${category}${URLs.subjects.getNames}`)
   },
   postSubject: (data: {
-    subject: string
+    name: string
     category: string
     description: string
   }) => axiosClient.post(URLs.subjects.post, data),
