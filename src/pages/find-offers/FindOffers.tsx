@@ -37,7 +37,7 @@ const FindOffers = () => {
     if (categoryId && categoryId !== '') {
       return () => subjectService.getSubjects(undefined, categoryId)
     }
-    return subjectService.getAllSubjects
+    return () => subjectService.getAllSubjects({ limit: 99 })
   }, [categoryId])
 
   const onCategoryChange = (

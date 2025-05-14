@@ -2,7 +2,12 @@ import { axiosClient } from '~/plugins/axiosClient'
 import { AxiosResponse } from 'axios'
 
 import { URLs } from '~/constants/request'
-import { ItemsWithCount, SubjectInterface, SubjectNameInterface } from '~/types'
+import {
+  ItemsWithCount,
+  SubjectInterface,
+  SubjectNameInterface,
+  SubjectParams
+} from '~/types'
 import { createUrlPath } from '~/utils/helper-functions'
 
 export const subjectService = {
@@ -24,7 +29,7 @@ export const subjectService = {
     category: string
     description: string
   }) => axiosClient.post(URLs.subjects.post, data),
-  getAllSubjects: () => {
-    return axiosClient.get(`${URLs.subjects.get}`)
+  getAllSubjects: (params?: SubjectParams) => {
+    return axiosClient.get(`${URLs.subjects.get}`, { params })
   }
 }

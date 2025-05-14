@@ -79,6 +79,11 @@ export interface SubjectInterface {
   updatedAt: string
 }
 
+export interface SubjectParams {
+  limit?: number
+  categoryId?: string
+}
+
 export interface SubjectNameInterface {
   _id: string
   name: string
