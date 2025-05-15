@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, useCallback, useMemo, useState, useEffect } from 'react'
 
 const usePagination = ({
   defaultPage = 1,
@@ -9,6 +9,7 @@ const usePagination = ({
     () => Math.ceil(itemsCount / itemsPerPage),
     [itemsCount, itemsPerPage]
   )
+
   const checkedPage = useMemo(() => {
     if (isNaN(defaultPage) || defaultPage < 1) {
       return 1
@@ -20,12 +21,20 @@ const usePagination = ({
   const [rowsPerPage, setRowsPerPage] = useState<number>(itemsPerPage)
   const [pageInput, setPageInput] = useState<number | string>(1)
 
+  useEffect(() => {
+    setRowsPerPage(itemsPerPage)
+    const totalPages = Math.ceil(itemsCount / itemsPerPage)
+    const validPage = Math.min(Math.max(defaultPage, 1), totalPages || 1)
+    setPage(validPage)
+  }, [defaultPage, itemsCount, itemsPerPage])
+
   const handleChangePage = (_e: ChangeEvent<unknown>, newPage: number) => {
     setPage(newPage)
   }
 
   const handleChangeRowsPerPage = (e: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(Number(e.target.value))
+    setPage(1)
   }
 
   const handlePageSubmit = (maxPages: number) => {
@@ -44,7 +53,7 @@ const usePagination = ({
     setPageInput(e.target.value)
   }
 
-  const clearPage = useCallback(() => setPage(1), [setPage])
+  const clearPage = useCallback(() => setPage(1), [])
 
   return {
     page,

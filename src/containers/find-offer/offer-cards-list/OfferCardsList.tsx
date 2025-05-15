@@ -1,7 +1,9 @@
+import { useEffect, useState } from 'react'
 import { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Box, Stack, Pagination } from '@mui/material'
 import usePagination from '~/hooks/table/use-pagination'
+import { itemsLoadLimit } from '~/constants/index'
 
 import OfferCard from '~/components/offer-card/OfferCard'
 import { styles } from '~/containers/find-offer/offer-cards-list/OfferCardsList.styles'
@@ -24,14 +26,30 @@ const OfferCardsList: FC<OfferCardsListProps> = ({
   error
 }) => {
   const { t } = useTranslation()
+
+  const getItemsPerPage = () => {
+    const width = window.innerWidth
+    if (width < 600) return itemsLoadLimit.mobile
+    if (width < 900) return itemsLoadLimit.tablet
+    return itemsLoadLimit.default
+  }
+  const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage)
   const { page, rowsPerPage, pageCount, handleChangePage } = usePagination({
     itemsCount: offers.length,
-    itemsPerPage: 6,
+    itemsPerPage,
     defaultPage: 1
   })
-
   const startIndex = (page - 1) * rowsPerPage
   const paginatedOffers = offers.slice(startIndex, startIndex + rowsPerPage)
+
+  useEffect(() => {
+    const handleResize = () => {
+      setItemsPerPage(getItemsPerPage())
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   if (loading) {
     return (
@@ -40,6 +58,7 @@ const OfferCardsList: FC<OfferCardsListProps> = ({
       </Box>
     )
   }
+
   if (error) {
     return (
       <NotFoundResults
