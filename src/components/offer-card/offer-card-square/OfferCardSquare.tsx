@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, memo } from 'react'
 import {
   Card,
   Box,
@@ -64,7 +64,7 @@ const OfferCardSquare: FC<OfferCardProps> = ({
 
       <Box sx={styles.chipsRow}>
         <Typography sx={styles.label}>Subject:</Typography>
-        <Chip label={subject.name.toUpperCase()} sx={styles.chip} />
+        <Chip label={subject.toUpperCase()} sx={styles.chip} />
       </Box>
       <Box sx={styles.chipsRow}>
         <Typography sx={styles.label}>Level:</Typography>
@@ -116,4 +116,4 @@ const OfferCardSquare: FC<OfferCardProps> = ({
   )
 }
 
-export default OfferCardSquare
+export default memo(OfferCardSquare)

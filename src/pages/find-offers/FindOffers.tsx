@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import PageWrapper from '~/components/page-wrapper/PageWrapper'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
 import OfferCardsList from '~/containers/find-offer/offer-cards-list/OfferCardsList'
@@ -8,7 +8,12 @@ import TitleWithDescription from '~/components/title-with-description/TitleWithD
 import DirectionLink from '~/components/direction-link/DirectionLink'
 import { Box } from '@mui/material'
 
-import { CategoryNameInterface, SizeEnum, SubjectNameInterface } from '~/types'
+import {
+  CategoryNameInterface,
+  SizeEnum,
+  SubjectNameInterface,
+  Offer
+} from '~/types'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 import { useTranslation } from 'react-i18next'
@@ -22,6 +27,8 @@ import AppToolbar from '~/components/app-toolbar/AppToolbar'
 import SearchAutocomplete from '~/components/search-autocomplete/SearchAutocomplete'
 import { subjectService } from '~/services/subject-service'
 import useBreakpoints from '~/hooks/use-breakpoints'
+import { offerService, GetOffersParams } from '~/services/offer-service'
+import useAxios from '~/hooks/use-axios'
 
 const FindOffers = () => {
   const [tutorName, setTutorName] = useState<string>('')
@@ -67,6 +74,31 @@ const FindOffers = () => {
     searchParams.set('categoryId', value?.category?._id ?? categoryId)
     setSearchParams(searchParams)
   }
+
+  const {
+    response: offers,
+    loading,
+    error,
+    fetchData
+  } = useAxios<{ items: Offer[]; count: number }, GetOffersParams, Offer[]>({
+    service: offerService.getOffers,
+    defaultResponse: [],
+    fetchOnMount: false,
+    transform: (res) => res.items
+  })
+
+  const params = useMemo<GetOffersParams>(() => {
+    const p: GetOffersParams = {}
+    if (categoryId) p.categoryId = categoryId
+    if (subjectId) p.subjectId = subjectId
+    if (tutorName.trim()) p.search = tutorName.trim()
+    return p
+  }, [subjectId, categoryId, tutorName])
+
+  useEffect(() => {
+    void fetchData(params)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params])
 
   const autoCompleteSubjects = (
     <AsyncAutocomplete
@@ -131,8 +163,13 @@ const FindOffers = () => {
       {breakpoints.isMobile && autoCompleteSubjects}
 
       <ViewSwitcher isGridView={isGridView} setIsGridView={setIsGridView} />
-      <OfferCardsList isGridView={isGridView} />
-      <PopularCategories limit={9} />
+      <OfferCardsList
+        error={error}
+        isGridView={isGridView}
+        loading={loading}
+        offers={offers}
+      />
+        <PopularCategories limit={9} />
     </PageWrapper>
   )
 }

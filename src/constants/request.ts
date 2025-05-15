@@ -44,5 +44,11 @@ export const URLs = {
   },
   uploadPhoto: {
     post: '/upload'
+  },
+  offers: {
+    get: '/offers',
+    post: '/offers',
+    delete: '/offers',
+    patch: '/offers'
   }
 }

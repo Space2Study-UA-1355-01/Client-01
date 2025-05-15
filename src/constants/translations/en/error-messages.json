@@ -2,5 +2,8 @@
   "fileSize": "Maximum file size - {{size}}",
   "resultsNotFound": "Sorry, no results found",
   "tryAgainText": "We couldn’t find what you were searching for. Please try again or suggest a new {{name}} that you were looking for.",
-  "buttonRequest": "Request a new {{name}}"
+  "fetchingError": "An error occurred while loading the data. Please try again.",
+  "fetchingErrorButtonText": "Try again",
+  "buttonRequest": "Request a new {{name}}",
+  "offers": "offer"
 }
