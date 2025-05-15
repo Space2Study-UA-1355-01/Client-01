@@ -9,8 +9,8 @@
       "student": "Find the perfect tutor for your needs by creating a request. Select the options that best describe what you`re looking for."
     },
     "button": {
-      "tutor": "Create request",
-      "student": "Create offer"
+      "tutor": "Create offer",
+      "student": "Create request"
     }
   },
   "titleWithDescription": {

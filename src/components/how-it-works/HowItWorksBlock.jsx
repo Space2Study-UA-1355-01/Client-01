@@ -38,7 +38,9 @@ export const HowItWorksBlock = () => {
         to={authRoutes.findOffers.path}
         variant='contained'
       >
-        Find {userRole === student ? 'tutor' : 'students'}
+        {userRole === student
+          ? t(`studentHomePage.findTutorBlock.button`)
+          : t(`tutorHomePage.findStudentBlock.button`)}
       </Button>
     </Box>
   )
