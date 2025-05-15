@@ -64,7 +64,7 @@ const OfferCardSquare: FC<OfferCardProps> = ({
 
       <Box sx={styles.chipsRow}>
         <Typography sx={styles.label}>Subject:</Typography>
-        <Chip label={subject.toUpperCase()} sx={styles.chip} />
+        <Chip label={subject?.toUpperCase() ?? ''} sx={styles.chip} />
       </Box>
       <Box sx={styles.chipsRow}>
         <Typography sx={styles.label}>Level:</Typography>
