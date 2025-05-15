@@ -1,12 +1,12 @@
 {
   "stepLabels": {
-    "generalInfo": "Загальне", 
-    "language": "Мова", 
+    "generalInfo": "Загальне",
+    "language": "Мова",
     "subjects": "Предмети",
     "photo": "Фото"
   },
   "generalInfo": {
-    "title": "Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint.",
+    "title": "Будь ласка, заповніть форму реєстрації для найкращого користувацького досвіду.",
     "textFieldLabel": "Коротко опишіть свій професійний статус",
     "helperText": "Поля зі знаком * є обов'язковими"
   },
@@ -14,8 +14,8 @@
     "title": "Опишіть свій професійний досвід. Максимум 70 символів.",
     "textFieldLabel": "Текст тут"
   },
-  "language": {
-    "title": "Velit officia consequat duis enim velit mollit. Other categories you can add in your account settings later.",
+  "languages": {
+    "title": "Оберіть мову на якій ви хочете навчатись чи співпрацювати.",
     "autocompleteLabel": "Твоя рідна мова"
   },
   "categories": {
@@ -27,12 +27,12 @@
     "sameSubject": "Ви вже маєте такий предмет"
   },
   "photo": {
-	"imageAlt": "Ваша фотографія",
-	"button": "Завантажте свою фотографію профілю",
-	"placeholder":"Попередній перегляд фотографій",
-	"description":"Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.",
-	"typeError": "Неправильний тип файлу. Дозволяються лише файли .png/.jpg/.jpeg.",
-	"fileSizeError": "Розмір одного файлу не може перевищувати 10 Мб."
+    "imageAlt": "Ваша фотографія",
+    "button": "Завантажте свою фотографію профілю",
+    "placeholder": "Попередній перегляд фотографій",
+    "description": "Завантажте чітке фото. Це допомагає викликати довіру та зробити профіль привабливішим.",
+    "typeError": "Неправильний тип файлу. Дозволяються лише файли .png/.jpg/.jpeg.",
+    "fileSizeError": "Розмір одного файлу не може перевищувати 10 Мб."
   },
   "successMessage": "Успішно! Ваші дані додано.",
   "warningMessage": "Ваші дані було збережено! Однак завантаження фото не вдалося. Будь ласка, спробуйте ще раз.",

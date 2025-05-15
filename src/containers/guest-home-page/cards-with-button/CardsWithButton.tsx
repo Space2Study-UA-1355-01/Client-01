@@ -16,6 +16,8 @@ import {
   UserRoleEnum
 } from '~/types'
 import { styles } from '~/containers/guest-home-page/cards-with-button/CardsWithButton.styles'
+import RegistrationDialog from '../registration-dialog/RegistrationDialog'
+import { useModalContext } from '~/context/modal-context'
 
 interface CardsWithButtonProps {
   array: AccordionWithImageItem[]
@@ -30,6 +32,15 @@ const CardsWithButton: FC<CardsWithButtonProps> = ({
   isTutor
 }) => {
   const { t } = useTranslation()
+  const { openModal } = useModalContext()
+  const role = isTutor ? UserRoleEnum.Tutor : UserRoleEnum.Student
+
+  const openDialogWithRole = (role: UserRoleEnum) => {
+    openModal({
+      component: <RegistrationDialog defaultRole={role} />,
+      paperProps: { sx: { maxWidth: 960 } }
+    })
+  }
 
   const cards = (state: TransitionChildren) =>
     array.map((item, key) => {
@@ -57,13 +68,16 @@ const CardsWithButton: FC<CardsWithButtonProps> = ({
         </Box>
       )
     })
-
   return (
     <>
       <Transition in={isTutor} timeout={300}>
         {(state) => cards(state)}
       </Transition>
-      <AppButton size={SizeEnum.ExtraLarge} sx={styles.button}>
+      <AppButton
+        onClick={() => openDialogWithRole(role)}
+        size={SizeEnum.ExtraLarge}
+        sx={styles.button}
+      >
         {btnText}
       </AppButton>
     </>

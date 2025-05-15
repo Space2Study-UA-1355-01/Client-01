@@ -231,10 +231,7 @@ const GeneralInfoStep = ({ btnsBox }) => {
       </Box>
       <Box sx={styles.rightBox}>
         <Stack sx={styles.form}>
-          <Typography>
-            Please complete the registration form for the best possible
-            experience.
-          </Typography>
+          <Typography>{t('becomeTutor.generalInfo.title')}</Typography>
           <Stack direction='row' spacing={2}>
             <TextField
               autoFocus
