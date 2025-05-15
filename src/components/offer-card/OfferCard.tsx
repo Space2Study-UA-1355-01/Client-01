@@ -35,7 +35,7 @@ const OfferCard: FC<OfferCardProps & { isGridView: boolean }> = ({
   isGridView,
   ...props
 }) => {
-  const isLargeScreen = useMediaQuery('(min-width: 660px)')
+  const isLargeScreen = useMediaQuery('(min-width: 730px)')
   if (isGridView || !isLargeScreen) {
     return <OfferCardSquare {...props} />
   } else {
