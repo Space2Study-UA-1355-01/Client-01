@@ -67,6 +67,19 @@
     "professional": "Професійний",
     "specialized": "Спеціалізований"
   },
+  "errorMessages": {
+    "emailValid": "Email має бути у форматі: “local-part@domain.com”",
+    "passwordLength": "Пароль не може бути коротшим за 8 і довшим за 25 символів",
+    "passwordValid": "Пароль має містити принаймні одну літеру та одну цифру",
+    "emptyField": "Це поле не може бути порожнім",
+    "nameLength": "Це поле не може містити більше ніж 30 символів",
+    "nameAlphabeticOnly": "Це поле може містити лише літери",
+    "passwordsDontMatch": "Паролі не співпадають",
+    "shortText": "Цей текст занадто короткий",
+    "longText": "Цей текст занадто довгий",
+    "numbersOnly": "Будь ласка, введіть коректне число",
+    "positiveNumbersOnly": "Будь ласка, введіть додатне число"
+  },
   "languages": {
     "allLanguages": "Усі мови",
     "english": "Англійська",
