@@ -3,7 +3,7 @@ export const styles = {
     p: 3,
     borderRadius: 3,
     boxShadow: 1,
-    maxWidth: 1100,
+    width: 834,
     m: 'auto',
     bgcolor: 'background.paper'
   },

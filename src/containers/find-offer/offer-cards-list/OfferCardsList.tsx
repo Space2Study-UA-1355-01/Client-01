@@ -87,7 +87,7 @@ const OfferCardsList: FC<OfferCardsListProps> = ({
       {isGridView ? (
         <Grid container spacing={2}>
           {paginatedOffers.map((offer) => (
-            <Grid item key={offer._id} md={4} sm={6} xs={12}>
+            <Grid item key={offer._id} lg={4} md={6} xs={12}>
               <Box sx={styles.container}>
                 <OfferCard
                   isGridView={isGridView}
