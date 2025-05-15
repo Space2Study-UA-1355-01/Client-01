@@ -7,7 +7,6 @@ import Typography from '@mui/material/Typography'
 
 import useAxios from '~/hooks/use-axios'
 import useForm from '~/hooks/use-form'
-import useConfirm from '~/hooks/use-confirm'
 import { useModalContext } from '~/context/modal-context'
 import { useSnackBarContext } from '~/context/snackbar-context'
 import Image from '~/assets/img/signup-dialog/student.svg'
@@ -27,17 +26,17 @@ import { snackbarVariants } from '~/constants'
 import { categoryService } from '~/services/category-service'
 import { validations } from '~/containers/find-offer/create-new-subject/CreateNewSubject.constants'
 import { styles } from '~/containers/find-offer/create-new-subject/CreateNewSubject.styles'
+import { subjectService } from '~/services/subject-service'
 
 const CreateSubjectModal = () => {
-  const { closeModal } = useModalContext()
-  const { setNeedConfirmation } = useConfirm()
+  const { closeModal, setUnsavedChanges } = useModalContext()
   const { setAlert } = useSnackBarContext()
   const { t } = useTranslation()
 
   const handleResponseError = (error: ErrorResponse) => {
     setAlert({
       severity: snackbarVariants.error,
-      message: error ? `errors.${error.code}` : ''
+      message: error ? error.message : ''
     })
   }
 
@@ -49,7 +48,8 @@ const CreateSubjectModal = () => {
     closeModal()
   }
 
-  const sendSubjectRequest = (): Promise<AxiosResponse> => null
+  const sendSubjectRequest = (): Promise<AxiosResponse> =>
+    subjectService.postSubject(data)
 
   const { loading, fetchData } = useAxios({
     service: sendSubjectRequest,
@@ -69,26 +69,26 @@ const CreateSubjectModal = () => {
     handleSubmit
   } = useForm({
     initialValues: {
-      subject: '',
+      name: '',
       category: '',
-      info: ''
+      description: ''
     },
     onSubmit: fetchData,
     validations
   })
 
   useEffect(() => {
-    setNeedConfirmation(isDirty)
-  }, [isDirty, setNeedConfirmation])
+    setUnsavedChanges(isDirty)
+  }, [isDirty, setUnsavedChanges])
 
   const handleCategoryChange = (
     _: React.SyntheticEvent,
     value: CategoryNameInterface | null | string
   ) => {
     if (typeof value === 'object') {
-      handleNonInputValueChange('category', value?.name ?? '')
+      handleNonInputValueChange('category', value?._id ?? '')
     } else {
-      handleNonInputValueChange('category', value)
+      handleNonInputValueChange('category', '')
     }
   }
 
@@ -111,19 +111,18 @@ const CreateSubjectModal = () => {
           {t('categoriesPage.newSubject.subject')}
         </Typography>
         <AppTextField
-          errorMsg={t(errors.subject)}
+          errorMsg={t(errors.name)}
           fullWidth
           label={t('categoriesPage.newSubject.labels.subject')}
-          onBlur={handleBlur('subject')}
-          onChange={handleInputChange('subject')}
-          value={data.subject}
+          onBlur={handleBlur('name')}
+          onChange={handleInputChange('name')}
+          value={data.name}
         />
         <Typography sx={styles.inputTitle}>
           {t('categoriesPage.newSubject.category')}
         </Typography>
         <AsyncAutocomplete
           fetchOnFocus
-          freeSolo
           labelField='name'
           onBlur={handleBlur('category')}
           onChange={handleCategoryChange}
@@ -135,18 +134,18 @@ const CreateSubjectModal = () => {
             helperText: t(errors.category) || ' '
           }}
           value={data.category}
-          valueField='name'
+          valueField='_id'
         />
         <AppTextArea
-          errorMsg={t(errors.info)}
+          errorMsg={t(errors.description)}
           fullWidth
           label={t('offerDetailsPage.enrollOffer.labels.info')}
           maxLength={1000}
-          onBlur={handleBlur('info')}
-          onChange={handleInputChange('info')}
+          onBlur={handleBlur('description')}
+          onChange={handleInputChange('description')}
           sx={styles.textArea}
           title={t('categoriesPage.newSubject.info')}
-          value={data.info}
+          value={data.description}
         />
         <AppButton
           loading={loading}
