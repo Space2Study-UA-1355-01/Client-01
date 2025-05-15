@@ -14,6 +14,7 @@ export interface CardWithLinkProps {
   name: string
   description?: string
   link?: string
+  totalOffers?: number
 }
 
 const CardWithLink: FC<CardWithLinkProps> = ({

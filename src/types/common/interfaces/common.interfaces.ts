@@ -38,6 +38,13 @@ export interface CategoryInterface {
   updatedAt: string
 }
 
+export interface PopularCategoryInterface {
+  _id: string
+  name: string
+  appearance: { icon: string; color: string }
+  totalOffers: number
+}
+
 export interface CategoryNameInterface {
   _id: string
   name: string

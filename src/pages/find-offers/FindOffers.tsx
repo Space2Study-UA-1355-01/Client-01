@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import PageWrapper from '~/components/page-wrapper/PageWrapper'
 import OfferRequestBlock from '~/containers/find-offer/offer-request-block/OfferRequestBlock'
 import OfferCardsList from '~/containers/find-offer/offer-cards-list/OfferCardsList'
+import PopularCategories from '~/containers/find-offer/popular-categories/PopularCategories'
 import ViewSwitcher from '~/components/view-switcher/ViewSwitcher'
 import TitleWithDescription from '~/components/title-with-description/TitleWithDescription'
 import DirectionLink from '~/components/direction-link/DirectionLink'
@@ -168,6 +169,7 @@ const FindOffers = () => {
         loading={loading}
         offers={offers}
       />
+        <PopularCategories limit={9} />
     </PageWrapper>
   )
 }

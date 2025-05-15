@@ -53,6 +53,7 @@
   },
   "popularCategories": {
     "title": "Popular Categories",
+    "description": "Exploring categories you're passionate about",
     "viewAllCategories": "View all categories"
   },
   "notFound": {

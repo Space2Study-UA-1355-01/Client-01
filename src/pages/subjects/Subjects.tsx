@@ -39,7 +39,7 @@ import {
   SubjectsInterfaceWithIcon
 } from '~/types/common/interfaces/common.interfaces'
 import { authRoutes } from '~/router/constants/authRoutes'
-import { styles } from '~/pages/subjects/Subjects.styles'
+import { styles } from './Subjects.styles'
 
 const Subjects = () => {
   const [match, setMatch] = useState<string>('')
@@ -276,7 +276,8 @@ const Subjects = () => {
         />
       </AppToolbar>
       {breakpoints.isMobile && autoCompleteCategories}
-      {!subjects.length && !subjectsLoading ? (
+      {(subjects.length === 0 || (cards.length === 0 && match)) &&
+      !subjectsLoading ? (
         <NotFoundResults
           buttonText={t('errorMessages.buttonRequest', { name: 'subjects' })}
           description={t('errorMessages.tryAgainText', { name: 'subjects' })}
