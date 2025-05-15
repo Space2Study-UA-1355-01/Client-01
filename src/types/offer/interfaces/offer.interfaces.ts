@@ -3,35 +3,34 @@ import {
   ProficiencyLevelEnum,
   CommonEntityFields,
   UserResponse,
-  SubjectNameInterface,
   LanguagesEnum,
   Faq,
   UserRoleEnum,
-  CategoryInterface,
   StatusEnum
 } from '~/types'
 
 export interface Offer extends CommonEntityFields {
   title: string
   price: number
-  proficiencyLevel: ProficiencyLevelEnum[]
+  proficiencyLevel: ProficiencyLevelEnum
   description: string
   languages: LanguagesEnum[]
   enrolledUsers: string[]
-  authorRole: UserRoleEnum.Tutor | UserRoleEnum.Student
+  authorRole: UserRoleEnum
   author: Pick<
     UserResponse,
     | '_id'
-    | 'totalReviews'
-    | 'photo'
-    | 'professionalSummary'
     | 'firstName'
     | 'lastName'
-    | 'FAQ'
+    | 'photo'
+    | 'professionalSummary'
+    | 'nativeLanguage'
+    | 'totalReviews'
     | 'averageRating'
   >
-  subject: SubjectNameInterface
-  category: CategoryInterface
+  subject: string
+  subjectName: string
+  category: string
   FAQ: Faq[]
   status: StatusEnum
 }

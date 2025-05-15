@@ -26,9 +26,7 @@ export interface OfferCardProps {
     totalReviews: RatingInfo
     averageRating: RatingInfo
   }
-  subject: {
-    name: string
-  }
+  subject: string
   onShowDetails?: () => void
   onSendMessage?: () => void
 }
