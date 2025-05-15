@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import SearchFilterInput from '~/components/search-filter-input/SearchFilterInput'
 
 vi.mock('react-i18next', () => ({
@@ -22,32 +23,28 @@ describe('SearchFilterInput', () => {
     expect(input).toBeInTheDocument()
   })
 
-  it('should render typed text correctly', () => {
-    fireEvent.change(input, { target: { value: 'some text' } })
+  it('should render typed text correctly', async () => {
+    await userEvent.type(input, 'some text')
     expect(input).toHaveValue('some text')
   })
 
-  it('should delete typed text when delete button is clicked', () => {
-    fireEvent.change(input, { target: { value: 'text' } })
+  it('should delete typed text when delete button is clicked', async () => {
+    await userEvent.type(input, 'text')
     const clearButton = screen.getByTestId('clearIcon')
-    fireEvent.click(clearButton)
+    await userEvent.click(clearButton)
     expect(input).toHaveValue('')
   })
 
-  it('should call updateFilter function on search button click', () => {
+  it('should call updateFilter function on search button click', async () => {
     const searchButton = screen.getByText('common.search')
-
-    fireEvent.change(input, { target: { value: 'some query' } })
-    fireEvent.click(searchButton)
-
+    await userEvent.type(input, 'some query')
+    await userEvent.click(searchButton)
     expect(updateFilter).toHaveBeenCalledWith('some query')
     expect(updateFilter).toHaveBeenCalledTimes(1)
   })
 
-  it('should call updateFilter function when enter is pressed', () => {
-    fireEvent.change(input, { target: { value: 'enter text' } })
-    fireEvent.keyDown(input, { key: 'Enter' })
-
+  it('should call updateFilter function when enter is pressed', async () => {
+    await userEvent.type(input, 'enter text{enter}')
     expect(updateFilter).toHaveBeenCalledWith('enter text')
     expect(updateFilter).toHaveBeenCalledTimes(1)
   })
