@@ -24,3 +24,5 @@ export type Sort = {
   order: SortEnum
   orderBy: string
 }
+
+export type Role = 'tutor' | 'student'

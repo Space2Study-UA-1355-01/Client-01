@@ -165,3 +165,22 @@ export interface Link {
   name: string
   url: string
 }
+
+export interface QA {
+  question: string
+  answer: string
+}
+
+export interface Category {
+  _id: string
+  name: string
+}
+
+export interface Subject {
+  _id: string
+  name: string
+}
+
+export interface FormProps {
+  onSuccess?: () => void
+}
