@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, memo } from 'react'
 import {
   Card,
   Box,
@@ -75,7 +75,7 @@ const OfferCardRectangle: FC<OfferCardProps> = ({
         <Box sx={styles.middleSection}>
           <Typography sx={styles.title}>{title}</Typography>
           <Stack direction='row' spacing={1} sx={{ mb: 1 }}>
-            <Chip label={subject.name.toUpperCase()} sx={styles.chip} />
+            <Chip label={subject.toUpperCase()} sx={styles.chip} />
             <Chip
               label={proficiencyLevel.toUpperCase()}
               sx={{
@@ -125,4 +125,4 @@ const OfferCardRectangle: FC<OfferCardProps> = ({
   )
 }
 
-export default OfferCardRectangle
+export default memo(OfferCardRectangle)
