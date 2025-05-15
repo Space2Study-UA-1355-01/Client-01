@@ -16,22 +16,22 @@
   },
   "howItWorks": {
     "title": "How it works",
-    "description": "4 steps to easy tutoring with Space2Study",
+    "description": "4 simple steps to effective tutoring with Space2Study",
     "signUp": {
       "title": "Sign up",
-      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+      "description": "Create your account in just a few minutes and join a growing community of students and tutors."
     },
     "createAccount": {
       "title": "Create a Tutor Account",
-      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+      "description": "Complete your profile by adding your subjects, skills, and experience so students can easily find you."
     },
     "getNewStudents": {
       "title": "Get New Students",
-      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+      "description": "Receive tutoring requests from students looking for your specific knowledge and expertise."
     },
     "receiveFeedbacks": {
-      "title": "Receive Feedbacks",
-      "description": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout."
+      "title": "Receive Feedback",
+      "description": "After each session, students can leave reviews to help you grow and attract even more learners."
     }
   },
   "faq": {
