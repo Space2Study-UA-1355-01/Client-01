@@ -20,13 +20,15 @@ import {
   Category,
   Subject,
   FormProps,
+  SubjectApiResponse
 } from '~/types/common/interfaces/common.interfaces'
 import {
   levelOptions,
   optionLanguages,
-  validProficiencyLevels
+  validProficiencyLevels,
+  LevelOption
 } from './constants'
-import * as s from '~/components/create-offer-or-request-form/CreateOfferOrRequestForm.styles'
+import * as s from './CreateOfferRequestForm.styles'
 
 const CreateOfferOrRequestForm: FC<FormProps> = ({ onSuccess }) => {
   const { t } = useTranslation()
@@ -53,11 +55,11 @@ const CreateOfferOrRequestForm: FC<FormProps> = ({ onSuccess }) => {
     const fetchCategories = async () => {
       setIsLoadingCategories(true)
       try {
-        const response = await axiosClient.get('/categories')
+        const response =
+          await axiosClient.get<SubjectApiResponse>('/categories')
         console.log('Categories response:', response.data)
         const data = response.data.data
-        const categoriesArray = Array.isArray(data) ? data : []
-        setCategories(categoriesArray)
+        setCategories(data)
       } catch (err) {
         console.error('Fetch categories error:', err)
         setCategories([])
@@ -77,13 +79,12 @@ const CreateOfferOrRequestForm: FC<FormProps> = ({ onSuccess }) => {
     const fetchSubjects = async () => {
       setIsLoadingSubjects(true)
       try {
-        const response = await axiosClient.get(
+        const response = await axiosClient.get<SubjectApiResponse>(
           `/categories/${category}/subjects/names`
         )
         console.log('Subjects response:', response.data)
         const data = response.data.data
-        const subjectsArray = Array.isArray(data) ? data : []
-        setSubjects(subjectsArray)
+        setSubjects(data)
       } catch (err) {
         console.error('Fetch subjects error:', err)
         setSubjects([])
@@ -148,7 +149,8 @@ const CreateOfferOrRequestForm: FC<FormProps> = ({ onSuccess }) => {
       }
       console.log('Submitting form data:', formData)
 
-      await axiosClient.post('/offers', formData)
+      const response = await axiosClient.post('/offers', formData)
+      console.log('Submission response:', response.data)
       setCategory('')
       setSubject('')
       setProficiencyLevel('Beginner')
@@ -208,7 +210,7 @@ const CreateOfferOrRequestForm: FC<FormProps> = ({ onSuccess }) => {
   return (
     <form
       onSubmit={(e) => {
-        void handleSubmit(e) 
+        void handleSubmit(e)
       }}
     >
       <s.StepContainer>
@@ -248,12 +250,11 @@ const CreateOfferOrRequestForm: FC<FormProps> = ({ onSuccess }) => {
                       : t('common.noCategories')}
                   </MenuItem>
                 )}
-                {Array.isArray(categories) &&
-                  categories.map((cat) => (
-                    <MenuItem key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </MenuItem>
-                  ))}
+                {categories.map((cat) => (
+                  <MenuItem key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </s.InputContainer>
@@ -279,12 +280,11 @@ const CreateOfferOrRequestForm: FC<FormProps> = ({ onSuccess }) => {
                       : t('common.noSubjects')}
                   </MenuItem>
                 )}
-                {Array.isArray(subjects) &&
-                  subjects.map((sub) => (
-                    <MenuItem key={sub._id} value={sub._id}>
-                      {sub.name}
-                    </MenuItem>
-                  ))}
+                {subjects.map((sub) => (
+                  <MenuItem key={sub._id} value={sub._id}>
+                    {sub.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           </s.InputContainer>
@@ -297,13 +297,13 @@ const CreateOfferOrRequestForm: FC<FormProps> = ({ onSuccess }) => {
               <Select
                 label={specializationStep.fieldLevel}
                 labelId='proficiency-level-label'
-                onChange={(e) => {
+                onChange={(e: SelectChangeEvent<string>) => {
                   setProficiencyLevel(e.target.value)
                   console.log('Selected proficiencyLevel:', e.target.value)
                 }}
                 value={proficiencyLevel}
               >
-                {levelOptions.map((option) => (
+                {levelOptions.map((option: LevelOption) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
@@ -367,7 +367,7 @@ const CreateOfferOrRequestForm: FC<FormProps> = ({ onSuccess }) => {
               value={languages}
               variant='outlined'
             >
-              {optionLanguages.map((lang) => (
+              {optionLanguages.map((lang: string) => (
                 <MenuItem key={lang} value={lang}>
                   {lang}
                 </MenuItem>

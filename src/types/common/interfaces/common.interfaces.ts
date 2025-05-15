@@ -38,6 +38,22 @@ export interface CategoryInterface {
   updatedAt: string
 }
 
+export interface CategoriesResponse {
+  data: {
+    _id: string
+    name: string
+    totalOffers: number
+    appearance: {
+      icon: string
+      color: string
+    }
+  }[]
+  limit: number
+  page: number
+  total: number
+  totalPages: number
+}
+
 export interface CategoryNameInterface {
   _id: string
   name: string
@@ -183,4 +199,16 @@ export interface Subject {
 
 export interface FormProps {
   onSuccess?: () => void
+}
+
+export interface CategoryResponse {
+  _id: string
+  name: string
+  appearance: {
+    icon: string
+    color: string
+  }
+  totalOffers: number
+  createdAt?: string
+  updatedAt?: string
 }
