@@ -33,7 +33,7 @@ const getAccessTokenFromCookie = () => {
   return match ? match[1] : ''
 }
 
-const LIMIT = 6
+const LIMIT = 12
 const apiPath = import.meta.env.VITE_API_BASE_PATH
 const clientPath = 'http://localhost:3000'
 

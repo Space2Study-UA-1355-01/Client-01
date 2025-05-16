@@ -169,7 +169,7 @@ const FindOffers = () => {
         loading={loading}
         offers={offers}
       />
-        <PopularCategories limit={9} />
+      <PopularCategories limit={9} />
     </PageWrapper>
   )
 }
