@@ -29,8 +29,8 @@ const OfferCardsList: FC<OfferCardsListProps> = ({
 
   const getItemsPerPage = () => {
     const width = window.innerWidth
-    if (width < 600) return itemsLoadLimit.mobile
-    if (width < 900) return itemsLoadLimit.tablet
+    if (width < 900) return itemsLoadLimit.mobile
+    if (width < 1100) return itemsLoadLimit.tablet
     return itemsLoadLimit.default
   }
   const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage)
