@@ -8,7 +8,6 @@ import { createUrlPath, parseJwt } from '~/utils/helper-functions'
 import { URLs } from '~/constants/request'
 import {
   ApiMethodEnum,
-  GoogleAuthParams,
   LoginParams,
   LoginResponse,
   SignupParams,
@@ -38,6 +37,11 @@ export const AuthService = {
   }
 }
 
+interface GoogleAuthResponse {
+  idToken: string
+  role?: string
+}
+
 export const authService = appApi.injectEndpoints({
   endpoints: (build) => ({
     signUp: build.mutation<SignupResponse, SignupParams>({
@@ -56,12 +60,21 @@ export const authService = appApi.injectEndpoints({
         }
       }
     }),
-    googleAuth: build.mutation<LoginResponse, GoogleAuthParams>({
-      query: (body) => ({ url: URLs.auth.googleAuth, method: POST, body }),
+    googleAuth: build.mutation<LoginResponse, GoogleAuthResponse>({
+      query: (body: GoogleAuthResponse) => ({
+        url: URLs.auth.googleAuth,
+        method: 'POST',
+        body: {
+          idToken: body.idToken,
+          role: body.role
+        }
+      }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
           dispatch(setUser(data.accessToken))
+          const parsedData: AccessToken = parseJwt(data.accessToken)
+          await loadUserProfileData(dispatch, parsedData.id, parsedData.role)
         } catch {
           dispatch(logout())
         }
